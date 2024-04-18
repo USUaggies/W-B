@@ -1,198 +1,77 @@
 <!doctype html>
-
 <html lang="en">
 
 <head>
-
     <!-- Required meta tags -->
-
     <meta charset="utf-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-
-
     <!-- Bootstrap CSS -->
-
     <link rel="stylesheet" href="css/bootstrap.css">
-
     <link rel="stylesheet" href="css/custom.css">
-	
-	<link rel="icon" type="image/x-icon" href="resources/favicon.ico">
-
-
-
+    <link rel="icon" type="image/x-icon" href="resources/favicon.ico">
     <title>Weight &amp; Balance</title>
-
 </head>
 
 <body>
-
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-
-    <a class="navbar-brand" href="index.html">USU Aviation</a>
-
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-
-        <span class="navbar-toggler-icon"></span>
-
-    </button>
-
-
-
-    <div class="collapse navbar-collapse" id="navbar">
-
-        <ul class="navbar-nav mr-auto">
-
-            <li class="nav-item active">
-
-                <a class="nav-link" href="index.html" id="navbarHelp">Instructions <span class="sr-only">(current)</span></a>
-
-            </li>
-
-            <li class="nav-item ">
-
-                <a class="nav-link" href="weightbalance.html">Weight &amp; Balance <span class="sr-only">(current)</span></a>
-
-            </li>
-
-            <li class="nav-item ">
-
-                <a class="nav-link disabled" href="performance.html">Weather &amp; Performance <span class="sr-only">(current)</span></a>
-
-            </li>
-			
-			<li class="nav-item ">
-
-                <a class="nav-link disabled" href="risk.html">Risk Assessment<span class="sr-only">(current)</span></a>
-
-            </li>
-
-            <li class="nav-item ">
-
-                <a class="nav-link disabled" href="summary.html" id="navbarSummary">Summary <span class="sr-only">(current)</span></a>
-
-            </li>
-
-
-
-            <li class="nav-item dropdown">
-
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-                    USU Links
-
-                </a>
-
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-
-                    <a class="dropdown-item" target="_blank" href="https://caas.usu.edu/avte/documents">Documents and Forms</a>
-
-                    <a class="dropdown-item" target="_blank" href="https://usu.flightlogger.net/">FlightLogger</a>
-
-                    <a class="dropdown-item" target="_blank" href="https://usu.co1.qualtrics.com/jfe/form/SV_6JqMu9UuqhUXvZr">Safety Report</a>
-					
-					<a class="dropdown-item" target="_blank" href="https://caas.usu.edu/avte/camera">Live Airport Camera</a>
-
-                </div>
-
-            </li>
-
-        </ul>
-
-    </div>
-
-</nav>
-
-
-
-<main role="main" class="container">
-
-    <div class="container">
-
-        <div class="row">
-
-            <div class="col-lg">
-
-                <h4>Instructions</h4>
-
-                <p>Use the navigation links above to switch between the multiple pages of this website.
-
-                    The 'Weight &amp; Balance' tab is where you should begin by selecting your aircraft tail number
-
-                    and filling out the required weights. All weights should be filled in,
-
-                    if the station does not have a weight then please enter 0. Once all required fields are complete
-
-                    the results will inform you if you are within weight and balance.
-
-                    The show details button will show all the stations' weight, arm, and moment.
-
-                </p>
-
-                <p>
-
-                    After completing the weight and balance portion, you should now select the 'Weather &amp; Performance' tab.
-
-                    This tab will retrieve weather and compute performance.
-
-                    Enter the departure airport station ID to retrieve the METAR and TAF (if available).
-
-                    If a METAR is not available or is missing key elements, manual entry will be required.
-
-                    Once you have retrieved the weather, input the runway heading you will be departing from (Runway 17 = 170).
-
-                    This now displays the performance numbers. This will add the airport to the sidebar. Click an airport to remove it.
-
-                </p>
-
-				<p>
-					The 'Risk Assessment' tab is optional. Click a box in each row to select the corresponding score. 
-					
-					A message regarding estimated risk will display at the bottom. 
-					
-				</p>
-
-                <p>
-
-                    The 'Summary' tab will now be available to click if you have filled out the 'Weight &amp; Balance' and 'Weather &amp; performance' tabs.
-
-                    The summary page shows all information and allows for an email to be generated or the page to be printed
-
-                    in a USU friendly format. The email button will generate a text only email and will be opened in the
-
-                    device's preferred email client. The print button will open a new tab or window, if the print dialog does not
-
-                    automatically open, pressing Ctrl+p will print the page.
-
-                </p>
-
-            </div>
-
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="index.html">USU Aviation</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index.html" id="navbarHelp">Instructions <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="weightbalance.html">Weight &amp; Balance <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link disabled" href="performance.html">Weather &amp; Performance <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link disabled" href="risk.html">Risk Assessment<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link disabled" href="summary.html" id="navbarSummary">Summary <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> USU Links </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" target="_blank" href="https://caas.usu.edu/avte/documents">Documents and Forms</a>
+                        <a class="dropdown-item" target="_blank" href="https://usu.flightlogger.net/">FlightLogger</a>
+                        <a class="dropdown-item" target="_blank" href="https://usu.co1.qualtrics.com/jfe/form/SV_6JqMu9UuqhUXvZr">Safety Report</a>
+                        <a class="dropdown-item" target="_blank" href="https://caas.usu.edu/avte/camera">Live Airport Camera</a>
+                    </div>
+                </li>
+            </ul>
         </div>
-		
-		<div class="nav-button-row row next-only">
-			<button id="next-button" class="btn btn-secondary m-1">Next</button>
-		</div>
-
-    </div>
-
-</main><!-- /.container -->
-
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
-<script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/data.js"></script>
-	
-<script>
-	document.getElementById("next-button").addEventListener("click", function(){
-		window.location.href = "weightbalance.html";
-	});
-</script>
-
+    </nav>
+    <main role="main" class="container">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg">
+                    <h4>Instructions</h4>
+                    <p>Use the navigation links above to switch between the multiple pages of this website. The 'Weight &amp; Balance' tab is where you should begin by selecting your aircraft tail number and filling out the required weights. All weights should be filled in, if the station does not have a weight then please enter 0. Once all required fields are complete the results will inform you if you are within weight and balance. The show details button will show all the stations' weight, arm, and moment. </p>
+                    <p> After completing the weight and balance portion, you should now select the 'Weather &amp; Performance' tab. This tab will retrieve weather and compute performance. Enter the departure airport station ID to retrieve the METAR and TAF (if available). If a METAR is not available or is missing key elements, manual entry will be required. Once you have retrieved the weather, input the runway heading you will be departing from (Runway 17 = 170). This now displays the performance numbers. This will add the airport to the sidebar. Click an airport to remove it. </p>
+                    <p> The 'Risk Assessment' tab is optional. Click a box in each row to select the corresponding score. A message regarding estimated risk will display at the bottom. </p>
+                    <p> The 'Summary' tab will now be available to click if you have filled out the 'Weight &amp; Balance' and 'Weather &amp; performance' tabs. The summary page shows all information and allows for an email to be generated or the page to be printed in a USU friendly format. The email button will generate a text only email and will be opened in the device's preferred email client. The print button will open a new tab or window, if the print dialog does not automatically open, pressing Ctrl+p will print the page. </p>
+                </div>
+            </div>
+            <div class="nav-button-row row next-only">
+                <button id="next-button" class="btn btn-secondary m-1">Next</button>
+            </div>
+        </div>
+    </main><!-- /.container -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/data.js"></script>
+    <script>
+        document.getElementById("next-button").addEventListener("click", function() {
+            window.location.href = "weightbalance.html";
+        });
+    </script>
 </body>
 
 </html>

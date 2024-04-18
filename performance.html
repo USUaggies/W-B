@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -7,259 +8,242 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.css">
     <link rel="stylesheet" href="css/custom.css">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block" />
-	<link rel="icon" type="image/x-icon" href="resources/favicon.ico">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=block" />
+    <link rel="icon" type="image/x-icon" href="resources/favicon.ico">
     <title>Weather &amp; Performance</title>
 </head>
+
 <body>
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="index.html">USU Aviation</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbar">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item ">
-                <a class="nav-link " href="index.html" id="navbarHelp">Instructions <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item ">
-                <a class="nav-link" href="weightbalance.html">Weight &amp; Balance <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="performance.html">Weather &amp; Performance <span class="sr-only">(current)</span></a>
-            </li>
-			<li class="nav-item">
-                <a class="nav-link disabled" href="risk.html" id="navbarRisk">Risk Assessment<span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item ">
-                <a class="nav-link disabled" href="summary.html" id="navbarSummary">Summary <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    USU Links
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <a class="dropdown-item" target="_blank" href="https://caas.usu.edu/avte/documents">Documents and Forms</a>
-                    <a class="dropdown-item" target="_blank" href="https://usu.flightlogger.net/">FlightLogger</a>
-                    <a class="dropdown-item" target="_blank" href="https://usu.co1.qualtrics.com/jfe/form/SV_6JqMu9UuqhUXvZr">Safety Report</a>
-					<a class="dropdown-item" target="_blank" href="https://caas.usu.edu/avte/camera">Live Airport Camera</a>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="index.html">USU Aviation</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item ">
+                    <a class="nav-link " href="index.html" id="navbarHelp">Instructions <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="weightbalance.html">Weight &amp; Balance <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="performance.html">Weather &amp; Performance <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="risk.html" id="navbarRisk">Risk Assessment<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link disabled" href="summary.html" id="navbarSummary">Summary <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> USU Links </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" target="_blank" href="https://caas.usu.edu/avte/documents">Documents and Forms</a>
+                        <a class="dropdown-item" target="_blank" href="https://usu.flightlogger.net/">FlightLogger</a>
+                        <a class="dropdown-item" target="_blank" href="https://usu.co1.qualtrics.com/jfe/form/SV_6JqMu9UuqhUXvZr">Safety Report</a>
+                        <a class="dropdown-item" target="_blank" href="https://caas.usu.edu/avte/camera">Live Airport Camera</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <main role="main" class="container">
+        <div class="container">
+            <div class="row">
+                <div class="col-1 airport-col"> Airports (click to remove) <div id="airport-container" class="airport-container"></div>
                 </div>
-            </li>
-        </ul>
-    </div>
-</nav>
-
-<main role="main" class="container">
-    <div class="container">
-        <div class="row">
-			
-			<div class="col-1 airport-col">
-				Airports (click to remove)
-				<div id="airport-container" class="airport-container"></div>
-			</div>
-            <div class="col-lg">
-                <h4>Weather</h4>
-                <div class="input-group mb-3" id = "weatherDiv">
-                    <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="text" class="form-control " placeholder="Station ID" id="weatherID">
-                    <div class="input-group-append">
-                        <button type="button" id="weatherSubmit" class="btn btn-secondary" onclick="getWeather()">Submit</button>
+                <div class="col-lg">
+                    <h4>Weather</h4>
+                    <div class="input-group mb-3" id="weatherDiv">
+                        <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="text" class="form-control " placeholder="Station ID" id="weatherID">
+                        <div class="input-group-append">
+                            <button type="button" id="weatherSubmit" class="btn btn-secondary" onclick="getWeather()">Submit</button>
+                        </div>
+                    </div>
+                    <p style="font-style: italic">Weather and performance for all airports will be displayed on the 'Summary' page</p>
+                    <div id="weatherInput" style="display: none">
+                        <p id="weatherAltTitle"></p>
+                        <table class="table table-sm table-striped table-bordered">
+                            <form id="altWeatherForm">
+                                <tbody>
+                                    <tr>
+                                        <th scope="col">Wind Dir and Vel</th>
+                                        <th id="alt-wWind"><input type="text" class="form-control" id="windHeading" form="altWeatherForm" placeholder="direction" required>&deg; @ <input type="text" class="form-control" id="windSpeed" form="altWeatherForm" placeholder="speed" required>kts</th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">Visibility</th>
+                                        <th id="alt-wVisibility"><input type="text" class="form-control" id="visibility" form="altWeatherForm" placeholder="sm"></th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">Temperature</th>
+                                        <th id="alt-wTemp"><input type="text" class="form-control" id="temperature" form="altWeatherForm" placeholder="&deg C" required></th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">Dew Point</th>
+                                        <th id="alt-wDewpoint"><input type="text" class="form-control" id="dewpoint" form="altWeatherForm" placeholder="&deg C" required></th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">Altimeter</th>
+                                        <th id="alt-wAltimeter"><input type="text" class="form-control" id="altimeter" form="altWeatherForm" placeholder="inHg" required></th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">Elevation</th>
+                                        <th id="alt-wElevation"><input type="text" class="form-control" id="fieldAlt" form="altWeatherForm" placeholder="feet" required></th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">Density Alt.</th>
+                                        <th id="alt-wDensityAlt"></th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">Pressure Alt.</th>
+                                        <th id="alt-wPressureAlt"></th>
+                                    </tr>
+                                </tbody><br>
+                            </form>
+                        </table>
+                        <div class="form-group row">
+                            <button type="button" class="btn btn-secondary" onclick="weatherInputClick()">Submit</button>
+                            <small class="col-sm-6 col-form-label text-success" id="weatherInfo">
+                            </small>
+                        </div>
+                    </div>
+                    <div class="errorMessage hidden" id="errorDiv1"></div>
+                    <div id="weatherData" style="display: none">
+                        <p id="wRaw"></p>
+                        <table class="table table-sm table-striped table-bordered">
+                            <tbody>
+                                <tr>
+                                    <th scope="col" id="wCatL">Flight Category</th>
+                                    <th id="wCat"></th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">Time</th>
+                                    <th id="wTime"></th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">Wind Dir and Vel</th>
+                                    <th id="wWind"></th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">Visibility</th>
+                                    <th id="wVisibility"></th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">Clouds</th>
+                                    <th id="wCeilings"></th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">Temperature</th>
+                                    <th id="wTemp"></th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">Dew Point</th>
+                                    <th id="wDewpoint"></th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">Altimeter</th>
+                                    <th id="wAltimeter"></th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">Density Alt.</th>
+                                    <th id="wDensityAlt"></th>
+                                </tr>
+                                <tr>
+                                    <th scope="col">Pressure Alt.</th>
+                                    <th id="wPressureAlt"></th>
+                                </tr>
+                                <tr id="wWeatherContainer">
+                                    <th scope="col">Weather Info</th>
+                                    <th id="wWeather"></th>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="weatherTAF">
+                            <h5>TAF</h5>
+                            <p id="TAF"></p>
+                        </div>
                     </div>
                 </div>
-				<p style="font-style: italic">Weather and performance for all airports will be displayed on the 'Summary' page</p>
-                <div id="weatherInput" style="display: none">
-                    <p id="weatherAltTitle"></p>
-					<table class="table table-sm table-striped table-bordered">
-                    	<form id="altWeatherForm">
-							<tbody>
-							<tr>
-								<th scope="col" >Wind Dir and Vel</th>
-								<th id="alt-wWind"><input type="text" class="form-control" id="windHeading" form="altWeatherForm" placeholder="direction" required>&deg; @ <input type="text" class="form-control" id="windSpeed" form="altWeatherForm" placeholder="speed" required>kts</th>
-							</tr>
-							<tr>
-								<th scope="col">Visibility</th>
-								<th id="alt-wVisibility"><input type="text" class="form-control" id="visibility" form="altWeatherForm" placeholder="sm"></th>
-							</tr>
-							<tr>
-								<th scope="col">Temperature</th>
-								<th id="alt-wTemp"><input type="text" class="form-control" id="temperature" form="altWeatherForm" placeholder="&deg C" required></th>
-							</tr>
-							<tr>
-								<th scope="col">Dew Point</th>
-								<th id="alt-wDewpoint"><input type="text" class="form-control" id="dewpoint" form="altWeatherForm" placeholder="&deg C" required></th>
-							</tr>
-							<tr>
-								<th scope="col">Altimeter</th>
-								<th id="alt-wAltimeter"><input type="text" class="form-control" id="altimeter" form="altWeatherForm" placeholder="inHg" required></th>
-							</tr>
-							<tr>
-								<th scope="col">Elevation</th>
-								<th id="alt-wElevation"><input type="text" class="form-control" id="fieldAlt" form="altWeatherForm" placeholder="feet" required></th>
-							</tr>
-							<tr>
-								<th scope="col">Density Alt.</th>
-								<th id="alt-wDensityAlt"></th>
-							</tr>
-							<tr>
-								<th scope="col">Pressure Alt.</th>
-								<th id="alt-wPressureAlt"></th>
-							</tr>
-							</tbody><br>
-						</form>
-                    </table>
-					<div class="form-group row">
-						<button type="button" class="btn btn-secondary" onclick="weatherInputClick()">Submit</button>
-						<small class="col-sm-6 col-form-label text-success" id="weatherInfo">
-						</small>
-					</div>
-                </div>
-				<div class="errorMessage hidden" id="errorDiv1"></div>
-                <div id="weatherData" style="display: none">
-                    <p id="wRaw"></p>
-                    <table class="table table-sm table-striped table-bordered">
-                        <tbody>
-                        <tr>
-                            <th scope="col" id="wCatL">Flight Category</th>
-                            <th id="wCat"></th>
-                        </tr>
-						<tr>
-                            <th scope="col">Time</th>
-                            <th id="wTime"></th>
-                        </tr>
-						<tr>
-                            <th scope="col" >Wind Dir and Vel</th>
-                            <th id="wWind"></th>
-                        </tr>
-                        <tr>
-                            <th scope="col">Visibility</th>
-                            <th id="wVisibility"></th>
-                        </tr>
-                        <tr>
-                            <th scope="col">Clouds</th>
-                            <th id="wCeilings"></th>
-                        </tr>
-                        <tr>
-                            <th scope="col">Temperature</th>
-                            <th id="wTemp"></th>
-                        </tr>
-                        <tr>
-                            <th scope="col">Dew Point</th>
-                            <th id="wDewpoint"></th>
-                        </tr>
-                        <tr>
-                            <th scope="col">Altimeter</th>
-                            <th id="wAltimeter"></th>
-                        </tr>
-                        <tr>
-                            <th scope="col">Density Alt.</th>
-                            <th id="wDensityAlt"></th>
-                        </tr>
-                        <tr>
-                            <th scope="col">Pressure Alt.</th>
-                            <th id="wPressureAlt"></th>
-                        </tr>
-						<tr id="wWeatherContainer">
-                            <th scope="col">Weather Info</th>
-                            <th id="wWeather"></th>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <div id="weatherTAF">
-                        <h5>TAF</h5>
-                        <p id="TAF"></p>
+                <div class="col-lg">
+                    <h4>Takeoff and Landing Performance</h4>
+                    <p>Performance data is an estimate only and does not take into consideration runway condition, aircraft condition, or pilot technique. Runway data may be outdated or incorrect</p>
+                    <div class="container form-group row">
+                        <div id="runwaySelectDiv"></div>
+                        <div style="white-space: nowrap;">
+                            <label for="runwayHdg" class="col-sm-4 col-form-label" style="display: inline-block; max-width: 150px">Runway Heading: </label>
+                            <input type="number" class="form-control" id="runwayHdg" min="1" max="360" placeholder="Degrees" onchange="runwayChange(this.value)" style="max-width: 125px; display: inline-block;">
+                        </div>
+                    </div>
+                    <p id="weatherWarning" style="=display: none"></p>
+                    <div class="errorMessage hidden" id="errorDiv2"></div>
+                    <div id="perfTable" style="display: none">
+                        <table class="table table-sm table-bordered table-striped">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">Headwind</th>
+                                    <td id="headWind"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Crosswind</th>
+                                    <td id="xWind"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Takeoff</th>
+                                    <td id="TODistance">Ground Roll:</td>
+                                    <td id="TO50Distance">Over 50':</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Landing</th>
+                                    <td id="LDGDistance">Ground Roll:</td>
+                                    <td id="LDG50Distance">Over 50':</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" colspan="2">Touch and Go Distance</th>
+                                    <td id="tgDistance"></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" colspan="2">Rate of Climb</th>
+                                    <td id="climbFPM"></td>
+                                </tr>
+                                <tr class="hidden">
+                                    <th scope="row" colspan="2">Single-Engine Rate of Climb</th>
+                                    <td id="SEClimbFPM"></td>
+                                </tr>
+                                <tr class="hidden">
+                                    <th scope="row" colspan="2">Climb Gradient</th>
+                                    <td id="climbGrad"></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-            <div class="col-lg">
-                <h4>Takeoff and Landing Performance</h4>
-                <p>Performance data is an estimate only and does not take into
-                    consideration runway condition, aircraft condition, or pilot technique.
-					Runway data may be outdated or incorrect</p>
-				<div class="container form-group row">
-					<div id="runwaySelectDiv"></div>
-					<div style="white-space: nowrap;">
-					<label for="runwayHdg" class="col-sm-4 col-form-label" style="display: inline-block; max-width: 150px">Runway Heading: </label>
-                    <input type="number" class="form-control" id="runwayHdg" min="1" max="360" placeholder="Degrees" onchange="runwayChange(this.value)" style="max-width: 125px; display: inline-block;">
-					</div>
-                </div>
-				<p id="weatherWarning" style="=display: none"></p>
-				<div class="errorMessage hidden" id="errorDiv2"></div>
-                <div id="perfTable" style="display: none">
-                    <table class="table table-sm table-bordered table-striped">
-                        <tbody>
-                        <tr>
-                            <th scope="row">Headwind</th>
-                            <td id="headWind"></td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row">Crosswind</th>
-                            <td id="xWind"></td>
-
-                        </tr>
-                        <tr>
-                            <th scope="row">Takeoff</th>
-                            <td id ="TODistance">Ground Roll:</td>
-                            <td id ="TO50Distance">Over 50':</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">Landing</th>
-                            <td id="LDGDistance">Ground Roll:</td>
-                            <td id="LDG50Distance">Over 50':</td>
-                        </tr>
-                        <tr>
-                            <th scope="row" colspan="2">Touch and Go Distance</th>
-                            <td id="tgDistance"></td>
-                        </tr>
-                        <tr>
-                            <th scope="row" colspan="2">Rate of Climb</th>
-                            <td id="climbFPM"></td>
-                        </tr>
-						<tr class="hidden">
-                            <th scope="row" colspan="2">Single-Engine Rate of Climb</th>
-                            <td id="SEClimbFPM"></td>
-                        </tr>
-						<tr class="hidden">
-                            <th scope="row" colspan="2">Climb Gradient</th>
-                            <td id="climbGrad"></td>
-                        </tr>
-
-                        </tbody>
-                    </table>
-                </div>
+            <div class="nav-button-row row">
+                <button id="previous-button" class="btn btn-secondary m-1">Previous</button>
+                <button id="next-button" class="btn btn-secondary m-1" disabled>Next</button>
             </div>
         </div>
-		<div class="nav-button-row row">
-			<button id="previous-button" class="btn btn-secondary m-1">Previous</button>
-			<button id="next-button" class="btn btn-secondary m-1" disabled>Next</button>
-		</div>
-    </div>
-</main>
-
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-<script type="application/javascript">
-    var input = document.getElementById("weatherID");
-
-    // Execute a function when the user releases a key on the keyboard
-    input.addEventListener("keyup", function(event) {
-      // Number 13 is the "Enter" key on the keyboard
-      if (event.keyCode === 13) {
-        // Cancel the default action, if needed
-        event.preventDefault();
-        // Trigger the button element with a click
-		
-		  getWeather();
-		  //getRunways(null);
-      }
-    });
-</script>
-<script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/airports.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/aircraft.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/perfdata.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/performance.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/data.js"></script>
-<div id="test"></div>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script type="application/javascript">
+        var input = document.getElementById("weatherID");
+        input.addEventListener("keyup", function(event) {
+            // Number 13 is the "Enter" key on the keyboard
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                getWeather();
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/airports.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/aircraft.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/perfdata.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/performance.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/data.js"></script>
+    <div id="test"></div>
 </body>
+
 </html>

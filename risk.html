@@ -1,270 +1,206 @@
 <!doctype html>
-
 <html lang="en">
 
 <head>
-
     <!-- Required meta tags -->
-
     <meta charset="utf-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <!-- Bootstrap CSS -->
-
     <link rel="stylesheet" href="css/bootstrap.css">
-
     <link rel="stylesheet" href="css/custom.css">
-	
-	<link rel="icon" type="image/x-icon" href="resources/favicon.ico">
-	
-	<style type="text/css">
-		.selected {
-      		background-color: #007bff;
-      		color: #fff;
-    	}
-		
-		.disabled-cell {
-			background-color: gray;
-		}
-		
-		.score-cell {
-			width: 45px;
-			background-color: lightgray;
-		}		
-		
-		th {
-			text-align: center;
-		}
-	</style>
+    <link rel="icon" type="image/x-icon" href="resources/favicon.ico">
+    <style type="text/css">
+        .selected {
+            background-color: #007bff;
+            color: #fff;
+        }
 
+        .disabled-cell {
+            background-color: gray;
+        }
+
+        .score-cell {
+            width: 45px;
+            background-color: lightgray;
+        }
+
+        th {
+            text-align: center;
+        }
+    </style>
     <title id="title">Risk Assessment</title>
-
 </head>
 
 <body>
-
-<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-
-    <a class="navbar-brand" href="index.html">USU Aviation</a>
-
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-
-        <span class="navbar-toggler-icon"></span>
-
-    </button>
-
-
-
-    <div class="collapse navbar-collapse" id="navbar">
-
-        <ul class="navbar-nav mr-auto">
-
-            <li class="nav-item ">
-
-                <a class="nav-link" href="index.html" id="navbarHelp">Instructions <span class="sr-only">(current)</span></a>
-
-            </li>
-
-            <li class="nav-item ">
-
-                <a class="nav-link" href="weightbalance.html">Weight &amp; Balance <span class="sr-only">(current)</span></a>
-
-            </li>
-
-            <li class="nav-item ">
-
-                <a class="nav-link" href="performance.html">Weather &amp; Performance <span class="sr-only">(current)</span></a>
-
-            </li>
-			
-			<li class="nav-item active">
-
-                <a class="nav-link" href="risk.html">Risk Assessment<span class="sr-only">(current)</span></a>
-
-            </li>
-
-            <li class="nav-item">
-
-                <a class="nav-link disabled" href="summary.html" id="navbarSummary">Summary <span class="sr-only">(current)</span></a>
-
-            </li>
-
-            <li class="nav-item dropdown">
-
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-                    USU Links
-
-                </a>
-
-                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-
-                    <a class="dropdown-item" target="_blank" href="https://caas.usu.edu/avte/documents">Documents and Forms</a>
-
-                    <a class="dropdown-item" target="_blank" href="https://usu.flightlogger.net/">FlightLogger</a>
-
-                    <a class="dropdown-item" target="_blank" href="https://usu.co1.qualtrics.com/jfe/form/SV_6JqMu9UuqhUXvZr">Safety Report</a>
-
-					<a class="dropdown-item" target="_blank" href="https://caas.usu.edu/avte/camera">Live Airport Camera</a>
-
-                </div>
-
-            </li>
-
-        </ul>
-
-    </div>
-
-</nav>
-
-<main role="main" class="container">
-    <div class="container-md">
-		<h4>Risk Assessment</h4>
-		<p>Click a box in each row to select</p>
-		<table id="risk-table" class="table table-bordered">
-			<thead>
-			  <tr>
-				<th class="vertical-th disabled-cell"></th>
-				<th>1</th>
-				<th>2</th>
-				<th>3</th>
-				<th>4</th>
-				<th>5</th>
-				<th class="score-cell"></th>
-			  </tr>
-			</thead>
-			<tbody>
-				<tr>
-					<th class="vertical-th">Day/Night</th>
-					<td data-row="0" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Day</td>
-					<td data-row="0" data-col="2" class="disabled-cell"></td>
-					<td data-row="0" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">Night + Moon</td>
-					<td data-row="0" data-col="4" class="disabled-cell"></td>
-					<td data-row="0" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">Night No Moon</td>
-					<td data-row="0" class="score-cell"></td>
-				</tr>
-				<tr>
-					<th class="vertical-th">Rating</th>
-					<td data-row="1" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Comm</td>
-					<td data-row="1" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">PPL + Instrument</td>
-					<td data-row="1" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">PPL</td>
-					<td data-row="1" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">Student</td>
-					<td data-row="1" data-col="5" class="disabled-cell"></td>
-					<td data-row="1" class="score-cell"></td>
-				</tr>
-				<tr>
-					<th class="vertical-th">Rest in last 24 hours</th>
-					<td data-row="2" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&gt;7hrs</td>
-					<td data-row="2" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">5-7 hrs</td>
-					<td data-row="2" data-col="3" class="disabled-cell"></td>
-					<td data-row="2" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">3-5 hrs</td>
-					<td data-row="2" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">&lt;3 hrs</td>
-					<td data-row="2" class="score-cell"></td>
-				</tr>
-				<tr>
-					<th class="vertical-th">Ceiling AGL</th>
-					<td data-row="3" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Clear</td>
-					<td data-row="3" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">8,000-10,000</td>
-					<td data-row="3" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">5,000-8,000</td>
-					<td data-row="3" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">3,000-5,000</td>
-					<td data-row="3" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">IMC</td>
-					<td data-row="3" class="score-cell"></td>
-				</tr>
-				<tr>
-					<th class="vertical-th">Visibility</th>
-					<td data-row="4" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&gt;15 miles</td>
-					<td data-row="4" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">10-15 miles</td>
-					<td data-row="4" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">6-9 miles</td>
-					<td data-row="4" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">3-5 miles</td>
-					<td data-row="4" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">1-2 miles</td>
-					<td data-row="4" class="score-cell"></td>
-				</tr>
-				<tr>
-					<th class="vertical-th">Crosswind</th>
-					<td data-row="5" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">0-5 kts</td>
-					<td data-row="5" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">5-8 kts</td>
-					<td data-row="5" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">8-12 kts</td>
-					<td data-row="5" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">12-17 kts</td>
-					<td data-row="5" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">&gt;17 kts</td>
-					<td data-row="5" class="score-cell"></td>
-				</tr>
-				<tr>
-					<th class="vertical-th">Target Airport Familiarity</th>
-					<td data-row="6" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Yes</td>
-					<td data-row="6" data-col="2" class="disabled-cell"></td>
-					<td data-row="6" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">No</td>
-					<td data-row="6" data-col="4" class="disabled-cell"></td>
-					<td data-row="6" data-col="5" class="disabled-cell"></td>
-					<td data-row="6" class="score-cell"></td>
-				</tr>
-				<tr>
-					<th class="vertical-th">Hours in Aircraft</th>
-					<td data-row="7" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&gt;150 hrs</td>
-					<td data-row="7" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">101-149 hrs</td>
-					<td data-row="7" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">50-100 hrs</td>
-					<td data-row="7" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">25-49 hrs</td>
-					<td data-row="7" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">&lt;25 hrs</td>
-					<td data-row="7" class="score-cell"></td>
-				</tr>
-				<tr>
-					<th class="vertical-th">Hours in last 90 days</th>
-					<td data-row="8" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&gt;20 hrs</td>
-					<td data-row="8" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">15-20 hrs</td>
-					<td data-row="8" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">10-14 hrs</td>
-					<td data-row="8" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">5-9 hrs</td>
-					<td data-row="8" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">&lt;5 hrs</td>
-					<td data-row="8" class="score-cell"></td>
-				</tr>
-				<tr>
-					<th class="vertical-th">Total Hours</th>
-					<td data-row="9" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&gt;1,000 hrs</td>
-					<td data-row="9" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">500-999 hrs</td>
-					<td data-row="9" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">100-499 hrs</td>
-					<td data-row="9" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">50-99 hrs</td>
-					<td data-row="9" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">&lt;50 hrs</td>
-					<td data-row="9" class="score-cell"></td>
-				</tr>
-				<tr>
-					<th class="vertical-th" colspan="6">Total Risk Score</th>
-					<td id="totalRisk" class="score-cell"></td>
-				</tr>
-				<tr id="risk0" class="hidden">
-					<td colspan="7">No unusual hazards. Use normal flight planning and established personal minimums and operating procedures</td>
-				</tr>
-				<tr id="risk1" class="hidden" >
-					<td colspan="7">Slightly increased risk. Conduct flight planning with extra caution. Review personal minimums and operating procedures</td>
-				</tr>
-				<tr id="risk2" class="hidden" >
-					<td colspan="7">Conditions present very high risk. Conduct flight planning with extra care and review all elements that present the most risk. Consult with more experienced pilots or flight instructors for guidance. Consider delaying flight until conditions improve</td>
-				</tr>
-			</tbody>
-  		</table>
-		<div class="nav-button-row row">
-			<button id="previous-button" type="button" class="btn btn-secondary m-1">Previous</button>
-			<button id="clearButton" type="button" class="btn btn-secondary m-2" onclick="clear()">Clear</button>
-			<button id="next-button" class="btn btn-secondary m-1">Next</button>
-		</div>
-	</div>
-	
-	
-</main><!-- /.container -->
-
-
-
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-	
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
-	
-<script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/risk.js" defer></script>
-	
-<script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/data.js"></script>
-
-
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <a class="navbar-brand" href="index.html">USU Aviation</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item ">
+                    <a class="nav-link" href="index.html" id="navbarHelp">Instructions <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="weightbalance.html">Weight &amp; Balance <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="performance.html">Weather &amp; Performance <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="risk.html">Risk Assessment<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="summary.html" id="navbarSummary">Summary <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> USU Links </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" target="_blank" href="https://caas.usu.edu/avte/documents">Documents and Forms</a>
+                        <a class="dropdown-item" target="_blank" href="https://usu.flightlogger.net/">FlightLogger</a>
+                        <a class="dropdown-item" target="_blank" href="https://usu.co1.qualtrics.com/jfe/form/SV_6JqMu9UuqhUXvZr">Safety Report</a>
+                        <a class="dropdown-item" target="_blank" href="https://caas.usu.edu/avte/camera">Live Airport Camera</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <main role="main" class="container">
+        <div class="container-md">
+            <h4>Risk Assessment</h4>
+            <p>Click a box in each row to select</p>
+            <table id="risk-table" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th class="vertical-th disabled-cell"></th>
+                        <th>1</th>
+                        <th>2</th>
+                        <th>3</th>
+                        <th>4</th>
+                        <th>5</th>
+                        <th class="score-cell"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th class="vertical-th">Day/Night</th>
+                        <td data-row="0" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Day</td>
+                        <td data-row="0" data-col="2" class="disabled-cell"></td>
+                        <td data-row="0" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">Night + Moon</td>
+                        <td data-row="0" data-col="4" class="disabled-cell"></td>
+                        <td data-row="0" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">Night No Moon</td>
+                        <td data-row="0" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th">Rating</th>
+                        <td data-row="1" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Comm</td>
+                        <td data-row="1" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">PPL + Instrument</td>
+                        <td data-row="1" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">PPL</td>
+                        <td data-row="1" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">Student</td>
+                        <td data-row="1" data-col="5" class="disabled-cell"></td>
+                        <td data-row="1" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th">Rest in last 24 hours</th>
+                        <td data-row="2" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&gt;7hrs</td>
+                        <td data-row="2" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">5-7 hrs</td>
+                        <td data-row="2" data-col="3" class="disabled-cell"></td>
+                        <td data-row="2" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">3-5 hrs</td>
+                        <td data-row="2" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">&lt;3 hrs</td>
+                        <td data-row="2" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th">Ceiling AGL</th>
+                        <td data-row="3" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Clear</td>
+                        <td data-row="3" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">8,000-10,000</td>
+                        <td data-row="3" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">5,000-8,000</td>
+                        <td data-row="3" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">3,000-5,000</td>
+                        <td data-row="3" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">IMC</td>
+                        <td data-row="3" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th">Visibility</th>
+                        <td data-row="4" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&gt;15 miles</td>
+                        <td data-row="4" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">10-15 miles</td>
+                        <td data-row="4" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">6-9 miles</td>
+                        <td data-row="4" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">3-5 miles</td>
+                        <td data-row="4" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">1-2 miles</td>
+                        <td data-row="4" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th">Crosswind</th>
+                        <td data-row="5" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">0-5 kts</td>
+                        <td data-row="5" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">5-8 kts</td>
+                        <td data-row="5" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">8-12 kts</td>
+                        <td data-row="5" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">12-17 kts</td>
+                        <td data-row="5" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">&gt;17 kts</td>
+                        <td data-row="5" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th">Target Airport Familiarity</th>
+                        <td data-row="6" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Yes</td>
+                        <td data-row="6" data-col="2" class="disabled-cell"></td>
+                        <td data-row="6" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">No</td>
+                        <td data-row="6" data-col="4" class="disabled-cell"></td>
+                        <td data-row="6" data-col="5" class="disabled-cell"></td>
+                        <td data-row="6" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th">Hours in Aircraft</th>
+                        <td data-row="7" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&gt;150 hrs</td>
+                        <td data-row="7" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">101-149 hrs</td>
+                        <td data-row="7" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">50-100 hrs</td>
+                        <td data-row="7" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">25-49 hrs</td>
+                        <td data-row="7" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">&lt;25 hrs</td>
+                        <td data-row="7" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th">Hours in last 90 days</th>
+                        <td data-row="8" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&gt;20 hrs</td>
+                        <td data-row="8" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">15-20 hrs</td>
+                        <td data-row="8" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">10-14 hrs</td>
+                        <td data-row="8" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">5-9 hrs</td>
+                        <td data-row="8" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">&lt;5 hrs</td>
+                        <td data-row="8" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th">Total Hours</th>
+                        <td data-row="9" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&gt;1,000 hrs</td>
+                        <td data-row="9" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">500-999 hrs</td>
+                        <td data-row="9" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">100-499 hrs</td>
+                        <td data-row="9" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">50-99 hrs</td>
+                        <td data-row="9" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">&lt;50 hrs</td>
+                        <td data-row="9" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th" colspan="6">Total Risk Score</th>
+                        <td id="totalRisk" class="score-cell"></td>
+                    </tr>
+                    <tr id="risk0" class="hidden">
+                        <td colspan="7">No unusual hazards. Use normal flight planning and established personal minimums and operating procedures</td>
+                    </tr>
+                    <tr id="risk1" class="hidden">
+                        <td colspan="7">Slightly increased risk. Conduct flight planning with extra caution. Review personal minimums and operating procedures</td>
+                    </tr>
+                    <tr id="risk2" class="hidden">
+                        <td colspan="7">Conditions present very high risk. Conduct flight planning with extra care and review all elements that present the most risk. Consult with more experienced pilots or flight instructors for guidance. Consider delaying flight until conditions improve</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="nav-button-row row">
+                <button id="previous-button" type="button" class="btn btn-secondary m-1">Previous</button>
+                <button id="clearButton" type="button" class="btn btn-secondary m-2" onclick="clear()">Clear</button>
+                <button id="next-button" class="btn btn-secondary m-1">Next</button>
+            </div>
+        </div>
+    </main><!-- /.container -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/risk.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/data.js"></script>
 </body>
 
 </html>

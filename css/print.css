@@ -1,31 +1,35 @@
 @charset "UTF-8";
 
 * {
-	font-size: .85rem;
+    font-size: .85rem;
 }
 
 [id^=wIdent] {
-	font-size: 1.2em;
+    font-size: 1.2em;
 }
 
 .hidden {
-	display: none;
+    display: none;
 }
 
 .centered {
-	text-align: center;
+    text-align: center;
 }
 
-td:empty, th:empty {
-	background-color: #d6d8db;
+td:empty,
+th:empty {
+    background-color: #d6d8db;
 }
 
-body { margin: 0;
-	min-width: 0 !important;
+body {
+    margin: 0;
+    min-width: 0 !important;
 }
+
 .sheet-outer {
     margin: 0;
 }
+
 .sheet {
     margin: 0;
     overflow: hidden;
@@ -33,49 +37,57 @@ body { margin: 0;
     box-sizing: border-box;
 }
 
-.sheet-outer.letter .sheet { 
-    width: 8.5in; 
-	box-sizing: border-box;
-	padding: 20px;
-/*    height: 11in; */
+.sheet-outer.letter .sheet {
+    width: 8.5in;
+    box-sizing: border-box;
+    padding: 20px;
 }
-.sheet.padding-5mm { padding: 5mm }
+
+.sheet.padding-5mm {
+    padding: 5mm
+}
 
 p.taf::after {
-	display: block;
-	width: 100%;
-	content: "";
-	margin-top: .5rem;
-	margin-bottom: .5rem;
-	border: 0;
-	border-top: 1px solid rgba(0, 0, 0, 1);
-	box-sizing: content-box;
-	overflow: visible;
+    display: block;
+    width: 100%;
+    content: "";
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 1);
+    box-sizing: content-box;
+    overflow: visible;
 }
 
 @page {
     size: letter;
     margin: 5mm 0;
 }
+
 @media print {
-	html, body {
-		height: 99%;
-	}
-	
-    .sheet-outer.letter { 
-        width: 8.5in;
-		padding: 10px;
+
+    html,
+    body {
+        height: 99%;
     }
-	table, .weatherDiv {
-		page-break-inside: avoid;
-	}
+
+    .sheet-outer.letter {
+        width: 8.5in;
+        padding: 10px;
+    }
+
+    table,
+    .weatherDiv {
+        page-break-inside: avoid;
+    }
 }
 
 h4.centered {
-	width: 100%;
-	text-align: center;
+    width: 100%;
+    text-align: center;
 }
 
-.table-sm th, .table-sm td {
+.table-sm th,
+.table-sm td {
     padding: 0.1rem;
 }
