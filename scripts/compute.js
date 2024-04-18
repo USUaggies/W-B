@@ -202,6 +202,17 @@ function reCompute() {
             document.getElementById("navbarSummary").classList.add("disabled");
         return;
     }
+	
+	if (isNaN(userInput.frontStationWeight) || isNaN(userInput.rearStationWeight) || isNaN(userInput.fuelWeight) || isNaN(userInput.fuelBurnWeight)) {
+		document.getElementById("next-button").disabled = true;
+        if (!document.getElementById("navbarPerformance").classList.contains("disabled"))
+            document.getElementById("navbarPerformance").classList.add("disabled");
+        if (!document.getElementById("navbarRisk").classList.contains("disabled"))
+            document.getElementById("navbarRisk").classList.add("disabled");
+        if (!document.getElementById("navbarSummary").classList.contains("disabled"))
+            document.getElementById("navbarSummary").classList.add("disabled");
+        return;
+	}
 
     if (!localStorage.getItem("userInput") || localStorage.getItem("userInput") != JSON.stringify(userInput)) {
         clearPerformance();
