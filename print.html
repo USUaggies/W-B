@@ -1,0 +1,236 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title id="title">Print</title>
+<link rel="stylesheet" href="css/bootstrap.css">
+<link rel="stylesheet" href="css/print.css">
+<script src="scripts/draw.js"></script>
+<script src="scripts/aircraft.js"></script>
+<script src="scripts/print.js" defer></script>
+</head>
+
+<body>
+	<div class="sheet-outer letter">
+		<section class="sheet padding-5mm">
+			<h4 class="centered" id="header">Weight &amp; Balance</h4>
+			<div class="row">
+				<div class="col" id="weatherCol1">
+					<table class="table table-sm table-striped table-bordered">
+						<thead>
+							<tr>
+								<th scope="col" class="table-secondary"></th>
+								<th scope="col">Weight</th>
+								<th scope="col">Arm</th>
+								<th scope="col">Moment</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th scope="row">Empty Weight</th>
+								<td id="empty_wt_td"></td>
+								<td id="empty_cg_td"></td>
+								<td id="empty_mnt_td"></td>
+							</tr>
+							<tr>
+								<th scope="row">Nose Baggage</th>
+								<td id="nose_wt_td"></td>
+								<td id="nose_cg_td"></td>
+								<td id="nose_mnt_td"></td>
+							</tr>
+							<tr>
+								<th scope="row">De-icing Fluid</th>
+								<td id="deIce_wt_td"></td>
+								<td id="deIce_cg_td"></td>
+								<td id="deIce_mnt_td"></td>
+							</tr>
+							<tr>
+								<th scope="row">Pilot &amp; Front PAX</th>
+								<td id="front_wt_td"></td>
+								<td id="front_cg_td"></td>
+								<td id="front_mnt_td"></td>
+							</tr>
+							<tr>
+								<th scope="row">Rear PAX</th>
+								<td id="rear_wt_td"></td>
+								<td id="rear_cg_td"></td>
+								<td id="rear_mnt_td"></td>
+							</tr>
+							<tr>
+								<th scope="row">Baggage</th>
+								<td id="bag_wt_td"></td>
+								<td id="bag_cg_td"></td>
+								<td id="bag_mnt_td"></td>
+							</tr>
+
+							<tr id="bag2_tr" style="display: none">
+								<th scope="row">Baggage 2</th>
+								<td id="bag2_wt_td"></td>
+								<td id="bag2_cg_td"></td>
+								<td id="bag2_mnt_td"></td>
+							</tr>
+
+							<tr style="border-top: 2px solid black;">
+								<th scope="row">Zero Fuel CG</th>
+								<td id="zero_wt_td"></td>
+								<td id="zero_cg_td"></td>
+								<td id="zero_mnt_td"></td>
+							</tr>
+							<tr>
+								<th scope="row">AUX Fuel</th>
+								<td id="aux_wt_td"></td>
+								<td id="aux_cg_td"></td>
+								<td id="aux_mnt_td"></td>
+							</tr>
+							<tr>
+								<th scope="row">Fuel in LBS</th>
+								<td id="fuel_wt_td"></td>
+								<td id="fuel_cg_td"></td>
+								<td id="fuel_mnt_td"></td>
+							</tr>
+
+							<tr style="border-top: 2px solid black;">
+								<th scope="row">Take Off Weight</th>
+								<td id="takeoff_wt_td"></td>
+								<td id="takeoff_cg_td"></td>
+								<td id="takeoff_mnt_td"></td>
+							</tr>
+							<tr>
+								<th scope="row">Fuel Burn</th>
+								<td id="burn_wt_td"></td>
+								<td id="burn_cg_td"></td>
+								<td id="burn_mnt_td"></td>
+							</tr>
+							<tr>
+								<th scope="row">Landing Weight</th>
+								<td id="landing_wt_td"></td>
+								<td id="landing_cg_td"></td>
+								<td id="landing_mnt_td"></td>
+							</tr>
+							<tr>
+								<th scope="row">Max Gross Weight</th>
+								<td colspan="2" id="max_wt_td"></td>
+								<td class="table-secondary"></td>
+							</tr>
+							<tr>
+								<th class="table-secondary" scope="row"> </th>
+								<td >Forward</td>
+								<td>Actual</td>
+								<td>Aft</td>
+							</tr>
+							<tr>
+								<th scope="row">CG</th>
+								<td id="fwd_cg"></td>
+								<td id="act_cg"></td>
+								<td id="aft_cg"></td>
+							</tr>
+						</tbody>
+					</table>
+					<table class="table table-bordered table-sm table-striped">
+						<tbody>
+							<tr>
+								<th colspan="4" id="wIdent-0" class="centered">Weather</th>
+							</tr>
+							<tr>
+								<th class="no-bottom-border">Time</th>
+								<th class="no-bottom-border">Wind Dir/Vel</th>
+								<th class="no-bottom-border">Visibility</th>
+								<th></th>
+							</tr>
+							<tr>
+								<td id="wTime-0" class="no-top-border"></td>
+								<td id="wWind-0" class="no-top-border"></td>
+								<td id="wVisibility-0" class="no-top-border"></td>
+								<td></td>
+							</tr>
+							<tr>
+								<th class="no-bottom-border">Clouds</th>
+								<th class="no-bottom-border">Temp/Dew</th>
+								<th class="no-bottom-border">Altimeter</th>
+								<th></th>
+							</tr>
+							<tr>
+								<td id="wCeilings-0" class="no-top-border"></td>
+								<td id="wTempDew-0" class="no-top-border"></td>
+								<td id="wAltimeter-0" class="no-top-border"></td>
+								<td></td>
+							</tr>
+							<tr style="border-top: 2px solid black;">
+								<th>Density Alt.</th>
+								<td id="wDensityAlt-0"></td>
+								<th>Pressure Alt.</th>
+								<td id="wPressureAlt-0"></td>
+							</tr>
+							<tr>
+								<th>Headwind</th>
+								<td id="headWind-0"></td>
+								<th>Crosswind</th>
+								<td id="crossWind-0"></td>
+							</tr>
+							<tr style="border-top: 2px solid black;">
+								<th class="centered" colspan="2">Takeoff (<span id="runwayHdg-0"></span>)</th>
+								<th colspan="2" class="centered">Landing</th>
+							</tr>
+							<tr>
+								<th>Ground Roll</th>
+								<td id="TODistance-0"></td>
+								<th>Ground Roll</th>
+								<td id="LDGDistance-0"></td>
+							</tr>
+							<tr>
+								<th>Over 50'</th>
+								<td id="TO50Distance-0"></td>
+								<th>Over 50'</th>
+								<td id="LDG50Distance-0"></td>
+							</tr>
+							<tr style="border-top: 2px solid black;">
+								<th>Touch and Go Distance</th>
+								<td id="tgDistance-0"></td>
+								<th>Rate of Climb</th>
+								<td id="rateClimb-0"></td>
+							</tr>
+							<tr id="DA42-performance-0" class="hidden">
+								<th>Climb Gradient</th>
+								<td id="climbGrad-0"></td>
+								<th>Single-Engine ROC</th>
+								<td id="SERateClimb-0"></td>
+							</tr>
+						</tbody>
+					</table>
+					<p class="taf" id="TAF-0"></p>
+				</div>
+				<div class="col" id="weatherCol2">
+					<div id="canvasDiv">
+						<canvas id="cgCanvas" width="350" height="252" style="border: 1px solid black"></canvas>
+            		</div>
+					<h5 class="centered">V-Speeds</h5>
+					<table class="table table-sm table-bordered"><tbody>
+						<tr>
+						<th class="col-1">Vr</th>
+						<th class="col-1">Vy</th>
+						<th id="Vx-header" class="col-1 hidden">Vx</th>
+						<th id="Vg-header" class="col-1">Vg</th>
+						<th class="col-1">Va</th>
+						<th id="Vyse-header" class="hidden col-1">Vyse</th>
+						<th id="Vmc-header" class="hidden col-1">Vmc</th>
+						<th class="col-1">Dmms</th>
+						</tr>
+						<tr>
+							<td id="Vr"></td>
+							<td id="Vy"></td>
+							<td id="Vx" class="hidden"></td>
+							<td id="Vg"></td>
+							<td id="Va"></td>
+							<td id="Vyse" class="hidden"></td>
+							<td id="Vmc" class="hidden"></td>
+							<td id="Dmms"></td>
+						</tr>
+					</tbody></table>
+					<h5 id="riskAssessmentHeader" class="hidden centered">Risk Assessment</h5>
+					<p id="riskAssessment" class="hidden"></p>
+				</div>
+			</div>
+		</section>
+	</div>
+</body>
+</html>
