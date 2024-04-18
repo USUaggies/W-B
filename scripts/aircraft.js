@@ -5,7 +5,7 @@
 const aircraft = [
 	
 	{
-		
+	
 		tail: "N972TH", 
 		
 		model: "C172S", 
@@ -17,280 +17,280 @@ const aircraft = [
 		aircraftArm: 41.9, 
 		
 		autopilot: "GFC"
-		
+	
 	},
 	
 	{
 
-        tail: "N383PS",
+	        tail: "N383PS",
+	
+	        model: "DA40F",
+	
+	        emptyWeight: 1700,
+	
+	        maxWeight: 2535,
+	
+	        aircraftArm: 96.87,
+	        
+	        autopilot: "none"
 
-        model: "DA40F",
+	},
 
-        emptyWeight: 1700,
+	{
 
-        maxWeight: 2535,
-
-        aircraftArm: 96.87,
-        
-        autopilot: "none"
-
-    },
+	        tail: "N416FP",
+	
+	        model: "DA40F",
+	
+	        emptyWeight: 1697,
+	
+	        maxWeight: 2535,
+	
+	        aircraftArm: 96.87,
+	        
+	        autopilot: "none"
+	
+	},
 	
 	{
 
-        tail: "N416FP",
+	        tail: "N417FP",
+	
+	        model: "DA40F",
+	
+	        emptyWeight: 1694,
+	
+	        maxWeight: 2535,
+	
+	        aircraftArm: 96.65,
+	        
+	        autopilot: "none"
 
-        model: "DA40F",
-
-        emptyWeight: 1697,
-
-        maxWeight: 2535,
-
-        aircraftArm: 96.87,
-        
-        autopilot: "none"
-
-    },
+	},
 	
 	{
 
-        tail: "N417FP",
+	        tail: "N418FP",
+	
+	        model: "DA40F",
+	
+	        emptyWeight: 1697,
+	
+	        maxWeight: 2535,
+	
+	        aircraftArm: 96.88,
+	        
+	        autopilot: "none"
 
-        model: "DA40F",
-
-        emptyWeight: 1694,
-
-        maxWeight: 2535,
-
-        aircraftArm: 96.65,
-        
-        autopilot: "none"
-
-    },
+	},
 	
 	{
 
-        tail: "N418FP",
+	        tail: "N422FP",
+	
+	        model: "DA40F",
+	
+	        emptyWeight: 1715,
+	
+	        maxWeight: 2535,
+	
+	        aircraftArm: 96.96,
+	        
+	        autopilot: "none"
 
-        model: "DA40F",
-
-        emptyWeight: 1697,
-
-        maxWeight: 2535,
-
-        aircraftArm: 96.88,
-        
-        autopilot: "none"
-
-    },
+	},
 	
 	{
 
-        tail: "N422FP",
+	        tail: "N423FP",
+	
+	        model: "DA40F",
+	
+	        emptyWeight: 1686,
+	
+	        maxWeight: 2535,
+	
+	        aircraftArm: 97.06,
+	        
+	        autopilot: "none"
 
-        model: "DA40F",
-
-        emptyWeight: 1715,
-
-        maxWeight: 2535,
-
-        aircraftArm: 96.96,
-        
-        autopilot: "none"
-
-    },
+	},
 	
 	{
 
-        tail: "N423FP",
-
-        model: "DA40F",
-
-        emptyWeight: 1686,
-
-        maxWeight: 2535,
-
-        aircraftArm: 97.06,
-        
-        autopilot: "none"
-
-    },
+	        tail: "N424FP",
+	
+	        model: "DA40F",
+	
+	        emptyWeight: 1697,
+	
+	        maxWeight: 2535,
+	
+	        aircraftArm: 96.89,
+	        
+	        autopilot: "none"
+	
+	},
 	
 	{
 
-        tail: "N424FP",
-
-        model: "DA40F",
-
-        emptyWeight: 1697,
-
-        maxWeight: 2535,
-
-        aircraftArm: 96.89,
-        
-        autopilot: "none"
-
-    },
+	        tail: "N425FP",
 	
+	        model: "DA40F",
+	
+	        emptyWeight: 1697,
+	
+	        maxWeight: 2535,
+	
+	        aircraftArm: 97.18,
+	        
+	        autopilot: "none"
+	
+	},
+		
 	{
 
-        tail: "N425FP",
-
-        model: "DA40F",
-
-        emptyWeight: 1697,
-
-        maxWeight: 2535,
-
-        aircraftArm: 97.18,
-        
-        autopilot: "none"
-
-    },
+	        tail: "N118GM",
 	
-	{
-
-        tail: "N118GM",
-
-        model: "DA40CS",
-
-        emptyWeight: 1727.0,
-
-        maxWeight: 2535,
-
-        aircraftArm: 96.94,
-        
-        autopilot: "KAP"
-
-    },
+	        model: "DA40CS",
+	
+	        emptyWeight: 1727.0,
+	
+	        maxWeight: 2535,
+	
+	        aircraftArm: 96.94,
+	        
+	        autopilot: "KAP"
+	
+	},
 	
 	{
 		
-        tail: "N1707S",
-
-        model: "DA40CS",
-
-        emptyWeight: 1727.19,
-
-        maxWeight: 2646,
-
-        aircraftArm: 96.68,
-        
-        autopilot: "KAP"
-
-    },
+	        tail: "N1707S",
+	
+	        model: "DA40CS",
+	
+	        emptyWeight: 1727.19,
+	
+	        maxWeight: 2646,
+	
+	        aircraftArm: 96.68,
+	        
+	        autopilot: "KAP"
+	
+	},
 	
 	{
 
-        tail: "N321FS",
-
-        model: "DA40CS",
-
-        emptyWeight: 1761,
-
-        maxWeight: 2535,
-
-        aircraftArm: 97.11,
-        
-        autopilot: "KAP"
-
-    },
+	        tail: "N321FS",
+	
+	        model: "DA40CS",
+	
+	        emptyWeight: 1761,
+	
+	        maxWeight: 2535,
+	
+	        aircraftArm: 97.11,
+	        
+	        autopilot: "KAP"
+	
+	},
 	
 	{
 
-        tail: "N344AF",
-
-        model: "DA40CS",
-
-        emptyWeight: 1800,
-
-        maxWeight: 2646,
-
-        aircraftArm: 97.37,
-        
-        autopilot: "none"
-
-    },    
-
-    {
-
-        tail: "N415AM",
-
-        model: "DA40CS",
-
-        emptyWeight: 1753.6,
-
-        maxWeight: 2535,
-
-        aircraftArm: 96.53,
-        
-        autopilot: "none"
-
-    },
-
-    {
-
-        tail: "N543JW",
-
-        model: "DA40CS",
-
-        emptyWeight: 1758.6,
-
-        maxWeight: 2535,
-
-        aircraftArm: 96.486,
-        
-        autopilot: "none"
-
-    },
+	        tail: "N344AF",
 	
+	        model: "DA40CS",
+	
+	        emptyWeight: 1800,
+	
+	        maxWeight: 2646,
+	
+	        aircraftArm: 97.37,
+	        
+	        autopilot: "none"
+	
+	},    
+
 	{
 
-        tail: "N858DT",
+	        tail: "N415AM",
+	
+	        model: "DA40CS",
+	
+	        emptyWeight: 1753.6,
+	
+	        maxWeight: 2535,
+	
+	        aircraftArm: 96.53,
+	        
+	        autopilot: "none"
+	
+	},
 
-        model: "DA40CS",
+	{
 
-        emptyWeight: 1820,
+	        tail: "N543JW",
+	
+	        model: "DA40CS",
+	
+	        emptyWeight: 1758.6,
+	
+	        maxWeight: 2535,
+	
+	        aircraftArm: 96.486,
+	        
+	        autopilot: "none"
+	
+	},
+		
+	{
 
-        maxWeight: 2535,
+	        tail: "N858DT",
+	
+	        model: "DA40CS",
+	
+	        emptyWeight: 1820,
+	
+	        maxWeight: 2535,
+	
+	        aircraftArm: 98.69,
+	        
+	        autopilot: "none"
+	
+	},
 
-        aircraftArm: 98.69,
-        
-        autopilot: "none"
+    	{
 
-    },
+	        tail: "N127KC",
+	
+	        model: "DA40XLS",
+	
+	        emptyWeight: 1828.85,
+	
+	        maxWeight: 2646,
+	
+	        aircraftArm: 98.50,
+	        
+	        autopilot: "GFC"
+	
+	},
 
-    {
-
-        tail: "N127KC",
-
-        model: "DA40XLS",
-
-        emptyWeight: 1828.85,
-
-        maxWeight: 2646,
-
-        aircraftArm: 98.50,
-        
-        autopilot: "GFC"
-
-    },
-
-    {
-
-        tail: "N230DC",
-
-        model: "DA40XLS",
-
-        emptyWeight: 1843.0,
-
-        maxWeight: 2646,
-
-        aircraftArm: 98.00,
-        
-        autopilot: "GFC"
-
-    },
+	{
+	
+	        tail: "N230DC",
+	
+	        model: "DA40XLS",
+	
+	        emptyWeight: 1843.0,
+	
+	        maxWeight: 2646,
+	
+	        aircraftArm: 98.00,
+	        
+	        autopilot: "GFC"
+	
+	},
 	
 	{
 		tail: "N239DC",
@@ -308,19 +308,19 @@ const aircraft = [
 	
 	{
 
-        tail: "N384CA",
-
-        model: "DA40XLS",
-
-        emptyWeight: 1812,
-
-        maxWeight: 2646,
-
-        aircraftArm: 98.31,
-        
-        autopilot: "GFC"
-
-    },
+	        tail: "N384CA",
+	
+	        model: "DA40XLS",
+	
+	        emptyWeight: 1812,
+	
+	        maxWeight: 2646,
+	
+	        aircraftArm: 98.31,
+	        
+	        autopilot: "GFC"
+	
+	},
 	
 	{
 		tail: "N451DS",
@@ -336,21 +336,21 @@ const aircraft = [
 		autopilot: "GFC"
 	},
 
-    {
+    	{
 
-        tail: "N605CA",
+	        tail: "N605CA",
+	
+	        model: "DA40XLS",
+	
+	        emptyWeight: 1804,
+	
+	        maxWeight: 2646,
+	
+	        aircraftArm: 99.04,
+	        
+	        autopilot: "GFC"
 
-        model: "DA40XLS",
-
-        emptyWeight: 1804,
-
-        maxWeight: 2646,
-
-        aircraftArm: 99.04,
-        
-        autopilot: "GFC"
-
-    },
+    	},
 		
 	{
 		tail: "N616ML",
@@ -366,138 +366,138 @@ const aircraft = [
 		autopilot: "GFC"
 	}, 
 
-    {
+    	{
 
-        tail: "N704PA",
+	        tail: "N704PA",
+	
+	        model: "DA40XLS",
+	
+	        emptyWeight: 1797.8,
+	
+	        maxWeight: 2646,
+	
+	        aircraftArm: 97.74,
+	        
+	        autopilot: "GFC"
 
-        model: "DA40XLS",
-
-        emptyWeight: 1797.8,
-
-        maxWeight: 2646,
-
-        aircraftArm: 97.74,
-        
-        autopilot: "GFC"
-
-    },
+    	},
 	
 	{
 
-        tail: "N734M",
+	        tail: "N734M",
+	
+	        model: "DA40XLS",
+	
+	        emptyWeight: 1860,
+	
+	        maxWeight: 2646,
+	
+	        aircraftArm: 97.99,
+	        
+	        autopilot: "GFC"
 
-        model: "DA40XLS",
-
-        emptyWeight: 1860,
-
-        maxWeight: 2646,
-
-        aircraftArm: 97.99,
-        
-        autopilot: "GFC"
-
-    },
+    	},
 	
 	{
 
-        tail: "N74SW",
+	        tail: "N74SW",
+	
+	        model: "DA40XLS",
+	
+	        emptyWeight: 1833.35,
+	
+	        maxWeight: 2646,
+	
+	        aircraftArm: 97.7,
+	        
+	        autopilot: "GFC"
 
-        model: "DA40XLS",
+    	},
 
-        emptyWeight: 1833.35,
+    	{
 
-        maxWeight: 2646,
+	        tail: "N759PA",
+	
+	        model: "DA40XLS",
+	
+	        emptyWeight: 1800.56,
+	
+	        maxWeight: 2646,
+	
+	        aircraftArm: 97.11,
+	        
+	        autopilot: "GFC"
 
-        aircraftArm: 97.7,
-        
-        autopilot: "GFC"
+	},
 
-    },
+    	{
 
-    {
+	        tail: "N78US",
+	
+	        model: "DA40XL",
+	
+	        emptyWeight: 1817.0,
+	
+	        maxWeight: 2646,
+	
+	        aircraftArm: 97.26,
+	        
+	        autopilot: "GFC",
+	
+	        standardTank: true
+	
+	},
 
-        tail: "N759PA",
+	{
+	
+	        tail: "N79US",
+	
+	        model: "DA40XL",
+	
+	        emptyWeight: 1817.0,
+	
+	        maxWeight: 2646,
+	
+	        aircraftArm: 97.34,
+	        
+	        autopilot: "GFC",
+	
+	        standardTank: true
+	
+	},
 
-        model: "DA40XLS",
-
-        emptyWeight: 1800.56,
-
-        maxWeight: 2646,
-
-        aircraftArm: 97.11,
-        
-        autopilot: "GFC"
-
-    },
-
-    {
-
-        tail: "N78US",
-
-        model: "DA40XL",
-
-        emptyWeight: 1817.0,
-
-        maxWeight: 2646,
-
-        aircraftArm: 97.26,
-        
-        autopilot: "GFC",
-
-        standardTank: true
-
-    },
-
-    {
-
-        tail: "N79US",
-
-        model: "DA40XL",
-
-        emptyWeight: 1817.0,
-
-        maxWeight: 2646,
-
-        aircraftArm: 97.34,
-        
-        autopilot: "GFC",
-
-        standardTank: true
-
-    },
-
-    { 
-
-        tail: "N831JL",
-
-        model: "DA40XLS",
-
-        emptyWeight: 1819.81,
-
-        maxWeight: 2646,
-
-        aircraftArm: 97.98,
-        
-        autopilot: "GFC"
-
-    },
+	{ 
+	
+	        tail: "N831JL",
+	
+	        model: "DA40XLS",
+	
+	        emptyWeight: 1819.81,
+	
+	        maxWeight: 2646,
+	
+	        aircraftArm: 97.98,
+	        
+	        autopilot: "GFC"
+	
+	},
 	
 	{
 
-        tail: "N866US",
-
-        model: "DA40XLS",
-
-        emptyWeight: 1817,
-
-        maxWeight: 2646,
-
-        aircraftArm: 97.55,
-        
-        autopilot: "GFC"
-
-    },
+	        tail: "N866US",
 	
+	        model: "DA40XLS",
+	
+	        emptyWeight: 1817,
+	
+	        maxWeight: 2646,
+	
+	        aircraftArm: 97.55,
+	        
+	        autopilot: "GFC"
+	
+	},
+		
 	{
 		tail: "N894SA",
 		
@@ -514,87 +514,87 @@ const aircraft = [
 	
 	{
 
-        tail: "N132TS",
-
-        model: "DA42",
-
-        emptyWeight: 2943.2,
-
-        maxTOWeight: 3935,
+		tail: "N132TS",
+	
+		model: "DA42",
+	
+		emptyWeight: 2943.2,
+	
+		maxTOWeight: 3935,
 		
 		maxLDGWeight: 3748,
 
-        aircraftArm: 95.05,
-        
-        autopilot: "none", 
+		aircraftArm: 95.05,
+	        
+		autopilot: "none", 
 		
 		auxTanks: "true", 
 		
 		deIce: "true"
 
-    },
+    	},
 	
 	{
 
-        tail: "N240TS",
-
-        model: "DA42",
-
-        emptyWeight: 2756.6,
-
-        maxTOWeight: 3935,
+		tail: "N240TS",
+		
+		model: "DA42",
+		
+		emptyWeight: 2756.6,
+		
+		maxTOWeight: 3935,
 		
 		maxLDGWeight: 3748,
 		
-        aircraftArm: 95.36,
-        
-        autopilot: "none", 
+		aircraftArm: 95.36,
+		
+		autopilot: "none", 
 		
 		auxTanks: "true"
 
-    },
+    	},
 	
 	{
 
-        tail: "N350TS",
-
-        model: "DA42",
-
-        emptyWeight: 2833.5,
-
-        maxTOWeight: 3935,
+		tail: "N350TS",
+		
+		model: "DA42",
+		
+		emptyWeight: 2833.5,
+		
+		maxTOWeight: 3935,
 		
 		maxLDGWeight: 3748,
-
-        aircraftArm: 95.98,
-        
-        autopilot: "none", 
+		
+		aircraftArm: 95.98,
+		
+		autopilot: "none", 
 		
 		auxTanks: "true"
 
-    },
+   	},
 	
 	{
 
-        tail: "N459TS",
-
-        model: "DA42",
-
-        emptyWeight: 2877.24,
-
-        maxTOWeight: 3935,
+		tail: "N459TS",
+		
+		model: "DA42",
+		
+		emptyWeight: 2877.24,
+		
+		maxTOWeight: 3935,
 		
 		maxLDGWeight: 3748,
-
-        aircraftArm: 95.3,
-        
-        autopilot: "none", 
+		
+		aircraftArm: 95.3,
+		
+		autopilot: "none", 
 		
 		auxTanks: "true", 
 		
 		deIce: "true"
 
-    },
+    	},
 
 ];
 
@@ -602,127 +602,127 @@ const aircraft = [
 
 const aircraftModels = [
 
-    {
+	{
 
-        model: "C172S",
-
-        maxFuel: 56,
-
-        maxBaggage1: 120,
+		model: "C172S",
+		
+		maxFuel: 56,
+		
+		maxBaggage1: 120,
 		
 		maxBaggage2: 60,
 		
 		maxBaggage: 120,
-
-        frontStationCG: 37,
-
-        rearStationCG: 73,
-
-        baggageStationCG: 95,
+		
+		frontStationCG: 37,
+		
+		rearStationCG: 73,
+		
+		baggageStationCG: 95,
 		
 		baggageStation2CG: 123,
+		
+		fuelStationCG: 48,
+		
+		fuelType: "100LL",
 
-        fuelStationCG: 48,
-
-        fuelType: "100LL",
-
-        cgRange: {
-
-            minAft: 47.3,
-
-            midAft: 47.3,
-
-            maxAft: 47.3,
-
-            minFwd: 35.0,
-
-            midFwd: 35.0,
-
-            maxFwd: 41.0,
-
-            minWgt: 1500,
-
-            midWgt: 1950,
-
-            maxWgt: 2550
-
-        },
-
-        vSpeeds : {
+		cgRange: {
 			
-			interpolate : ["va"],
+			minAft: 47.3,
+			
+			midAft: 47.3,
+			
+			maxAft: 47.3,
+			
+			minFwd: 35.0,
+			
+			midFwd: 35.0,
+			
+			maxFwd: 41.0,
+			
+			minWgt: 1500,
+			
+			midWgt: 1950,
+			
+			maxWgt: 2550
 
-            vr : 55,
+		},
+		
+		vSpeeds : {
+				
+			interpolate : ["va"],
+			
+			vr : 55,
 			
 			vx : 65,
-
-            vy : 73,
-
-            vg : 68,
-
-            va : {
-
-                1900 : 90,
-
-                2200 : 98, 
+			
+			vy : 73,
+			
+			vg : 68,
+			
+			va : {
+			
+				1900 : 90,
 				
+				2200 : 98, 
+					
 				2550 : 105
-
-            }, 
+			
+			}, 
 			
 			dmms : 56
+			
+		}
 
-        }
-
-    },
+	},
 	
 	{
 
-        model: "DA40F",
+		model: "DA40F",
+		
+		maxFuel: 40.2,
+		
+		maxBaggage: 66,
+		
+		frontStationCG: 90.6,
+		
+		rearStationCG: 128,
+		
+		baggageStationCG: 143.7,
+		
+		fuelStationCG: 103.5,
+		
+		fuelType: "100LL",
 
-        maxFuel: 40.2,
-
-        maxBaggage: 66,
-
-        frontStationCG: 90.6,
-
-        rearStationCG: 128,
-
-        baggageStationCG: 143.7,
-
-        fuelStationCG: 103.5,
-
-        fuelType: "100LL",
-
-        cgRange: {
-
-            minAft: 102,
-
-            midAft: 102,
-
-            maxAft: 102,
-
-            minFwd: 94.5,
-
-            midFwd: 94.5,
-
-            maxFwd: 96.9,
-
-            minWgt: 1720,
-
-            midWgt: 2161,
-
-            maxWgt: 2535
-
-        },
-
-        vSpeeds : {
+		cgRange: {
+		
+			minAft: 102,
 			
+			midAft: 102,
+			
+			maxAft: 102,
+			
+			minFwd: 94.5,
+			
+			midFwd: 94.5,
+			
+			maxFwd: 96.9,
+			
+			minWgt: 1720,
+			
+			midWgt: 2161,
+			
+			maxWgt: 2535
+		
+		},
+		
+		vSpeeds : {
+				
 			interpolate : ["vy", "vg", "dmms"],
-
-            vr : 59,
-
-            vy : {
+			
+			vr : 59,
+			
+			vy : {
 				
 				1874 : 54,
 				
@@ -731,8 +731,8 @@ const aircraftModels = [
 				2535 : 66
 				
 			},
-
-            vg : {
+			
+			vg : {
 				
 				1874 : 60,
 				
@@ -741,14 +741,14 @@ const aircraftModels = [
 				2535 : 73
 				
 			},
-
-            va : {
-
-                2161 : 94,
-
-                2535 : 108
-
-            }, 
+			
+			va : {
+			
+				2161 : 94,
+				
+				2535 : 108
+			
+			}, 
 			
 			dmms : {
 				
@@ -757,58 +757,58 @@ const aircraftModels = [
 				2535 : 69
 				
 			}
-
-        }
-
-    },
-
-    {
-
-        model: "DA40CS",
-
-        maxFuel: 40.2,
-
-        maxBaggage: 66,
-
-        frontStationCG: 90.6,
-
-        rearStationCG: 128,
-
-        baggageStationCG: 153.1,
-
-        fuelStationCG: 103.5,
-
-        fuelType: "100LL",
-
-        cgRange: {
-
-            minAft: 102,
-
-            midAft: 102,
-
-            maxAft: 102,
-
-            minFwd: 94.5,
-
-            midFwd: 94.5,
-
-            maxFwd: 96.9,
-
-            minWgt: 1720,
-
-            midWgt: 2161,
-
-            maxWgt: 2535
-
-        },
-
-        vSpeeds : {
 			
+		}
+
+	},
+
+    	{
+
+		model: "DA40CS",
+		
+		maxFuel: 40.2,
+		
+		maxBaggage: 66,
+		
+		frontStationCG: 90.6,
+		
+		rearStationCG: 128,
+		
+		baggageStationCG: 153.1,
+		
+		fuelStationCG: 103.5,
+		
+		fuelType: "100LL",
+
+		cgRange: {
+		
+			minAft: 102,
+			
+			midAft: 102,
+			
+			maxAft: 102,
+			
+			minFwd: 94.5,
+			
+			midFwd: 94.5,
+			
+			maxFwd: 96.9,
+			
+			minWgt: 1720,
+			
+			midWgt: 2161,
+			
+			maxWgt: 2535
+		
+		},
+		
+		vSpeeds : {
+				
 			interpolate : ["vy", "vg", "dmms"],
-
-            vr : 59,
-
-            vy : {
+			
+			vr : 59,
+			
+			vy : {
 				
 				1874 : 54,
 				
@@ -817,8 +817,8 @@ const aircraftModels = [
 				2535 : 66
 				
 			},
-
-            vg : {
+			
+			vg : {
 				
 				1874 : 60,
 				
@@ -827,14 +827,14 @@ const aircraftModels = [
 				2535 : 73
 				
 			},
-
-            va : {
-
-                2161 : 94,
-
-                2535 : 108
-
-            }, 
+			
+			va : {
+			
+				2161 : 94,
+				
+				2535 : 108
+			
+			}, 
 			
 			dmms : {
 				
@@ -843,162 +843,62 @@ const aircraftModels = [
 				2535 : 69
 				
 			}
-
-        }
-
-    },
-
-    {
-
-        model: "DA40XL",
-
-        maxFuel: 40.2,
-
-        maxBaggage1 : 100,
-
-        maxBaggage2 : 40,
-
-        maxBaggage : 100,
-
-        frontStationCG: 90.6,
-
-        rearStationCG: 128,
-
-        baggageStationCG: 153.1,
-
-        baggageStation2CG: 178.7,
-
-        fuelStationCG: 103.5,
-
-        fuelType: "100LL",
-
-        cgRange: {
-
-            minAft: 102,
-
-            midAft: 102,
-
-            maxAft: 102,
-
-            minFwd: 94.5,
-
-            midFwd: 94.5,
-
-            maxFwd: 97.6,
-
-            minWgt: 1720,
-
-            midWgt: 2161,
-
-            maxWgt: 2646
-
-        },
-
-        vSpeeds : {
 			
+		}
+
+	},
+
+    	{
+
+		model: "DA40XL",
+		
+		maxFuel: 40.2,
+		
+		maxBaggage1 : 100,
+		
+		maxBaggage2 : 40,
+		
+		maxBaggage : 100,
+		
+		frontStationCG: 90.6,
+		
+		rearStationCG: 128,
+		
+		baggageStationCG: 153.1,
+		
+		baggageStation2CG: 178.7,
+		
+		fuelStationCG: 103.5,
+		
+		fuelType: "100LL",
+
+		cgRange: {
+			
+			    minAft: 102,
+			
+			    midAft: 102,
+			
+			    maxAft: 102,
+			
+			    minFwd: 94.5,
+			
+			    midFwd: 94.5,
+			
+			    maxFwd: 97.6,
+			
+			    minWgt: 1720,
+			
+			    midWgt: 2161,
+			
+			    maxWgt: 2646
+		
+		},
+		
+		vSpeeds : {
+				
 			interpolate : ["vy", "vg", "dmms"],
-
-            vr : 59,
-
-            vy : {
-				
-				1874 : 54,
-				
-				2205 : 60, 
-				
-				2535 : 66, 
-				
-				2646 : 67
-				
-			},
-
-            vg : {
-				
-				1874 : 60,
-				
-				2205 : 68, 
-				
-				2535 : 73, 
-				
-				2646 : 76
-				
-			},
-
-            va : {
-
-                2161 : 94,
-
-                2535 : 108,
-
-                2646 : 111
-
-            }, 
 			
-			dmms : {
-				
-				2161 : 59,
-				
-				2535 : 69, 
-				
-				2646 : 73
-				
-			}
-
-        }
-
-    },
-
-    {
-
-        model: "DA40XLS",
-
-        maxFuel: 50,
-
-        maxBaggage1 : 100,
-
-        maxBaggage2 : 40,
-
-        maxBaggage : 100,
-
-        frontStationCG: 90.6,
-
-        rearStationCG: 128,
-
-        baggageStationCG: 153.1,
-
-        baggageStation2CG: 178.7,
-
-        fuelStationCG: 103.5,
-
-        fuelType: "100LL",
-
-        cgRange: {
-
-            minAft: 100.4,
-
-            midAft: 100.4,
-
-            maxAft: 100.4,
-
-            minFwd: 94.5,
-
-            midFwd: 94.5,
-
-            maxFwd: 97.6,
-
-            minWgt: 1720,
-
-            midWgt: 2161,
-
-            maxWgt: 2646
-
-        },
-
-        vSpeeds : {
-			
-			interpolate : ["vy", "vg", "dmms"],
-
-            vr : 59,
+			vr : 59,
 			
 			vy : {
 				
@@ -1011,8 +911,8 @@ const aircraftModels = [
 				2646 : 67
 				
 			},
-
-            vg : {
+			
+			vg : {
 				
 				1874 : 60,
 				
@@ -1023,16 +923,16 @@ const aircraftModels = [
 				2646 : 76
 				
 			},
-
-            va : {
-
-                2161 : 94,
-
-                2535 : 108,
-
-                2646 : 111
-
-            },
+			
+			va : {
+			
+				2161 : 94,
+				
+				2535 : 108,
+				
+				2646 : 111
+			
+			}, 
 			
 			dmms : {
 				
@@ -1043,104 +943,204 @@ const aircraftModels = [
 				2646 : 73
 				
 			}
+		
+		}
 
-        }
+	},
 
-    },
+    	{
 
-    {
+		model: "DA40XLS",
+		
+		maxFuel: 50,
+		
+		maxBaggage1 : 100,
+		
+		maxBaggage2 : 40,
+		
+		maxBaggage : 100,
+		
+		frontStationCG: 90.6,
+		
+		rearStationCG: 128,
+		
+		baggageStationCG: 153.1,
+		
+		baggageStation2CG: 178.7,
+		
+		fuelStationCG: 103.5,
+		
+		fuelType: "100LL",
 
-        model: "DA42",
-
-        maxFuel: 50,
-
-        maxAuxFuel : 26,
-
-        maxNoseBaggage: 66,
-
-        maxDeIce : 8.3,
-
-        maxBaggage1 : 100,
-
-        maxBaggage2 : 40,
-
-        maxBaggage : 100,
-
-        frontStationCG: 90.6,
-
-        rearStationCG: 128,
-
-        noseBagStationCG: 23.6,
-
-        baggageStationCG: 153.1,
-
-        baggageStation2CG: 178.7,
-
-        fuelStationCG: 103.5,
-
-        auxStationCG: 126,
-
-        deIceStationCG: 39.4,
-
-        fuelType: "JETA",
-
-        cgRange: {
-
-            minAft: 95.28,
-
-            midAft: 98.03,
-
-            maxAft: 98.03,
-
-            minFwd: 92.52,
-
-            midFwd: 92.52,
-
-            maxFwd: 94.49,
-
-            minWgt: 2756,
-
-            midWgtFwd: 3236,
-
-            midWgtAft: 3527,
-
-            maxWgt: 3935
-
-        },
-
-        vSpeeds : { 
+		cgRange: {
+		
+			minAft: 100.4,
 			
+			midAft: 100.4,
+			
+			maxAft: 100.4,
+			
+			minFwd: 94.5,
+			
+			midFwd: 94.5,
+			
+			maxFwd: 97.6,
+			
+			minWgt: 1720,
+			
+			midWgt: 2161,
+			
+			maxWgt: 2646
+
+		},
+		
+		vSpeeds : {
+				
+			interpolate : ["vy", "vg", "dmms"],
+			
+			vr : 59,
+			
+			vy : {
+				
+				1874 : 54,
+				
+				2205 : 60, 
+				
+				2535 : 66, 
+				
+				2646 : 67
+				
+			},
+			
+			vg : {
+				
+				1874 : 60,
+				
+				2205 : 68, 
+				
+				2535 : 73, 
+				
+				2646 : 76
+				
+			},
+			
+			va : {
+			
+				2161 : 94,
+				
+				2535 : 108,
+				
+				2646 : 111
+				
+			},
+			
+			dmms : {
+				
+				2161 : 59,
+				
+				2535 : 69, 
+				
+				2646 : 73
+				
+			}
+			
+		}
+
+    	},
+
+    	{
+
+		model: "DA42",
+		
+		maxFuel: 50,
+		
+		maxAuxFuel : 26,
+		
+		maxNoseBaggage: 66,
+		
+		maxDeIce : 8.3,
+		
+		maxBaggage1 : 100,
+		
+		maxBaggage2 : 40,
+		
+		maxBaggage : 100,
+		
+		frontStationCG: 90.6,
+		
+		rearStationCG: 128,
+		
+		noseBagStationCG: 23.6,
+		
+		baggageStationCG: 153.1,
+		
+		baggageStation2CG: 178.7,
+		
+		fuelStationCG: 103.5,
+		
+		auxStationCG: 126,
+		
+		deIceStationCG: 39.4,
+		
+		fuelType: "JETA",
+
+		cgRange: {
+		
+			minAft: 95.28,
+			
+			midAft: 98.03,
+			
+			maxAft: 98.03,
+			
+			minFwd: 92.52,
+			
+			midFwd: 92.52,
+			
+			maxFwd: 94.49,
+			
+			minWgt: 2756,
+			
+			midWgtFwd: 3236,
+			
+			midWgtAft: 3527,
+			
+			maxWgt: 3935
+		
+		},
+		
+		vSpeeds : { 
+				
 			interpolate : ["dmms"],
 			
-            vr : { 
+			vr : { 
 				
 				3748: 70,
 				
 				3935: 72
 				
 			},
-
-            vy : { 
+			
+			vy : { 
 				
 				3748: 77,
 				
 				3935: 79
 				
 			},
-
-            vg : "-",
-
-            vyse : 82,
-
-            vmc : 68,
-
-            va : {
-
-                3400 : 120,
-
-                3935 : 126
-
-            }, 
+			
+			vg : "-",
+			
+			vyse : 82,
+			
+			vmc : 68,
+			
+			va : {
+			
+				3400 : 120,
+				
+				3935 : 126
+			
+			}, 
 			
 			dmms : {
 				
@@ -1150,12 +1150,12 @@ const aircraftModels = [
 				
 				3935 : 80
 			}
+		
+		}
 
-        }
+    	}
 
-    }
-
-    /* This is where you could add a new aircraft type, but if you have to add more variables then you would need
+    /* This is where you could add a new aircraft type. If you have to add more variables then you need
 
     to edit the javascript code to make use of those variables
 
