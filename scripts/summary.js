@@ -377,7 +377,7 @@ function fillVSpeeds(computedData, modelData) {
 
 function printResults() {
     /**Called when user clicks print button**/
-    window.open("print.html");
+    window.open("print");
 }
 
 function emailResults() {
@@ -592,5 +592,5 @@ function afterPrint() {
 function reset() {
     sessionStorage.clear();
     localStorage.clear();
-    window.location.href = "index.html";
+    window.location.href = "index";
 }

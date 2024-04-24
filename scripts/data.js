@@ -13,7 +13,7 @@ function checkDataValidity() {
 function resetAllData() {
     sessionStorage.clear();
     localStorage.clear();
-    window.location.href = "index.html";
+    window.location.href = "index";
 }
 
 checkDataValidity();
