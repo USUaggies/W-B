@@ -574,11 +574,16 @@ function addWeatherTable(i) {
     document.getElementById("main").appendChild(row);
 }
 
+function printPage() {
+    beforePrint();
+    setTimeout(window.print, 1000)
+}
+
 function beforePrint() {
     let normalContent = document.getElementById("normal-content");
     let cgCvs = document.getElementById("cgCanvas");
     let newHtml = document.getElementById("print-iframe").contentWindow.document.body.innerHTML;
-    document.body.removeChild(normalContent);
+    normalContent.parentNode.removeChild(normalContent);
     document.body.innerHTML = newHtml
     var destCtx = document.getElementById("cgCanvas").getContext('2d');
     var destCvs = document.getElementById("cgCanvas");
@@ -588,6 +593,7 @@ function beforePrint() {
 function afterPrint() {
     location.reload();
 }
+
 
 function reset() {
     sessionStorage.clear();
