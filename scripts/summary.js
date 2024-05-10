@@ -576,7 +576,7 @@ function addWeatherTable(i) {
 
 function printPage() {
     beforePrint();
-    setTimeout(window.print, 1000)
+    setTimeout(window.print, 500)
 }
 
 function beforePrint() {
