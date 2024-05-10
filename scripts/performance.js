@@ -445,9 +445,6 @@ function getRunways(weatherData) {
                         }
                         output += "</select>";
                         var current = document.getElementById("runwaySelectDiv").innerHTML;
-                        document.getElementById("test").innerHTML = output;
-                        output = document.getElementById("test").innerHTML;
-                        document.getElementById("test").innerHTML = "";
                         if (output != current) {
                             document.getElementById("runwaySelectDiv").innerHTML = output;
                         }
