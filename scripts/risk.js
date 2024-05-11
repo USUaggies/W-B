@@ -56,10 +56,12 @@ function getSelectedCells() {
 }
 
 function populateCells() {
-    let cells = JSON.parse(sessionStorage.getItem("riskData")).selectedCells;
-    for (let c of cells) {
-        let cell = document.querySelector(`.selectable-cell[data-row="${c[0]}"][data-col="${c[1]}"]`);
-        handleCellClick(cell);
+    if (sessionStorage.getItem("riskData")) {
+        let cells = JSON.parse(sessionStorage.getItem("riskData")).selectedCells;
+        for (let c of cells) {
+            let cell = document.querySelector(`.selectable-cell[data-row="${c[0]}"][data-col="${c[1]}"]`);
+            handleCellClick(cell);
+        }
     }
 }
 
