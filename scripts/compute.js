@@ -818,15 +818,15 @@ if (localStorage.getItem("userInput") !== null) {
         document.getElementById("navbarRisk").classList.remove("disabled");
     }
     if (sessionStorage.getItem("userAgree") === null) {
-        $('#Modal').modal({
-            backdrop: 'static'
-        })
+        let modal = new bootstrap.Modal(document.getElementById("Modal"), {"backdrop": "static"});
+        modal.show();
+        document.querySelector("#Modal button").addEventListener("click", () => {modal.hide();});
     }
 } else {
     if (sessionStorage.getItem("userAgree") === null) {
-        $('#Modal').modal({
-            backdrop: 'static'
-        })
+        let modal = new bootstrap.Modal(document.getElementById("Modal"), {"backdrop": "static"});
+        modal.show();
+        document.querySelector("#Modal button").addEventListener("click", () => {modal.hide();});
     }
 }
 
