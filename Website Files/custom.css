@@ -1,0 +1,205 @@
+#content .navbar {
+    background-color: #0f2439 !important;
+    text-decoration: none;
+    margin-bottom: 10px;
+}
+#content .navbar a {
+    text-decoration: none;
+}
+#content .btn-secondary {
+    background-color: #0f2439;
+    color: white;
+    border-color: #6c757d;
+}   
+#content .nav-button-row {
+    justify-content: space-between;
+    margin-bottom: 10px;
+}    
+#content > .container {
+    max-width: 1140px;
+}
+
+#content .col-1 {
+	width: 1000px;
+}
+
+#content .vertical-th {
+    text-align: center;
+}
+
+#content #buttonRow {
+    padding-top: 10px;
+}
+
+#content *:not(.material-symbols-outlined) {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+#content table tr th {
+    font-size: 1rem;
+}
+
+#content #buttonRow {
+    padding-left: 20px;
+}
+
+#content #wWeatherContainer {
+    background-color: mediumblue;
+    color: white;
+}
+
+#content #weatherWarning {
+    color: #cc0000;
+    font-size: 1.2em;
+}
+
+#content #NOTAMRemind {
+    background-color: red;
+    color: white;
+    text-align: center;
+}
+
+#content canvas {
+    width: 100%;
+    height: auto;
+}
+
+#content #picture-iframe {
+    position: absolute;
+    left: -1500px;
+}
+
+#content .invalid>div>input {
+    border: 1px solid red;
+    color: red;
+}
+
+#content .weather-row::before {
+    width: 100%;
+    content: "";
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    box-sizing: content-box;
+    height: 0;
+    overflow: visible;
+}
+
+@media (min-width: 576px) {
+    #content .airport-select {
+        width: auto;
+    }
+
+    #content .airport-container {
+        flex-direction: row;
+    }
+
+    #content .airport-col {
+        flex: auto;
+        margin-bottom: 10px;
+        margin-top: 10px;
+    }
+}
+
+@media (min-width: 992px) {
+    #content .airport-select {
+        width: 100%;
+    }
+
+    #content .airport-container {
+        flex-direction: column;
+    }
+
+    #content .airport-col {
+        flex: 0 0 8.333333%;
+    }
+}
+
+#content .airport-container {
+    display: flex;
+    align-content: center;
+    justify-content: flex-start;
+    gap: 10px;
+    padding-top: .5em;
+}
+
+#content .airport-col {
+    max-width: none;
+}
+
+#content .airport-select {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    min-width: 60px;
+    min-height: 50px;
+    height: auto;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 100%;
+    background-color: #009FFF;
+    border-radius: 10%;
+    cursor: pointer;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+}
+
+#content .nav-button-row::before {
+    width: 100%;
+    content: "";
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    box-sizing: content-box;
+    height: 0;
+    overflow: visible;
+}
+
+#content .nav-button-row {
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+#content .next-only {
+    justify-content: flex-end;
+}
+
+#content .errorMessage {
+    color: #cc0000;
+    font-size: 1.2em;
+}
+
+#content #runwaySelect {
+    margin-left: 15px;
+    margin-right: 15px;
+    margin-bottom: 7px;
+    width: auto;
+}
+
+#content .hidden {
+    display: none;
+}
+
+#content .bg-dark {
+    background-color: #0f2439 !important;
+}
+
+#content .btn-secondary {
+    background-color: #0f2439;
+}
+
+#content #alt-wWind>input {
+    width: 100px;
+    display: inline;
+}
+
+#content root {
+    --gray: #f8f8f8;
+    --blue: #4d5f80;
+    --blue-dark: #384660;
+    --blue-bright: #2472b5;
+    --blue-light: #d9dfe8;
+}

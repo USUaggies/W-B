@@ -1,0 +1,123 @@
+@charset "UTF-8";
+
+#content * {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    font-size: .85rem;
+}
+
+#content [id^=wIdent] {
+    font-size: 1.2em;
+}
+
+#content .hidden {
+    display: none;
+}
+
+#content .centered {
+    text-align: center;
+}
+
+#content h4 {
+    font-size: 1.5rem;
+}
+
+#content td:empty,
+th:empty {
+    background-color: #d6d8db;
+}
+
+#content body {
+    margin: 0;
+    min-width: 0 !important;
+}
+
+#content .letter .row {
+    padding-top: 13px;
+}
+
+#canvasDiv {
+	display: flex;
+	justify-content: center;
+}
+
+#content .col-1 {
+	width: 1000px;
+}
+
+#content .sheet-outer {
+    margin: 0;
+}
+
+#content .sheet {
+    margin: 0;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+}
+
+#content .sheet-outer.letter .sheet {
+    width: 8.5in;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+#content .sheet.padding-5mm {
+    padding: 5mm
+}
+
+#content p.taf::after {
+    display: block;
+    width: 100%;
+    content: "";
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+    border: 0;
+    border-top: 1px solid rgba(0, 0, 0, 1);
+    box-sizing: content-box;
+    overflow: visible;
+}
+
+@page {
+    size: letter;
+    margin: 5mm 0;
+}
+
+@media print {
+	
+	#site-header, .cookiealert {
+		display: none !important;
+	}
+	
+	#content {
+		width: 9.8in;
+	}
+
+    html,
+    body {
+        height: 99%;
+    }
+
+    .sheet-outer.letter {
+        width: 9.8in;
+        padding-left: 20px;
+    }
+
+    table,
+    .weatherDiv {
+        page-break-inside: avoid;
+    }
+	
+	.weatherDiv {
+		padding-top: 20px;
+	}
+}
+
+#content h4.centered {
+    width: 100%;
+    text-align: center;
+}
+
+#content .table-sm th,
+.table-sm td {
+    padding: 0.1rem;
+}

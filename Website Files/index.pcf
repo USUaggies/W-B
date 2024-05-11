@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?pcf-stylesheet path="/_resources/xsl/usu.xsl" site="z_XSL" extension="php"?>
+<!DOCTYPE document SYSTEM "http://commons.omniupdate.com/dtd/standard.dtd"> 
+
+<data>
+	<document xmlns:ouc="http://omniupdate.com/XSL/Variables">
+		<ouc:properties label="config">
+			<parameter section="Side Nav Options" name="showSideNav" type="radio" group="Everyone" prompt="Choose where side navigation will appear">
+<option value="hide" selected="false">Hide Side Navigation</option>
+<option value="left" selected="false">Show Left Navigation</option>
+</parameter>
+			<parameter name="inheritSideNav" type="filechooser" group="Everyone" prompt="Path to Side Nav" alt="Use if you have an alternative side navigation." dependency="dm-tag" filter="inc"></parameter>
+			<parameter name="navTitle" type="text" group="Everyone" prompt="Title of Side Navigation" alt="This title will be displayed on mobile view."></parameter>
+			<parameter name="navTitleHref" type="filechooser" group="Everyone" prompt="Link Location for Title of Side Nav" dependency="dm-tag" alt="This is where you would like the side navigation to link to. If left blank, the title will not be a link."></parameter>
+			<parameter section="Gallery Options" name="gallery-type" group="Everyone" type="select" prompt="Banner Type" alt="Specify the look and feel of all gallery assets on this page.">
+<option value="showGallery" selected="true">No Gallery On Page</option>
+<option value="jumbotron" selected="false">Jumbotron</option>
+<option value="video" selected="false">Video</option>
+</parameter>
+			<parameter name="bodyClass" display="no" type="text" group="administrators" prompt="Body Class" alt="Add a CSS class to the body tag."></parameter>
+		</ouc:properties>
+		<ouc:properties label="metadata">
+			
+			<title>Digital Weight and Balance</title>
+			<meta name="Description" content="Digital Weight and Balance for USU Fixed wing" />
+		</ouc:properties>
+		<ouc:div label="gallery" group="Everyone" button-text="Banner" button="787"><ouc:editor wysiwyg="gallery"/></ouc:div>
+		<nocontainer />
+		<content>
+			<link rel="stylesheet" href="https://caas.usu.edu/avte/weight-balance/css/custom.css" />
+			
+			<div class="container">
+				<ouc:div label="content" group="everyone" button="787" break="break"><ouc:editor wysiwyg="yes" csspath="/z-omniupdate/css/edit-main.css" parag="no"/>
+					
+					 <nav class="navbar navbar-expand-md navbar-dark bg-dark mt-4">
+       <a class="navbar-brand" href="index">USU Aviation</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="index" id="navbarHelp">Instructions <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="weightbalance">Weight &amp; Balance <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link disabled" href="performance">Weather &amp; Performance <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link disabled" href="risk">Risk Assessment<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link disabled" href="summary" id="navbarSummary">Summary <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> USU Links </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                        <a class="dropdown-item" target="_blank" href="https://caas.usu.edu/avte/documents">Documents and Forms</a>
+                        <a class="dropdown-item" target="_blank" href="https://usu.flightlogger.net/">FlightLogger</a>
+                        <a class="dropdown-item" target="_blank" href="https://usu.co1.qualtrics.com/jfe/form/SV_6JqMu9UuqhUXvZr">Safety Report</a>
+                        <a class="dropdown-item" target="_blank" href="https://caas.usu.edu/avte/camera">Live Airport Camera</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+        
+   
+        <div class="container">
+            <div class="row">
+                <div class="col-lg">
+                    <h4>Instructions</h4>
+                    <p>Use the navigation links above to switch between the multiple pages of this website. The 'Weight &amp; Balance' tab is where you should begin by selecting your aircraft tail number and filling out the required weights. All weights should be filled in, if the station does not have a weight then please enter 0. Once all required fields are complete the results will inform you if you are within weight and balance. The show details button will show all the stations' weight, arm, and moment. </p>
+                    <p> After completing the weight and balance portion, you should now select the 'Weather &amp; Performance' tab. This tab will retrieve weather and compute performance. Enter the departure airport station ID to retrieve the METAR and TAF (if available). If a METAR is not available or is missing key elements, manual entry will be required. Once you have retrieved the weather, input the runway heading you will be departing from (Runway 17 = 170). This now displays the performance numbers. This will add the airport to the sidebar. Click an airport to remove it. </p>
+                    <p> The 'Risk Assessment' tab is optional. Click a box in each row to select the corresponding score. A message regarding estimated risk will display at the bottom. </p>
+                    <p> The 'Summary' tab will now be available to click if you have filled out the 'Weight &amp; Balance' and 'Weather &amp; performance' tabs. The summary page shows all information and allows for an email to be generated or the page to be printed in a USU friendly format. The email button will generate a text only email and will be opened in the device's preferred email client. The print button will open a new tab or window, if the print dialog does not automatically open, pressing Ctrl+p will print the page. </p>
+                </div>
+            </div>
+            <div class="nav-button-row row next-only">
+                <button id="next-button" class="btn btn-secondary m-1">Next</button>
+            </div>
+        </div>
+					
+				</ouc:div>
+			</div>
+			
+			
+			
+			
+			<![CDATA[
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/data.js"></script>
+    <script>
+        document.getElementById("next-button").addEventListener("click", function() {
+            window.location.href = "weightbalance";
+        });
+    </script>
+
+]]>
+			
+		</content>
+	</document>
+</data>
