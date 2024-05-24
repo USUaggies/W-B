@@ -37,7 +37,7 @@ function drawCG(newData, userInput, modelData, colors) {
         /*draw CG lines*/
         ctx.beginPath();
         ctx.moveTo(cgObj.takeoff.x, cgObj.takeoff.y);
-        if (!cgObj.midpoing || cgObj.landing.y <= cgObj.midpoint.y) {
+        if (!cgObj.midpoint || cgObj.landing.y <= cgObj.midpoint.y) {
             ctx.lineTo(cgObj.landing.x, cgObj.landing.y);
         } else {
             ctx.lineTo(cgObj.midpoint.x, cgObj.midpoint.y);
