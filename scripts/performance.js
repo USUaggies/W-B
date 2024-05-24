@@ -407,12 +407,18 @@ function getRunways(weatherData) {
                     if (airportResults["id"] !== null) {
                         var runways = [];
                         var runwayData = airportResults[0]["runways"];
+                        for (var key in runwayData){
+                            if (!runwayData[key]["id"].includes("/")) {
+                                delete runwayData[key];
+                            }
+                        }
                         for (var key in runwayData) {
                             if ((runwayData[key]['surface'] == "A" || runwayData[key]['surface'] == "C")) {
                                 runways[runwayData[key]["id"].split("/")[0]] = runwayData[key]["dimension"].split("x")[0];
                                 runways[runwayData[key]["id"].split("/")[1]] = runwayData[key]["dimension"].split("x")[0];
                             }
                         }
+                        
                         var windData = [];
                         for (var key in runways) {
                             var value = key + "0";
