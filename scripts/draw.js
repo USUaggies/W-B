@@ -37,22 +37,22 @@ function drawCG(newData, userInput, modelData, colors) {
         /*draw CG lines*/
         ctx.beginPath();
         ctx.moveTo(cgObj.takeoff.x, cgObj.takeoff.y);
-        if (cgObj.landing.y <= cgObj.midpoint.y) {
-                ctx.lineTo(cgObj.landing.x, cgObj.landing.y);
+        if (!cgObj.midpoing || cgObj.landing.y <= cgObj.midpoint.y) {
+            ctx.lineTo(cgObj.landing.x, cgObj.landing.y);
         } else {
-                ctx.lineTo(cgObj.midpoint.x, cgObj.midpoint.y);
-                ctx.lineTo(cgObj.landing.x, cgObj.landing.y);
+            ctx.lineTo(cgObj.midpoint.x, cgObj.midpoint.y);
+            ctx.lineTo(cgObj.landing.x, cgObj.landing.y);
         }
         ctx.strokeStyle = "black";
         ctx.stroke();
         ctx.beginPath();
-        if (cgObj.landing.y <= cgObj.midpoint.y) {
-                ctx.moveTo(cgObj.landing.x, cgObj.landing.y);
-                ctx.lineTo(cgObj.midpoint.x, cgObj.midpoint.y);
-                ctx.lineTo(cgObj.zero.x, cgObj.zero.y);
+        if (cgObj.midpoint && cgObj.landing.y <= cgObj.midpoint.y) {
+            ctx.moveTo(cgObj.landing.x, cgObj.landing.y);
+            ctx.lineTo(cgObj.midpoint.x, cgObj.midpoint.y);
+            ctx.lineTo(cgObj.zero.x, cgObj.zero.y);
         } else {
-                ctx.moveTo(cgObj.landing.x, cgObj.landing.y);
-                ctx.lineTo(cgObj.zero.x, cgObj.zero.y);
+            ctx.moveTo(cgObj.landing.x, cgObj.landing.y);
+            ctx.lineTo(cgObj.zero.x, cgObj.zero.y);
         }
         ctx.setLineDash([2, 2]);
         ctx.strokeStyle = "grey";
