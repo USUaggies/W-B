@@ -617,6 +617,9 @@ function computeWB(aircraftObj, userInput) {
         } else {
             computedData["auxFuelMoment"] = 0.0;
         }
+        if (userInput.fuelBurnWeight > userInput.fuelWeight) {
+            computedData["fuelBurnMoment"] = Math.round((parseFloat(modelData.auxStationCG) * (userInput.fuelBurnWeight - userInput.fuelWeight) + (parseFloat(modelData.fuelStationCG) * userInput.fuelWeight + Number.EPSILON)) * 100) / 100;
+        }
         computedData["noseBagMoment"] = Math.round((parseFloat(modelData.noseBagStationCG) * userInput.noseWeight + Number.EPSILON) * 100) / 100;
         computedData["baggage2Moment"] = Math.round((parseFloat(modelData.baggageStation2CG) * userInput.baggage2Weight + Number.EPSILON) * 100) / 100;
         computedData["zeroFuelMoment"] = computedData.emptyMoment + computedData.noseBagMoment +
@@ -628,6 +631,9 @@ function computeWB(aircraftObj, userInput) {
 
         computedData["takeOffMoment"] = computedData.zeroFuelMoment + computedData.fuelMoment + computedData.auxFuelMoment;
         computedData["takeOffWeight"] = Math.round((computedData.zeroFuelWeight + userInput.fuelWeight + userInput.auxFuelWeight) * 100) / 100;
+        computedData["midpointMoment"] = computedData.zeroFuelMoment + computedData.auxFuelMoment;
+        computedData["midpointWeight"] = Math.round((computedData.zeroFuelWeight + userInput.auxFuelWeight) * 100) / 100;
+        computedData["midpointCG"] = Math.round((computedData.midpointMoment / computedData.midpointWeight + Number.EPSILON) * 100) / 100;
     }
     /*XL for the second baggage area*/
     else if ((aircraftObj.model === "DA40XL") || (aircraftObj.model === "DA40XLS") || (aircraftObj.model === "C172S")) {

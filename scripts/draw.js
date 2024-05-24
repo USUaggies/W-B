@@ -37,12 +37,23 @@ function drawCG(newData, userInput, modelData, colors) {
         /*draw CG lines*/
         ctx.beginPath();
         ctx.moveTo(cgObj.takeoff.x, cgObj.takeoff.y);
-        ctx.lineTo(cgObj.landing.x, cgObj.landing.y);
+        if (cgObj.landing.y <= cgObj.midpoint.y) {
+                ctx.lineTo(cgObj.landing.x, cgObj.landing.y);
+        } else {
+                ctx.lineTo(cgObj.midpoint.x, cgObj.midpoint.y);
+                ctx.lineTo(cgObj.landing.x, cgObj.landing.y);
+        }
         ctx.strokeStyle = "black";
         ctx.stroke();
         ctx.beginPath();
-        ctx.moveTo(cgObj.landing.x, cgObj.landing.y);
-        ctx.lineTo(cgObj.zero.x, cgObj.zero.y);
+        if (cgObj.landing.y <= cgObj.midpoint.y) {
+                ctx.moveTo(cgObj.landing.x, cgObj.landing.y);
+                ctx.lineTo(cgObj.midpoint.x, cgObj.midpoint.y);
+                ctx.lineTo(cgObj.zero.x, cgObj.zero.y);
+        } else {
+                ctx.moveTo(cgObj.landing.x, cgObj.landing.y);
+                ctx.lineTo(cgObj.zero.x, cgObj.zero.y);
+        }
         ctx.setLineDash([2, 2]);
         ctx.strokeStyle = "grey";
         ctx.stroke();
@@ -135,6 +146,7 @@ function drawEnvelope(c, ctx, modelData, newData) {
         ctx.textAlign = "right";
         ctx.fillText("aft", pnt6.x + 50, pnt6.y + 20);
         takeoff_cg = convertCoordinates(c, newData.takeoffCG, newData.takeOffWeight, DA42Borders);
+        midpoint_cg = convertCoordinates(c, newData.midpointCG, newData.midpointWeight, DA42Borders);
         landing_cg = convertCoordinates(c, newData.landingCG, newData.landingWeight, DA42Borders);
         zero_cg = convertCoordinates(c, newData.zeroFuelCG, newData.zeroFuelWeight, DA42Borders);
     }
@@ -146,11 +158,20 @@ function drawEnvelope(c, ctx, modelData, newData) {
     ctx.fillText("Weight", -c.height / 2, 50);
     ctx.restore();
     ctx.textAlign = "left";
-    return {
-        takeoff: takeoff_cg,
-        landing: landing_cg,
-        zero: zero_cg
-    };
+    if (!(modelData.model === "DA42")) {
+        return {
+            takeoff : takeoff_cg,
+            landing : landing_cg,
+            zero : zero_cg
+        };
+    } else {
+        return {
+            takeoff : takeoff_cg,
+            midpoint : midpoint_cg,
+            landing : landing_cg,
+            zero : zero_cg
+        };
+    }
 }
 
 function convertCoordinates(canvas, x, y, borders) {
