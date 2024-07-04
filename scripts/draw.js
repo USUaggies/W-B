@@ -1,6 +1,6 @@
 function drawCG(newData, userInput, modelData, colors) {
     image = new Image();
-    image.src = 'resources/grid.png';
+    image.src = '../resourfces/grid.png';
     var c = document.getElementById("cgCanvas");
     var ctx = c.getContext("2d");
     ctx.clearRect(0, 0, c.width, c.height);
