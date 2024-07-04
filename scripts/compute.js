@@ -850,8 +850,8 @@ function updateDataTimestamp() {
 }
 
 document.getElementById("previous-button").addEventListener("click", function() {
-    window.location.href = "index";
+    window.location.href = "/";
 });
 document.getElementById("next-button").addEventListener("click", function() {
-    window.location.href = "performance";
+    window.location.href = "/performance";
 });

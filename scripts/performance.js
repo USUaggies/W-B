@@ -1151,10 +1151,10 @@ function addAirportTab(identifier) {
     airportContainer.appendChild(airportTab);
 }
 document.getElementById("previous-button").addEventListener("click", function() {
-    window.location.href = "weightbalance";
+    window.location.href = "/weightbalance";
 });
 document.getElementById("next-button").addEventListener("click", function() {
-    window.location.href = "risk";
+    window.location.href = "/risk";
 });
 if (sessionStorage.getItem("performance") && sessionStorage.getItem("performance") !== "{}" && sessionStorage.getItem("performance") !== "") {
     document.getElementById("navbarSummary").classList.remove("disabled");
