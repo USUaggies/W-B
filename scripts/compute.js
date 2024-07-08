@@ -45,10 +45,15 @@ function aircraftSelection() {
 
     if (aircraftObj.autopilot == "none") {
         document.getElementById("emptyAircraftInfo").innerHTML =
-            "Empty: " + aircraftObj.emptyWeight + " lbs, CG: " + aircraftObj.aircraftArm + ", <br>Type: " + aircraftObj.model;
+            "Empty:&nbsp;" + aircraftObj.emptyWeight + "&nbsp;lbs, CG:&nbsp;" + aircraftObj.aircraftArm + ", Type:&nbsp;" + aircraftObj.model;
+        document.getElementById("smallEmptyAircraftInfo").innerHTML =
+            "Empty:&nbsp;" + aircraftObj.emptyWeight + "&nbsp;lbs, CG:&nbsp;" + aircraftObj.aircraftArm + ", Type:&nbsp;" + aircraftObj.model;
     } else {
         document.getElementById("emptyAircraftInfo").innerHTML =
-            "Empty: " + aircraftObj.emptyWeight + " lbs, CG: " + aircraftObj.aircraftArm + ", <br>Type: " + aircraftObj.model + ", AP: " + aircraftObj.autopilot;
+            "Empty:&nbsp;" + aircraftObj.emptyWeight + "&nbsp;lbs, CG:&nbsp;" + aircraftObj.aircraftArm + ", Type:&nbsp;" + aircraftObj.model + ", AP:&nbsp;" + aircraftObj.autopilot;
+        document.getElementById("smallEmptyAircraftInfo").innerHTML =
+            "Empty:&nbsp;" + aircraftObj.emptyWeight + "&nbsp;lbs, CG:&nbsp;" + aircraftObj.aircraftArm + ", Type:&nbsp;" + aircraftObj.model + ", AP:&nbsp;" + aircraftObj.autopilot;
+
     }
 
     /*We need to hide or show different input fields based on aircraft type/model*/
@@ -135,6 +140,51 @@ function aircraftSelection() {
     reCompute();
 }
 
+function saveFlightData(collapse=false, controller=null) {
+    if (!localStorage.getItem("flightData")) {
+        var flightData = {};
+    } else {
+        var flightData = JSON.parse(localStorage.getItem("flightData"));
+    }
+    flightData["studentName"] = document.getElementById("studentName").value;
+    flightData["instructorName"] = document.getElementById("instructorName").value;
+    flightData["practiceArea"] = document.getElementById("practiceArea").value;
+    flightData["flightLesson"] = document.getElementById("flightLesson").value;
+    flightData["timeEnroute"] = document.getElementById("timeEnroute").value;
+    flightData["dueBackTime"] = document.getElementById("dueBackTime").value;
+    localStorage.setItem("flightData", JSON.stringify(flightData));
+    let flightSmall = `<small>${document.getElementById('aircraftSelect').value}&nbsp| ${flightData["studentName"].replace(" ", "&nbsp;")}&nbsp;| 
+    ${flightData["instructorName"].replace(" ", "&nbsp;")}&nbsp;| ${flightData["practiceArea"].replace(" ", "&nbsp;")}&nbsp;| 
+    Lesson&nbsp;${flightData["flightLesson"].replace(" ", "&nbsp;")}&nbsp;| ${flightData["timeEnroute"].replace(" ", "&nbsp;")}&nbsp;hours&nbsp;| 
+    Back&nbsp;at&nbsp;${flightData["dueBackTime"].replace(" ", "&nbsp;")}</small>`;
+    document.getElementById("flightInfoSummary").innerHTML = flightSmall;
+    let formElements = Array.from(document.querySelectorAll("#flightInfoCollapse input"));
+    let validElements = formElements.filter(element => element.value);
+    validElements.forEach(element => flightInfoWarning(element, true));
+    if (flightData["studentName"] && flightData["instructorName"] && flightData["practiceArea"] && 
+    flightData["flightLesson"] && flightData["timeEnroute"] && flightData["dueBackTime"]) {
+        updateNext(false);
+        if (document.getElementById("overall_result").classList.contains("list-group-item-warning")) {
+            document.getElementById("overall_result").classList.remove("list-group-item-warning");
+        }
+            if (collapse) {
+            for (let i = 0; i < formElements.length; i++) {
+                if (formElements[i].classList.contains("invalid"))
+                    formElements[i].classList.remove("invalid");
+            }
+            toggleCollapse();        
+            controller.abort();
+        }
+    } else {
+        if (document.getElementById("overall_result").classList.contains("list-group-item-success")) {
+            // document.getElementById("overall_result").classList.remove("list-group-item-success");
+            document.getElementById("overall_result").classList.add("list-group-item-warning");
+            document.getElementById("overall_result").innerHTML = "Fill out all flight data";
+        }
+        updateNext(true);
+    }
+}
+
 function reCompute() {
     /**Runs when a change in the user input is detected, this keeps the results updated with having to submit
      *
@@ -193,24 +243,17 @@ function reCompute() {
     var validInputString = checkInputConstraints(modelData, userInput);
     if (!(validInputString === "")) {
         resultWarning(validInputString[0], validInputString[1]);
-        document.getElementById("next-button").disabled = true;
-        if (!document.getElementById("navbarPerformance").classList.contains("disabled"))
-            document.getElementById("navbarPerformance").classList.add("disabled");
-        if (!document.getElementById("navbarRisk").classList.contains("disabled"))
-            document.getElementById("navbarRisk").classList.add("disabled");
-        if (!document.getElementById("navbarSummary").classList.contains("disabled"))
-            document.getElementById("navbarSummary").classList.add("disabled");
+        updateNext(true);
         return;
     }
 	
 	if (isNaN(userInput.frontStationWeight) || isNaN(userInput.rearStationWeight) || isNaN(userInput.fuelWeight) || isNaN(userInput.fuelBurnWeight)) {
-		document.getElementById("next-button").disabled = true;
-        if (!document.getElementById("navbarPerformance").classList.contains("disabled"))
-            document.getElementById("navbarPerformance").classList.add("disabled");
-        if (!document.getElementById("navbarRisk").classList.contains("disabled"))
-            document.getElementById("navbarRisk").classList.add("disabled");
-        if (!document.getElementById("navbarSummary").classList.contains("disabled"))
-            document.getElementById("navbarSummary").classList.add("disabled");
+		updateNext(true);
+        if (document.getElementById("overall_result").classList.contains("list-group-item-success")) {
+            document.getElementById("overall_result").classList.remove("list-group-item-success");
+            document.getElementById("overall_result").classList.add("list-group-item-danger");
+            document.getElementById("overall_result").innerHTML="Invalid input";
+        }
         return;
 	}
 
@@ -481,6 +524,7 @@ function reCompute() {
 
     drawCG(newData, userInput, modelData, colors);
     auditMode(newData, userInput, toFwdCG);
+    saveFlightData();
 }
 
 function checkInputConstraints(modelData, userInput) {
@@ -549,7 +593,15 @@ function loadUserData() {
      * This changes all the HTML elements to match the previous user data
      * It returns the userData object**/
     var userData = JSON.parse(localStorage.getItem("userInput"));
+    var flightData = JSON.parse(localStorage.getItem("flightData"));
     var aircraftObj = userData.obj;
+
+    document.getElementById("studentName").value = flightData["studentName"];
+    document.getElementById("instructorName").value = flightData["instructorName"];
+    document.getElementById("practiceArea").value = flightData["practiceArea"];
+    document.getElementById("flightLesson").value = flightData["flightLesson"];
+    document.getElementById("timeEnroute").value = flightData["timeEnroute"];
+    document.getElementById("dueBackTime").value = flightData["dueBackTime"];
 
     document.getElementById("aircraftSelect").value = aircraftObj.tail;
     document.getElementById("frontStation").value = userData.frontStationWeight;
@@ -799,8 +851,7 @@ function resultSuccess() {
         document.getElementById("overall_result").classList.add("list-group-item-success");
     }
     document.getElementById("overall_result").innerHTML = "Aircraft within limits.";
-    document.getElementById("next-button").disabled = false;
-    document.getElementById("navbarPerformance").classList.remove("disabled");
+    updateNext(false);
     let formElements = document.getElementById("form_input").children;
     for (let i = 0; i < formElements.length; i++) {
         if (formElements[i].classList.contains("invalid"))
@@ -811,6 +862,34 @@ function resultSuccess() {
 function userAgreement() {
     sessionStorage.setItem("userAgree", "true");
     updateDataTimestamp();
+}
+
+function updateNext(disable=true) {
+    if (disable) {
+        if (!document.getElementById("navbarPerformance").classList.contains("disabled"))
+            document.getElementById("navbarPerformance").classList.add("disabled");
+        if (!document.getElementById("navbarRisk").classList.contains("disabled"))
+            document.getElementById("navbarRisk").classList.add("disabled");
+        if (!document.getElementById("navbarSummary").classList.contains("disabled"))
+            document.getElementById("navbarSummary").classList.add("disabled");
+        document.getElementById("next-button").disabled = true;
+        return;
+    }
+    let flightInputs = Array.from(document.querySelectorAll("#flightInfoCollapse input"));
+    let validFlight = flightInputs.filter(element => !element.value).length == 0;
+    if (document.getElementById("overall_result").classList.contains("list-group-item-success") && validFlight) {
+        document.getElementById("overall_result").innerHTML = "Aircraft within limits."
+        document.getElementById("navbarPerformance").classList.remove("disabled");
+        document.getElementById("next-button").disabled = false;
+    }
+}
+
+function flightInfoWarning(warningElement, clear=false) {
+    if (clear) {
+        warningElement.classList.remove("invalid");
+    } else {
+        warningElement.classList.add("invalid");
+    }
 }
 
 /*call to fill in the dropdown selector with tail numbers*/
@@ -849,9 +928,65 @@ function updateDataTimestamp() {
     localStorage.setItem("modified", new Date().getTime());
 }
 
+function toggleCollapse() {
+    const collapseDiv = document.getElementById("flightInfoCollapse");
+    const shown = collapseDiv.classList.contains("show");
+    if (!shown) {
+        new bootstrap.Collapse(document.getElementById("flightInfoCollapse"));
+        return;
+    }
+    const flightData = JSON.parse(localStorage.getItem("flightData"));
+    if (flightData["studentName"] && flightData["instructorName"] && flightData["practiceArea"] && 
+    flightData["flightLesson"] && flightData["timeEnroute"] && flightData["dueBackTime"]) {
+        new bootstrap.Collapse(document.getElementById("flightInfoCollapse"));
+        return;
+    }
+    let formElements = Array.from(document.querySelectorAll("#flightInfoCollapse input"));
+    let invalidElements = formElements.filter(element => !element.value);
+    invalidElements.forEach(element => flightInfoWarning(element));
+    let validElements = formElements.filter(element => element.value);
+    validElements.forEach(element => flightInfoWarning(element, true));
+}
+
 document.getElementById("previous-button").addEventListener("click", function() {
     window.location.href = "/";
 });
 document.getElementById("next-button").addEventListener("click", function() {
     window.location.href = "/performance";
 });
+
+const aircraftData = document.getElementById('flightInfoCollapse')
+aircraftData.addEventListener('hide.bs.collapse', event => {
+    document.getElementById("flightInfoCollapseButton").innerHTML = "expand_all"
+    document.getElementById("aircraftSelectRow").classList.add("hidden");
+    document.getElementById("aircraftLabelDiv").classList.add("hidden");
+    // document.getElementById("flightInfoSpacer").classList.add("hidden");
+    document.getElementById("flightInfoSummary").classList.remove("hidden");
+    document.getElementById("emptyAircraftInfo").classList.add("hidden");
+    // document.getElementById("aircraftRow").style.height = "42px";
+})
+
+aircraftData.addEventListener('show.bs.collapse', event => {
+    document.getElementById("flightInfoCollapseButton").innerHTML = "collapse_all"
+    document.getElementById("aircraftSelectRow").classList.remove("hidden");
+    document.getElementById("aircraftLabelDiv").classList.remove("hidden");
+    // document.getElementById("flightInfoSpacer").classList.remove("hidden");
+    document.getElementById("flightInfoSummary").classList.add("hidden");
+    document.getElementById("emptyAircraftInfo").classList.remove("hidden");
+    // document.getElementById("aircraftRow").style.height = "68px";
+})
+
+const flightInfoSummary = document.getElementById("flightInfoSummary");
+flightInfoSummary.addEventListener("click", toggleCollapse);
+
+const collapseButton = document.getElementById("collapseButton");
+collapseButton.addEventListener("click", toggleCollapse);
+
+const controller = new AbortController();
+const { signal } = controller;
+const flightInfoCollapse = document.getElementById("flightInfoCollapse");
+let listener = flightInfoCollapse.addEventListener("focusout", (event) => {
+    if (flightInfoCollapse.contains(event.relatedTarget)) return;
+    saveFlightData(true, controller);
+}, {signal})
+saveFlightData();

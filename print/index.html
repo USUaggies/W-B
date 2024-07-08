@@ -6,9 +6,9 @@
     <title id="title">Print</title>
     <link rel="stylesheet" href="/css/bootstrap.css">
     <link rel="stylesheet" href="/css/print.css">
-    <script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/draw.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/aircraft.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/USUaggies/w-b/scripts/print.js" defer></script>
+    <script src="/scripts/draw.js"></script>
+    <script src="/scripts/aircraft.js"></script>
+    <script src="/scripts/print.js" defer></script>
 </head>
 
 <body>
@@ -17,6 +17,7 @@
             <h4 class="centered" id="header">Weight &amp; Balance</h4>
             <div class="row">
                 <div class="col" id="weatherCol1">
+                    <p id="flightDataSummary"></p>
                     <table class="table table-sm table-striped table-bordered">
                         <thead>
                             <tr>
@@ -229,6 +230,10 @@
                     <h5 id="riskAssessmentHeader" class="hidden centered">Risk Assessment</h5>
                     <p id="riskAssessment" class="hidden"></p>
                 </div>
+            </div>
+            <div class="row">
+                <div class="col"><hr class="sigLine"><p class="text-center" id="instructorSigLine"></p></div>
+                <div class="col"><hr class="sigLine"><p class="text-center" id="studentSigLine"></p></div>
             </div>
         </section>
     </div>

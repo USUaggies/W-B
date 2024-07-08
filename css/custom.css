@@ -1,4 +1,5 @@
 body {
+    min-width: 320px;
     padding-top: 5rem;
 }
 
@@ -22,6 +23,10 @@ body {
     text-align: center;
 }
 
+#flightDataSummary {
+    text-wrap: balance;
+}
+
 canvas {
     width: 100%;
     height: auto;
@@ -30,6 +35,11 @@ canvas {
 #picture-iframe {
     position: absolute;
     left: -1500px;
+}
+
+input.invalid {
+    border: 1px solid red;
+    color: red;
 }
 
 .invalid>div>input {
@@ -47,6 +57,149 @@ canvas {
     box-sizing: content-box;
     height: 0;
     overflow: visible;
+}
+
+.collapseIconDiv {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+}
+
+.collapse_icon {
+    align-self: center;
+    max-width: 50px;
+    min-width: 50px;
+    height: 40px;
+    padding: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.empty-aircraft-info {
+    font-size: 12px;
+}
+
+#aircraftLabelDiv {
+    display: contents;
+}
+
+#aircraftLabelDiv.hidden {
+    display: none;
+}
+
+#flightInfoSummary {
+    max-width: 400px;
+}
+
+#smallEmptyAircraftInfo {
+    align-content: center;
+    order:  2;
+    display: none;
+}
+
+#flight_info > div:first-child {
+    justify-content: space-between;
+}
+
+#flight_info > .row > * {
+    align-self: center;
+}
+
+.flight-info-summary > small {
+    display: inline-table;
+    text-wrap: balance;
+}
+
+#summary-buttonDiv {
+    display: contents;
+}
+
+#aircraftSelectCol {
+    width: 75%;
+}
+
+#aircraftSelectLabel {
+    align-self: center;
+}
+
+#aircraftSelectDiv {
+    display: flex;
+}
+
+#aircraftSelectRow {
+    margin-bottom: 0px;
+}
+
+#aircraftSelect {
+    min-width: 105px;
+    align-self: center;
+}
+
+#flightInfoCollapse > div:last-child, #flight_info > div:first-child {
+    margin-bottom: 0px;
+}
+
+#flightInfoCollapse > div:first-child {
+    margin-top: 1rem;
+}
+
+#dueBackTimeDiv {
+    display: flex;
+    gap: 10px;
+}
+
+#dueBackTimeDiv > label {
+    width: 100%;
+}
+
+#dueBackTimeInputDiv {
+    width: 100%;
+}
+
+@media (max-width: 575px) {
+    #dueBackTimeDiv {
+        flex-wrap: wrap;
+        gap: 0;
+    }
+    .form-group-sm {
+        margin-bottom: 1rem;
+    }
+    #aircraftRow {
+        flex-wrap: wrap;
+    }
+    #aircraftSelectLabel {
+        order: 1;
+        width: auto;
+    }
+    #smallEmptyAircraftInfo {
+        display: inline-block;
+    }
+    #emptyAircraftInfo {
+        display: none;
+        order: 2;
+        width: auto;
+    }
+    #aircraftSelectDiv {
+        min-width: 135px;
+        /* width: 75%; */
+        order: 3;
+    }
+    #collapseButtonDiv {
+        min-width:  50px;
+        width: 25%;
+        order: 4;
+    }
+    #summary-buttonDiv:has(> #flightInfoSummary:not(.hidden)) {
+        display: flex;
+    }
+    #aircraftLabelDiv {
+        display: flex;
+    }
+    /* }#aircraftRow:has(+ div.collapse:not(.show)) > #summary-buttonDiv,
+    #aircraftRow:has(+ div.collapsing) > #summary-buttonDiv {
+        display: flex;
+    } */
 }
 
 @media (min-width: 576px) {

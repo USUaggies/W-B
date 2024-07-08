@@ -1,4 +1,4 @@
-const minsToExpire = 15;
+const minsToExpire = 3000;
 
 // Erase data if it hasn't been modified in 15 mins
 function checkDataValidity() {
@@ -13,7 +13,7 @@ function checkDataValidity() {
 function resetAllData() {
     sessionStorage.clear();
     localStorage.clear();
-    window.location.href = "index";
+    window.location.href = "../";
 }
 
 checkDataValidity();
