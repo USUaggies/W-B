@@ -1,4 +1,4 @@
-const minsToExpire = 3000;
+const minsToExpire = 30;
 
 // Erase data if it hasn't been modified in 15 mins
 function checkDataValidity() {
