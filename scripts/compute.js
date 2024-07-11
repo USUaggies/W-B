@@ -949,10 +949,10 @@ function toggleCollapse() {
 }
 
 document.getElementById("previous-button").addEventListener("click", function() {
-    window.location.href = "/";
+    window.location.href = "../";
 });
 document.getElementById("next-button").addEventListener("click", function() {
-    window.location.href = "/performance";
+    window.location.href = "../performance";
 });
 
 const aircraftData = document.getElementById('flightInfoCollapse')

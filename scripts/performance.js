@@ -84,7 +84,7 @@ function getWeather() {
             }
         }
     }
-    request.open("GET", "/weather?q=" + stationID, true);
+    request.open("GET", "../weather.php?q=" + stationID, true);
     request.send();
 }
 
@@ -468,7 +468,7 @@ function getRunways(weatherData) {
             }
         }
     }
-    request.open("GET", "/airports?q=" + weatherData['station_id'], true);
+    request.open("GET", "../airports.php?q=" + weatherData['station_id'], true);
     request.send();
 }
 
@@ -1151,10 +1151,10 @@ function addAirportTab(identifier) {
     airportContainer.appendChild(airportTab);
 }
 document.getElementById("previous-button").addEventListener("click", function() {
-    window.location.href = "/weightbalance";
+    window.location.href = "../weightbalance";
 });
 document.getElementById("next-button").addEventListener("click", function() {
-    window.location.href = "/risk";
+    window.location.href = "../risk";
 });
 if (sessionStorage.getItem("performance") && sessionStorage.getItem("performance") !== "{}" && sessionStorage.getItem("performance") !== "") {
     document.getElementById("navbarSummary").classList.remove("disabled");
