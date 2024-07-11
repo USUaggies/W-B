@@ -146,12 +146,14 @@ function saveFlightData(collapse=false, controller=null) {
     } else {
         var flightData = JSON.parse(localStorage.getItem("flightData"));
     }
-    flightData["studentName"] = document.getElementById("studentName").value;
-    flightData["instructorName"] = document.getElementById("instructorName").value;
-    flightData["practiceArea"] = document.getElementById("practiceArea").value;
-    flightData["flightLesson"] = document.getElementById("flightLesson").value;
-    flightData["timeEnroute"] = document.getElementById("timeEnroute").value;
-    flightData["dueBackTime"] = document.getElementById("dueBackTime").value;
+    if (flightData) {
+        flightData["studentName"] = document.getElementById("studentName").value;
+        flightData["instructorName"] = document.getElementById("instructorName").value;
+        flightData["practiceArea"] = document.getElementById("practiceArea").value;
+        flightData["flightLesson"] = document.getElementById("flightLesson").value;
+        flightData["timeEnroute"] = document.getElementById("timeEnroute").value;
+        flightData["dueBackTime"] = document.getElementById("dueBackTime").value;
+    }
     localStorage.setItem("flightData", JSON.stringify(flightData));
     let flightSmall = `<small>${document.getElementById('aircraftSelect').value}&nbsp| ${flightData["studentName"].replace(" ", "&nbsp;")}&nbsp;| 
     ${flightData["instructorName"].replace(" ", "&nbsp;")}&nbsp;| ${flightData["practiceArea"].replace(" ", "&nbsp;")}&nbsp;| 
