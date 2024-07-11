@@ -87,10 +87,10 @@ if (sessionStorage.getItem("performance") !== null) {
     document.getElementById("navbarSummary").classList.remove("disabled");
 }
 document.getElementById("previous-button").addEventListener("click", function() {
-    window.location.href = "performance";
+    window.location.href = "../performance";
 });
 document.getElementById("next-button").addEventListener("click", function() {
-    window.location.href = "summary";
+    window.location.href = "../summary";
 });
 document.getElementById("clearButton").addEventListener("click", clear);
 populateCells();

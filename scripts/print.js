@@ -3,6 +3,7 @@ const zeroPad = (num, places) => String(num).padStart(places, '0');
 function fillData() {
     /**Main call to fetch all data from local or session storage and call all the fill functions**/
     var userData = JSON.parse(localStorage.getItem("userInput"));
+    var flightData = JSON.parse(localStorage.getItem("flightData"));
     var weatherData = JSON.parse(sessionStorage.getItem("weather"));
     var computedData = JSON.parse(localStorage.getItem("computedData"));
     var performanceData = JSON.parse(sessionStorage.getItem("performance"));
@@ -13,6 +14,10 @@ function fillData() {
     var aircraftObj = JSON.parse(localStorage.getItem("userInput")).obj;
     var modelData = aircraftModels.find(x => x.model === aircraftObj.model);
     document.getElementById("title").innerHTML = tailNumber + " Summary";
+    let flightDataSummary = `Student:&nbsp;${flightData["studentName"].replace(" ", "&nbsp;")}&nbsp;| Instructor:&nbsp;${flightData["instructorName"].replace(" ", "&nbsp;")}&nbsp;| 
+    Route:&nbsp;${flightData["practiceArea"].replace(" ", "&nbsp;")}&nbsp;| Lesson&nbsp;${flightData["flightLesson"].replace(" ", "&nbsp;")}&nbsp;| 
+    Time&nbsp;Enroute:&nbsp;${flightData["timeEnroute"].replace(" ", "&nbsp;")}&nbsp;hrs&nbsp;| Due&nbsp;Back:&nbsp;${flightData["dueBackTime"].replace(" ", "&nbsp;")}`;
+    document.getElementById("flightDataSummary").innerHTML = flightDataSummary;
     fillWB(computedData, userData, resultCG.fwdCG, resultCG.validCG, false);
     fillRisk(riskData);
     drawCG(computedData, userData, modelData, colors);
@@ -27,6 +32,8 @@ function fillData() {
     }
     fillVSpeeds(computedData, modelData);
     let timestamp = `${new Date().toLocaleDateString("en-us", {dateStyle: "medium"})} ${new Date().toLocaleTimeString("en-us", {timeStyle: "short"})} (${new Date().toLocaleString("en-us", {timeZone: "UTC", 	timeStyle: "short", dateStyle: "short", hour12: false})} GMT)`;
+    document.getElementById("instructorSigLine").innerHTML = flightData["instructorName"];
+    document.getElementById("studentSigLine").innerHTML = flightData["studentName"];
     document.getElementById("header").innerHTML = tailNumber + " Weight and Balance " + ` - ${timestamp}`;
 }
 
