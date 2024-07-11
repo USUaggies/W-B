@@ -934,6 +934,11 @@ function toggleCollapse() {
     const collapseDiv = document.getElementById("flightInfoCollapse");
     const shown = collapseDiv.classList.contains("show");
     if (!shown) {
+        document.getElementById("flightInfoCollapseButton").innerHTML = "collapse_all"
+        document.getElementById("aircraftSelectRow").classList.remove("hidden");
+        document.getElementById("aircraftLabelDiv").classList.remove("hidden");
+        document.getElementById("flightInfoSummary").classList.add("hidden");
+        document.getElementById("emptyAircraftInfo").classList.remove("hidden");
         new bootstrap.Collapse(document.getElementById("flightInfoCollapse"));
         return;
     }
@@ -941,6 +946,11 @@ function toggleCollapse() {
     if (flightData["studentName"] && flightData["instructorName"] && flightData["practiceArea"] && 
     flightData["flightLesson"] && flightData["timeEnroute"] && flightData["dueBackTime"]) {
         new bootstrap.Collapse(document.getElementById("flightInfoCollapse"));
+        document.getElementById("flightInfoCollapseButton").innerHTML = "expand_all"
+        document.getElementById("aircraftSelectRow").classList.add("hidden");
+        document.getElementById("aircraftLabelDiv").classList.add("hidden");
+        document.getElementById("flightInfoSummary").classList.remove("hidden");
+        document.getElementById("emptyAircraftInfo").classList.add("hidden");
         return;
     }
     let formElements = Array.from(document.querySelectorAll("#flightInfoCollapse input"));
@@ -956,27 +966,6 @@ document.getElementById("previous-button").addEventListener("click", function() 
 document.getElementById("next-button").addEventListener("click", function() {
     window.location.href = "../performance";
 });
-
-const aircraftData = document.getElementById('flightInfoCollapse')
-aircraftData.addEventListener('hide.bs.collapse', event => {
-    document.getElementById("flightInfoCollapseButton").innerHTML = "expand_all"
-    document.getElementById("aircraftSelectRow").classList.add("hidden");
-    document.getElementById("aircraftLabelDiv").classList.add("hidden");
-    // document.getElementById("flightInfoSpacer").classList.add("hidden");
-    document.getElementById("flightInfoSummary").classList.remove("hidden");
-    document.getElementById("emptyAircraftInfo").classList.add("hidden");
-    // document.getElementById("aircraftRow").style.height = "42px";
-})
-
-aircraftData.addEventListener('show.bs.collapse', event => {
-    document.getElementById("flightInfoCollapseButton").innerHTML = "collapse_all"
-    document.getElementById("aircraftSelectRow").classList.remove("hidden");
-    document.getElementById("aircraftLabelDiv").classList.remove("hidden");
-    // document.getElementById("flightInfoSpacer").classList.remove("hidden");
-    document.getElementById("flightInfoSummary").classList.add("hidden");
-    document.getElementById("emptyAircraftInfo").classList.remove("hidden");
-    // document.getElementById("aircraftRow").style.height = "68px";
-})
 
 const flightInfoSummary = document.getElementById("flightInfoSummary");
 flightInfoSummary.addEventListener("click", toggleCollapse);
