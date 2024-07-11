@@ -31,7 +31,7 @@ function fillData() {
         fillPerformance(performanceData[airports[i]], false, tailNumber, i);
     }
     fillVSpeeds(computedData, modelData);
-    let timestamp = `${new Date().toLocaleDateString("en-us", {dateStyle: "medium"})} ${new Date().toLocaleTimeString("en-us", {timeStyle: "short"})} (${new Date().toLocaleString("en-us", {timeZone: "UTC", 	timeStyle: "short", dateStyle: "short", hour12: false})} GMT)`;
+    let timestamp = `${new Date().toLocaleDateString("en-us", {dateStyle: "medium"})} ${new Date().toLocaleTimeString("en-us", {timeStyle: "short"})} (${new Date().toLocaleString("en-us", {timeZone: "UTC", 	timeStyle: "short", dateStyle: "short", hour12: false})} Zulu)`;
     document.getElementById("instructorSigLine").innerHTML = flightData["instructorName"];
     document.getElementById("studentSigLine").innerHTML = flightData["studentName"];
     document.getElementById("header").innerHTML = tailNumber + " Weight and Balance " + ` - ${timestamp}`;

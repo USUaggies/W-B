@@ -27,7 +27,7 @@ function fillData() {
         fillPerformance(performanceData[i], false, tailNumber, i);
     }
     fillVSpeeds(computedData, modelData);
-    let timestamp = `${new Date().toLocaleDateString("en-us", {dateStyle: "medium"})} ${new Date().toLocaleTimeString("en-us", {timeStyle: "short"})} (${new Date().toLocaleString("en-us", {timeZone: "UTC", timeStyle: "short", dateStyle: "short", hour12: false})} GMT)`
+    let timestamp = `${new Date().toLocaleDateString("en-us", {dateStyle: "medium"})} ${new Date().toLocaleTimeString("en-us", {timeStyle: "short"})} (${new Date().toLocaleString("en-us", {timeZone: "UTC", timeStyle: "short", dateStyle: "short", hour12: false})} Zulu)`
     document.getElementById("timestamp").innerHTML = timestamp;
 }
 
