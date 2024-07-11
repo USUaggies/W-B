@@ -942,6 +942,7 @@ function toggleCollapse() {
         new bootstrap.Collapse(document.getElementById("flightInfoCollapse"));
         return;
     }
+	
     const flightData = JSON.parse(localStorage.getItem("flightData"));
     if (flightData["studentName"] && flightData["instructorName"] && flightData["practiceArea"] && 
     flightData["flightLesson"] && flightData["timeEnroute"] && flightData["dueBackTime"]) {
