@@ -511,15 +511,15 @@ function emailResults() {
         bodyString);
 }
 
-function waitForButtonRow() {
+function waitForFrame() {
     return new Promise(resolve => {
         if (document.getElementById("picture-iframe").contentWindow.document.getElementById("buttonRow")) {
             return resolve(document.getElementById("picture-iframe").contentWindow.document.getElementById("buttonRow"));
         }
         const observer = new MutationObserver(mutations => {
-            if (document.getElementById("picture-iframe").contentWindow.document.getElementById("buttonRow")) {
+            if (document.getElementById("picture-iframe").contentWindow.document.body) {
                 observer.disconnect();
-                resolve(document.getElementById("picture-iframe").contentWindow.document.getElementById("buttonRow"));
+                resolve(document.getElementById("picture-iframe").contentWindow.document.body);
             }
         });
         observer.observe(document.getElementById("picture-iframe").contentWindow.document.documentElement, {
@@ -530,14 +530,13 @@ function waitForButtonRow() {
     });
 }
 
-function savePicture() {
+async function savePicture() {
     let saveButton = document.getElementById("saveButton");
     saveButton.disabled = true;
-    let html = document.documentElement.outerHTML;
-    html = html.split(`<div id="previewImg" style="display: none;"></div>`)[0];
+    let html = `<html>${document.getElementById("print-iframe").contentWindow.document.documentElement.innerHTML}</html>`;
     let iframe = document.createElement("iframe");
     iframe.id = "picture-iframe";
-    iframe.style.width = "1024px";
+    iframe.style.width = "8.5in";
     iframe.style.height = "100%";
     document.body.appendChild(iframe);
     iframe.contentDocument.open();
@@ -546,16 +545,15 @@ function savePicture() {
     let tailNum = JSON.parse(localStorage.getItem("userInput")).obj.tail;
     let date = new Date();
     let formatedDate = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()} ${zeroPad(date.getHours(), 2)}${zeroPad(date.getMinutes(), 2)}`;
-    let buttonPromise = waitForButtonRow();
+    let buttonPromise = waitForFrame();
     buttonPromise.catch(error => {
         console.error("Error in promise:", error);
     });
     buttonPromise.then((buttonRow) => {
         var destCtx = document.getElementById("picture-iframe").contentWindow.document.getElementById("cgCanvas").getContext('2d');
-        destCtx.drawImage(document.getElementById("cgCanvas"), 0, 0);
-        buttonRow.style.display = "none";
-        html2canvas(document.getElementById("picture-iframe").contentWindow.document.getElementById("main"), {
-            logging: false
+        destCtx.drawImage(document.getElementById("cgCanvas"), 0, 0, document.getElementById("picture-iframe").contentWindow.document.getElementById("cgCanvas").width, document.getElementById("picture-iframe").contentWindow.document.getElementById("cgCanvas").height);
+        html2canvas(document.getElementById("picture-iframe").contentWindow.document.body, {
+            logging: true
         }).then(function(canvas) {
             var anchorTag = document.createElement("a");
             document.body.appendChild(anchorTag);
