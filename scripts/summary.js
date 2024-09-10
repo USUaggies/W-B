@@ -552,7 +552,7 @@ async function savePicture() {
     buttonPromise.then((buttonRow) => {
         var destCtx = document.getElementById("picture-iframe").contentWindow.document.getElementById("cgCanvas").getContext('2d');
         destCtx.drawImage(document.getElementById("cgCanvas"), 0, 0, document.getElementById("picture-iframe").contentWindow.document.getElementById("cgCanvas").width, document.getElementById("picture-iframe").contentWindow.document.getElementById("cgCanvas").height);
-        html2canvas(document.getElementById("picture-iframe").contentWindow.document.body, {
+        html2canvas(document.getElementById("picture-iframe").contentWindow.document.getElementById("content"), {
             logging: true
         }).then(function(canvas) {
             var anchorTag = document.createElement("a");
