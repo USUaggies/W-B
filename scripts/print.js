@@ -184,14 +184,10 @@ function fillPerformance(performanceData, isPrint, tailNumber, suffix) {
     } else {
         document.getElementById("crossWind-" + suffix).innerHTML = performanceData.crossWind.toFixed(0) + " kts (Left)";
     }
-    document.getElementById("TODistance-" + suffix).innerHTML = "Ground Roll: " +
-        (performanceData.takeoffDistance / 10).toFixed(0) * 10 + " ft";
-    document.getElementById("TO50Distance-" + suffix).innerHTML = "Over 50': " +
-        (performanceData.takeoff50Distance / 10).toFixed(0) * 10 + " ft";
-    document.getElementById("LDGDistance-" + suffix).innerHTML = "Ground Roll: " +
-        (performanceData.landingDistance / 10).toFixed(0) * 10 + " ft";
-    document.getElementById("LDG50Distance-" + suffix).innerHTML = "Over 50': " +
-        (performanceData.landing50Distance / 10).toFixed(0) * 10 + " ft";
+    document.getElementById("TODistance-" + suffix).innerHTML = (performanceData.takeoffDistance / 10).toFixed(0) * 10 + " ft";
+    document.getElementById("TO50Distance-" + suffix).innerHTML = (performanceData.takeoff50Distance / 10).toFixed(0) * 10 + " ft";
+    document.getElementById("LDGDistance-" + suffix).innerHTML = (performanceData.landingDistance / 10).toFixed(0) * 10 + " ft";
+    document.getElementById("LDG50Distance-" + suffix).innerHTML = (performanceData.landing50Distance / 10).toFixed(0) * 10 + " ft";
     document.getElementById("rateClimb-" + suffix).innerHTML = (performanceData.climbPerf / 10).toFixed(0) * 10 + " FPM";
     document.getElementById("tgDistance-" + suffix).innerHTML = performanceData.tgDistance + " ft";
     if (performanceData.SEClimbPerf) {
