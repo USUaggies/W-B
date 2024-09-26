@@ -126,77 +126,79 @@
                             </tr>
                         </tbody>
                     </table>
-                    <table class="table table-bordered table-sm table-striped">
-                        <tbody>
-                            <tr>
-                                <th colspan="4" id="wIdent-0" class="centered">Weather</th>
-                            </tr>
-                            <tr>
-                                <th class="no-bottom-border">Time</th>
-                                <th class="no-bottom-border">Wind Dir/Vel</th>
-                                <th class="no-bottom-border">Visibility</th>
-                                <th></th>
-                            </tr>
-                            <tr>
-                                <td id="wTime-0" class="no-top-border"></td>
-                                <td id="wWind-0" class="no-top-border"></td>
-                                <td id="wVisibility-0" class="no-top-border"></td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <th class="no-bottom-border">Clouds</th>
-                                <th class="no-bottom-border">Temp/Dew</th>
-                                <th class="no-bottom-border">Altimeter</th>
-                                <th></th>
-                            </tr>
-                            <tr>
-                                <td id="wCeilings-0" class="no-top-border"></td>
-                                <td id="wTempDew-0" class="no-top-border"></td>
-                                <td id="wAltimeter-0" class="no-top-border"></td>
-                                <td></td>
-                            </tr>
-                            <tr style="border-top: 2px solid black;">
-                                <th>Density Alt.</th>
-                                <td id="wDensityAlt-0"></td>
-                                <th>Pressure Alt.</th>
-                                <td id="wPressureAlt-0"></td>
-                            </tr>
-                            <tr>
-                                <th>Headwind</th>
-                                <td id="headWind-0"></td>
-                                <th>Crosswind</th>
-                                <td id="crossWind-0"></td>
-                            </tr>
-                            <tr style="border-top: 2px solid black;">
-                                <th class="centered" colspan="2">Takeoff (<span id="runwayHdg-0"></span>)</th>
-                                <th colspan="2" class="centered">Landing</th>
-                            </tr>
-                            <tr>
-                                <th>Ground Roll</th>
-                                <td id="TODistance-0"></td>
-                                <th>Ground Roll</th>
-                                <td id="LDGDistance-0"></td>
-                            </tr>
-                            <tr>
-                                <th>Over 50'</th>
-                                <td id="TO50Distance-0"></td>
-                                <th>Over 50'</th>
-                                <td id="LDG50Distance-0"></td>
-                            </tr>
-                            <tr style="border-top: 2px solid black;">
-                                <th>Touch and Go Distance</th>
-                                <td id="tgDistance-0"></td>
-                                <th>Rate of Climb</th>
-                                <td id="rateClimb-0"></td>
-                            </tr>
-                            <tr id="DA42-performance-0" class="hidden">
-                                <th>Climb Gradient</th>
-                                <td id="climbGrad-0"></td>
-                                <th>Single-Engine ROC</th>
-                                <td id="SERateClimb-0"></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="weatherDiv">
+                        <table class="table table-bordered table-sm table-striped">
+                            <tbody>
+                                <tr>
+                                    <th colspan="4" id="wIdent-0" class="centered">Weather</th>
+                                </tr>
+                                <tr>
+                                    <th class="no-bottom-border">Time</th>
+                                    <th class="no-bottom-border">Wind Dir/Vel</th>
+                                    <th class="no-bottom-border">Visibility</th>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <td id="wTime-0" class="no-top-border"></td>
+                                    <td id="wWind-0" class="no-top-border"></td>
+                                    <td id="wVisibility-0" class="no-top-border"></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th class="no-bottom-border">Clouds</th>
+                                    <th class="no-bottom-border">Temp/Dew</th>
+                                    <th class="no-bottom-border">Altimeter</th>
+                                    <th></th>
+                                </tr>
+                                <tr>
+                                    <td id="wCeilings-0" class="no-top-border"></td>
+                                    <td id="wTempDew-0" class="no-top-border"></td>
+                                    <td id="wAltimeter-0" class="no-top-border"></td>
+                                    <td></td>
+                                </tr>
+                                <tr style="border-top: 2px solid black;">
+                                    <th>Density Alt.</th>
+                                    <td id="wDensityAlt-0"></td>
+                                    <th>Pressure Alt.</th>
+                                    <td id="wPressureAlt-0"></td>
+                                </tr>
+                                <tr>
+                                    <th>Headwind</th>
+                                    <td id="headWind-0"></td>
+                                    <th>Crosswind</th>
+                                    <td id="crossWind-0"></td>
+                                </tr>
+                                <tr style="border-top: 2px solid black;">
+                                    <th class="centered" colspan="2">Takeoff (<span id="runwayHdg-0"></span>)</th>
+                                    <th colspan="2" class="centered">Landing</th>
+                                </tr>
+                                <tr>
+                                    <th>Ground Roll</th>
+                                    <td id="TODistance-0"></td>
+                                    <th>Ground Roll</th>
+                                    <td id="LDGDistance-0"></td>
+                                </tr>
+                                <tr>
+                                    <th>Over 50'</th>
+                                    <td id="TO50Distance-0"></td>
+                                    <th>Over 50'</th>
+                                    <td id="LDG50Distance-0"></td>
+                                </tr>
+                                <tr style="border-top: 2px solid black;">
+                                    <th>Touch and Go Distance</th>
+                                    <td id="tgDistance-0"></td>
+                                    <th>Rate of Climb</th>
+                                    <td id="rateClimb-0"></td>
+                                </tr>
+                                <tr id="DA42-performance-0" class="hidden">
+                                    <th>Climb Gradient</th>
+                                    <td id="climbGrad-0"></td>
+                                    <th>Single-Engine ROC</th>
+                                    <td id="SERateClimb-0"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                     <p class="taf" id="TAF-0"></p>
                 </div>
                 <div class="col" id="weatherCol2">
