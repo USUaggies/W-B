@@ -536,7 +536,7 @@ async function savePicture() {
     let html = `<html>${document.getElementById("print-iframe").contentWindow.document.documentElement.innerHTML}</html>`;
     let iframe = document.createElement("iframe");
     iframe.id = "picture-iframe";
-    iframe.style.width = "8.5in";
+    iframe.style.width = "1000px";
     iframe.style.height = "100%";
     document.body.appendChild(iframe);
     iframe.contentDocument.open();
