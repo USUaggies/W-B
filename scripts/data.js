@@ -13,7 +13,9 @@ function checkDataValidity() {
 function resetAllData() {
     sessionStorage.clear();
     localStorage.clear();
-    window.location.href = "../";
+    if (window.location.href != "https://caas.usu.edu/avte/weight-balance/") {
+        window.location.href = "../";
+    }
 }
 
 checkDataValidity();
