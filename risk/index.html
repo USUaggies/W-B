@@ -15,6 +15,16 @@
             color: #fff;
         }
 
+        .no-fly {
+            background-color: #ff0f0f !important;
+            color: white;
+        }
+
+        .score-no-fly {
+            background-color: #ff0f0f !important;
+            color: white;
+        }
+
         .disabled-cell {
             background-color: gray;
         }
@@ -74,124 +84,81 @@
                 <thead>
                     <tr>
                         <th class="vertical-th disabled-cell"></th>
-                        <th>1</th>
-                        <th>2</th>
+                        <th id="noFlyHeader">NO FLY</th>
                         <th>3</th>
-                        <th>4</th>
-                        <th>5</th>
+                        <th>1</th>
+                        <th>0</th>
                         <th class="score-cell"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <th class="vertical-th">Day/Night</th>
-                        <td data-row="0" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Day</td>
-                        <td data-row="0" data-col="2" class="disabled-cell"></td>
-                        <td data-row="0" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">Night + Moon</td>
-                        <td data-row="0" data-col="4" class="disabled-cell"></td>
-                        <td data-row="0" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">Night No Moon</td>
+                        <th class="vertical-th">Are you experiencing any symptoms of illness?</th>
+                        <td data-row="0" data-col="NO FLY" class="selectable-cell" onclick="handleCellClick(this)">Considering getting medical attention</td>
+                        <td data-row="0" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">Distracting symptoms, distinctly uncomfortable or probably worse while flying</td>
+                        <td data-row="0" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Minor unobtrusive symptoms</td>
+                        <td data-row="0" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">No</td>
                         <td data-row="0" class="score-cell"></td>
                     </tr>
                     <tr>
-                        <th class="vertical-th">Rating</th>
-                        <td data-row="1" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Comm</td>
-                        <td data-row="1" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">PPL + Instrument</td>
-                        <td data-row="1" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">PPL</td>
-                        <td data-row="1" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">Student</td>
-                        <td data-row="1" data-col="5" class="disabled-cell"></td>
+                        <th class="vertical-th">Are you taking any medication-prescribed or otherwise-to treat short term symptoms?</th>
+                        <td data-row="1" data-col="NO FLY" class="selectable-cell" onclick="handleCellClick(this)">Yes, and it is not approved as per the OTC Medication Guide</td>
+                        <td data-row="1" class="disabled-cell"></td>
+                        <td data-row="1" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Yes, and it is approved by the OTC medication guide.</td>
+                        <td data-row="1" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">No</td>
                         <td data-row="1" class="score-cell"></td>
                     </tr>
                     <tr>
-                        <th class="vertical-th">Rest in last 24 hours</th>
-                        <td data-row="2" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&gt;7hrs</td>
-                        <td data-row="2" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">5-7 hrs</td>
-                        <td data-row="2" data-col="3" class="disabled-cell"></td>
-                        <td data-row="2" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">3-5 hrs</td>
-                        <td data-row="2" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">&lt;3 hrs</td>
+                        <th class="vertical-th">Are you experiencing emotional, personal, financial, or job related stress which is causing a distraction to everyday activities or a decrease in performance?</th>
+                        <td data-row="2" data-col="NO FLY" class="selectable-cell" onclick="handleCellClick(this)">I have been unable to focus or routine day to day activities are difficult to accomplish</td>
+                        <td data-row="2" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">I have noticed occasional dips in performance related to stress</td>
+                        <td data-row="2" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">There are distractions but I have been coping well</td>
+                        <td data-row="2" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">No</td>
                         <td data-row="2" class="score-cell"></td>
                     </tr>
                     <tr>
-                        <th class="vertical-th">Ceiling AGL</th>
-                        <td data-row="3" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Clear</td>
-                        <td data-row="3" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">8,000-10,000</td>
-                        <td data-row="3" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">5,000-8,000</td>
-                        <td data-row="3" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">3,000-5,000</td>
-                        <td data-row="3" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">IMC</td>
+                        <th class="vertical-th">Are you experiencing any effects of alcohol or drug use?</th>
+                        <td data-row="3" data-col="NO FLY" class="selectable-cell" onclick="handleCellClick(this)">Yes, however slight</td>
+                        <td data-row="3" data-col="2" class="disabled-cell"></td>
+                        <td data-row="3" data-col="3" class="disabled-cell"></td>
+                        <td data-row="3" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">No</td>
                         <td data-row="3" class="score-cell"></td>
                     </tr>
                     <tr>
-                        <th class="vertical-th">Visibility</th>
-                        <td data-row="4" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&gt;15 miles</td>
-                        <td data-row="4" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">10-15 miles</td>
-                        <td data-row="4" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">6-9 miles</td>
-                        <td data-row="4" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">3-5 miles</td>
-                        <td data-row="4" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">1-2 miles</td>
+                        <th class="vertical-th">How much sleep did you get in the previous 24 hours</th>
+                        <td data-row="4" data-col="NO FLY" class="selectable-cell" onclick="handleCellClick(this)">&lt; 4 hours</td>
+                        <td data-row="4" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">&lt; 5.5 hours</td>
+                        <td data-row="4" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&lt; 7 hours</td>
+                        <td data-row="4" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">7 hours or more</td>
                         <td data-row="4" class="score-cell"></td>
                     </tr>
                     <tr>
-                        <th class="vertical-th">Crosswind</th>
-                        <td data-row="5" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">0-5 kts</td>
-                        <td data-row="5" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">5-8 kts</td>
-                        <td data-row="5" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">8-12 kts</td>
-                        <td data-row="5" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">12-17 kts</td>
-                        <td data-row="5" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">&gt;17 kts</td>
+                        <th class="vertical-th">Are you feeling properly hydrated and nourished?</th>
+                        <td data-row="5" data-col="NO FLY" class="disabled-cell"></td>
+                        <td data-row="5" data-col="3" class="disabled-cell"></td>
+                        <td data-row="5" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Have not had a proper meal in 8 hours or have felt dehyrated today </td>
+                        <td data-row="5" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">Yes</td>
                         <td data-row="5" class="score-cell"></td>
                     </tr>
                     <tr>
-                        <th class="vertical-th">Target Airport Familiarity</th>
-                        <td data-row="6" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Yes</td>
-                        <td data-row="6" data-col="2" class="disabled-cell"></td>
-                        <td data-row="6" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">No</td>
-                        <td data-row="6" data-col="4" class="disabled-cell"></td>
-                        <td data-row="6" data-col="5" class="disabled-cell"></td>
-                        <td data-row="6" class="score-cell"></td>
-                    </tr>
-                    <tr>
-                        <th class="vertical-th">Hours in Aircraft</th>
-                        <td data-row="7" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&gt;150 hrs</td>
-                        <td data-row="7" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">101-149 hrs</td>
-                        <td data-row="7" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">50-100 hrs</td>
-                        <td data-row="7" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">25-49 hrs</td>
-                        <td data-row="7" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">&lt;25 hrs</td>
-                        <td data-row="7" class="score-cell"></td>
-                    </tr>
-                    <tr>
-                        <th class="vertical-th">Hours in last 90 days</th>
-                        <td data-row="8" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&gt;20 hrs</td>
-                        <td data-row="8" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">15-20 hrs</td>
-                        <td data-row="8" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">10-14 hrs</td>
-                        <td data-row="8" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">5-9 hrs</td>
-                        <td data-row="8" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">&lt;5 hrs</td>
-                        <td data-row="8" class="score-cell"></td>
-                    </tr>
-                    <tr>
-                        <th class="vertical-th">Total Hours</th>
-                        <td data-row="9" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&gt;1,000 hrs</td>
-                        <td data-row="9" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">500-999 hrs</td>
-                        <td data-row="9" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">100-499 hrs</td>
-                        <td data-row="9" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">50-99 hrs</td>
-                        <td data-row="9" data-col="5" class="selectable-cell" onclick="handleCellClick(this)">&lt;50 hrs</td>
-                        <td data-row="9" class="score-cell"></td>
-                    </tr>
-                    <tr>
-                        <th class="vertical-th" colspan="6">Total Risk Score</th>
+                        <th class="vertical-th" colspan="5">Total Risk Score</th>
                         <td id="totalRisk" class="score-cell"></td>
                     </tr>
                     <tr id="risk0" class="hidden">
-                        <td colspan="7">No unusual hazards. Use normal flight planning and established personal minimums and operating procedures</td>
+                        <td colspan="7">No unusual hazards. Use normal flight planning, established personal minimums, and operating procedures</td>
                     </tr>
                     <tr id="risk1" class="hidden">
-                        <td colspan="7">Slightly increased risk. Conduct flight planning with extra caution. Review personal minimums and operating procedures</td>
+                        <td colspan="7">Increased risk, discuss with CFI</td>
                     </tr>
-                    <tr id="risk2" class="hidden">
-                        <td colspan="7">Conditions present very high risk. Conduct flight planning with extra care and review all elements that present the most risk. Consult with more experienced pilots or flight instructors for guidance. Consider delaying flight until conditions improve</td>
+                    <tr id="risk2" class="hidden score-no-fly">
+                        <td colspan="7">Very high risk, flight not allowed</td>
                     </tr>
                 </tbody>
             </table>
             <div class="nav-button-row row">
                 <button id="previous-button" type="button" class="btn btn-secondary m-1">Previous</button>
                 <button id="clearButton" type="button" class="btn btn-secondary m-2" onclick="clear()">Clear</button>
-                <button id="next-button" class="btn btn-secondary m-1">Next</button>
+                <button id="next-button" class="btn btn-secondary m-1" disabled>Next</button>
             </div>
         </div>
     </main><!-- /.container -->

@@ -235,13 +235,16 @@ function fillRisk(riskData) {
     let riskCat = JSON.parse(riskData).riskCat;
     document.getElementById("riskAssessmentHeader").classList.remove("hidden");
     document.getElementById("riskAssessment").classList.remove("hidden");
-    document.getElementById("riskAssessment").innerHTML = `<strong>Risk Score: ${JSON.parse(riskData).riskScore}</strong><br>`;
     if (riskCat == 0) {
+        document.getElementById("riskAssessment").innerHTML = `<strong>Risk Score: ${JSON.parse(riskData).riskScore}</strong><br>`;
         document.getElementById("riskAssessment").innerHTML += "No unusual hazards. Use normal flight planning and established personal minimums and operating procedures";
     } else if (riskCat == 1) {
-        document.getElementById("riskAssessment").innerHTML += "Slightly increased risk. Conduct flight planning with extra caution. Review personal minimums and operating procedures";
+        document.getElementById("riskAssessment").innerHTML = `<strong>Risk Score: ${JSON.parse(riskData).riskScore}</strong><br>`;
+        document.getElementById("riskAssessment").innerHTML += "Increased risk, discuss with CFI";
     } else if (riskCat == 2) {
-        document.getElementById("riskAssessment").innerHTML += "Conditions present very high risk. Conduct flight planning with extra care and review all elements that present the most risk. Consult with more experienced pilots or flight instructors for guidance. Consider delaying flight until conditions improve";
+        document.getElementById("riskAssessment").innerHTML += "Very high risk, flight not allowed";
+        document.getElementById("riskAssessment").style.color = "red";
+        document.getElementById("riskAssessment").style.fontWeight = "bold";
     }
 }
 

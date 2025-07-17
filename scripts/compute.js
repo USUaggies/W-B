@@ -868,12 +868,9 @@ function userAgreement() {
 
 function updateNext(disable=true) {
     if (disable) {
-        if (!document.getElementById("navbarPerformance").classList.contains("disabled"))
-            document.getElementById("navbarPerformance").classList.add("disabled");
-        if (!document.getElementById("navbarRisk").classList.contains("disabled"))
-            document.getElementById("navbarRisk").classList.add("disabled");
-        if (!document.getElementById("navbarSummary").classList.contains("disabled"))
-            document.getElementById("navbarSummary").classList.add("disabled");
+        document.getElementById("navbarPerformance").classList.add("disabled");
+        document.getElementById("navbarRisk").classList.add("disabled");
+        document.getElementById("navbarSummary").classList.add("disabled");
         document.getElementById("next-button").disabled = true;
         return;
     }
@@ -901,8 +898,9 @@ if (localStorage.getItem("userInput") !== null) {
     loadUserData();
     aircraftSelection();
     if (sessionStorage.getItem("performance") && sessionStorage.getItem("performance") !== "{}" && sessionStorage.getItem("performance") !== "") {
-        document.getElementById("navbarSummary").classList.remove("disabled");
         document.getElementById("navbarRisk").classList.remove("disabled");
+        if (sessionStorage.getItem("riskData") && !JSON.parse(sessionStorage.getItem("riskData"))['noFly'] && JSON.parse(sessionStorage.getItem("riskData"))['completed'])
+            document.getElementById("navbarSummary").classList.remove("disabled");
     }
     if (sessionStorage.getItem("userAgree") === null) {
         let modal = new bootstrap.Modal(document.getElementById("Modal"), {"backdrop": "static"});
