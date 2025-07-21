@@ -30,12 +30,13 @@
         }
 
         .score-cell {
-            width: 45px;
+            width: 52px;
             background-color: lightgray;
         }
 
         th {
             text-align: center;
+            height: 30px;
         }
     </style>
     <title id="title">Risk Assessment</title>
@@ -76,69 +77,121 @@
             </ul>
         </div>
     </nav>
-    <main role="main" class="container">
-        <div class="container-md">
+    <main role="main" class="container no-max-width">
+        <div class="container-md no-max-width">
             <h4>Risk Assessment</h4>
             <p>Click a box in each row to select</p>
             <table id="risk-table" class="table table-bordered">
                 <thead>
                     <tr>
-                        <th class="vertical-th disabled-cell"></th>
-                        <th id="noFlyHeader">NO FLY</th>
-                        <th>3</th>
+                        <th id="noFlyHeader" class="vertical-th disabled-cell" colspan="6"></th>
+                        <!-- <th id="noFlyHeader">NO FLY</th> -->
+                        <!-- <th>3</th>
                         <th>1</th>
-                        <th>0</th>
-                        <th class="score-cell"></th>
+                        <th>0</th> -->
+                        <!-- <th class="score-cell" style="min-width: 26px;"></th> -->
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <th class="vertical-th">Are you experiencing any symptoms of illness?</th>
-                        <td data-row="0" data-col="NO FLY" class="selectable-cell" onclick="handleCellClick(this)">Considering getting medical attention</td>
-                        <td data-row="0" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">Distracting symptoms, distinctly uncomfortable or probably worse while flying</td>
-                        <td data-row="0" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Minor unobtrusive symptoms</td>
-                        <td data-row="0" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">No</td>
+                        <th class="vertical-th">Complete an IMSAFE assessment: To what extent are the items below affecting you? Are you experiencing any symptoms of illness?
+Are you taking any medication-prescribed or otherwise-to treat short term symptoms?
+Are you experiencing emotional, personal, financial, or job related stress which is causing a distraction to everyday activities or a decrease in performance?
+Are you experiencing any effects of alcohol or drug use?
+Are you feeling properly hydrated and nourished? Are there external pressures such as an impending checkride or add/drop deadline which may affect my go/ no-go decision?</th>
+                        <td data-row="0" data-col="NO FLY" class="selectable-cell" onclick="handleCellClick(this)">One or more of these are causing a serious distraction to my daily activities causing a definite decrease in performance</td>
+                        <td data-row="0" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">I am experiencing occasional distraction as a result of one or more of these factors, but my overall performance is good</td>
+                        <td data-row="0" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">There may be a few factors, but I don't feel like they have been distracting in any significant way</td>
+                        <td data-row="0" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">There are no physical or mental distractions</td>
                         <td data-row="0" class="score-cell"></td>
                     </tr>
                     <tr>
-                        <th class="vertical-th">Are you taking any medication-prescribed or otherwise-to treat short term symptoms?</th>
-                        <td data-row="1" data-col="NO FLY" class="selectable-cell" onclick="handleCellClick(this)">Yes, and it is not approved as per the OTC Medication Guide</td>
-                        <td data-row="1" class="disabled-cell"></td>
-                        <td data-row="1" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Yes, and it is approved by the OTC medication guide.</td>
-                        <td data-row="1" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">No</td>
+                        <th class="vertical-th">How much sleep did you get in the previous 24 hours?</th>
+                        <td data-row="1" data-col="NO FLY" class="selectable-cell" onclick="handleCellClick(this)">Less than 4 hours</td>
+                        <td data-row="1" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">5.5 hours or less</td>
+                        <td data-row="1" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">7 hours or less</td>
+                        <td data-row="1" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">8 hours or more</td>
                         <td data-row="1" class="score-cell"></td>
                     </tr>
                     <tr>
-                        <th class="vertical-th">Are you experiencing emotional, personal, financial, or job related stress which is causing a distraction to everyday activities or a decrease in performance?</th>
-                        <td data-row="2" data-col="NO FLY" class="selectable-cell" onclick="handleCellClick(this)">I have been unable to focus or routine day to day activities are difficult to accomplish</td>
-                        <td data-row="2" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">I have noticed occasional dips in performance related to stress</td>
-                        <td data-row="2" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">There are distractions but I have been coping well</td>
-                        <td data-row="2" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">No</td>
+                        <th class="vertical-th">Which of the following describes your recent experience in the aircraft to be flown?</th>
+                        <td data-row="2" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">I have flown less than once in the last 15 days</td>
+                        <td data-row="2" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">I have flown only once in the last 15 days</td>
+                        <td data-row="2" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">I have flown only once in the last 7 days</td>
+                        <td data-row="2" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">I have flown twice or more in the last 7 days</td>
                         <td data-row="2" class="score-cell"></td>
                     </tr>
                     <tr>
-                        <th class="vertical-th">Are you experiencing any effects of alcohol or drug use?</th>
-                        <td data-row="3" data-col="NO FLY" class="selectable-cell" onclick="handleCellClick(this)">Yes, however slight</td>
-                        <td data-row="3" data-col="2" class="disabled-cell"></td>
-                        <td data-row="3" data-col="3" class="disabled-cell"></td>
+                        <th class="vertical-th">Will any portion of this flight be conducted at night?</th>
+                        <td data-row="3" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">Yes</td>
+                        <td data-row="3" class="disabled-cell"></td>
+                        <td data-row="3" class="disabled-cell"></td>
                         <td data-row="3" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">No</td>
                         <td data-row="3" class="score-cell"></td>
                     </tr>
                     <tr>
-                        <th class="vertical-th">How much sleep did you get in the previous 24 hours</th>
-                        <td data-row="4" data-col="NO FLY" class="selectable-cell" onclick="handleCellClick(this)">&lt; 4 hours</td>
-                        <td data-row="4" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">&lt; 5.5 hours</td>
-                        <td data-row="4" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">&lt; 7 hours</td>
-                        <td data-row="4" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">7 hours or more</td>
+                        <th class="vertical-th">Are you familiar with all airports in your flight plan?</th>
+                        <td data-row="4" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">No</td>
+                        <td data-row="4" class="disabled-cell"></td>
+                        <td data-row="4" class="disabled-cell"></td>
+                        <td data-row="4" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">Yes</td>
                         <td data-row="4" class="score-cell"></td>
                     </tr>
                     <tr>
-                        <th class="vertical-th">Are you feeling properly hydrated and nourished?</th>
-                        <td data-row="5" data-col="NO FLY" class="disabled-cell"></td>
-                        <td data-row="5" data-col="3" class="disabled-cell"></td>
-                        <td data-row="5" data-col="1" class="selectable-cell" onclick="handleCellClick(this)">Have not had a proper meal in 8 hours or have felt dehyrated today </td>
-                        <td data-row="5" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">Yes</td>
+                        <th class="vertical-th">Is there forecast precipitation along your route?</th>
+                        <td data-row="5" data-col="NO FLY" class="selectable-cell" onclick="handleCellClick(this)">Yes, and the temperatures are forecast to be 6 degrees or less.</td>
+                        <td data-row="5" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">Yes, there is precipitation forecast in multiple locations along my route.</td>
+                        <td data-row="5" data-col="2" class="selectable-cell" onclick="handleCellClick(this)">There is precipitation forecast in one place along my route.</td>
+                        <td data-row="5" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">No</td>
                         <td data-row="5" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th">Are the ceilings going to be below 3,000’ (fixed wing) or 2,000' for helicopters or is the visibility less than 7 statute miles (fixed wing) or 5 statute miles for helicopters?</th>
+                        <td data-row="6" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">Yes</td>
+                        <td data-row="6" class="disabled-cell"></td>
+                        <td data-row="6" class="disabled-cell"></td>
+                        <td data-row="6" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">No</td>
+                        <td data-row="6" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th">Are forecast winds within 30% of the flight's maximum wind limits? maximum wind * .7 (consult weather minimums chart)</th>
+                        <td data-row="7" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">Yes</td>
+                        <td data-row="7" class="disabled-cell"></td>
+                        <td data-row="7" class="disabled-cell"></td>
+                        <td data-row="7" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">No</td>
+                        <td data-row="7" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th">Is the gust factor above 7 knots?</th>
+                        <td data-row="8" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">Yes</td>
+                        <td data-row="8" class="disabled-cell"></td>
+                        <td data-row="8" class="disabled-cell"></td>
+                        <td data-row="8" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">No</td>
+                        <td data-row="8" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th">Is there a crosswind of 12 knots or greater? (N/A for RWs)</th>
+                        <td data-row="9" data-col="3" class="selectable-cell" onclick="handleCellClick(this)">Yes</td>
+                        <td data-row="9" class="disabled-cell"></td>
+                        <td data-row="9" class="disabled-cell"></td>
+                        <td data-row="9" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">No</td>
+                        <td data-row="9" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th">Is there a convective sigmet covering any part of your route within an hour (before and after) of your flight?</th>
+                        <td data-row="10" data-col="4" class="selectable-cell" onclick="handleCellClick(this)">Yes</td>
+                        <td data-row="10" class="disabled-cell"></td>
+                        <td data-row="10" class="disabled-cell"></td>
+                        <td data-row="10" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">No</td>
+                        <td data-row="10" class="score-cell"></td>
+                    </tr>
+                    <tr>
+                        <th class="vertical-th">Will there be takeoffs or landings above density altitude 9,000'?</th>
+                        <td data-row="11" data-col="NO FLY" class="selectable-cell" onclick="handleCellClick(this)">Yes and it is a solo flight.</td>
+                        <!-- <td data-row="11" data-col="3" class="disabled-cell"></td> -->
+                        <td data-row="11" data-col="2" class="selectable-cell" onclick="handleCellClick(this)" colspan="2">Yes</td>
+                        <td data-row="11" data-col="0" class="selectable-cell" onclick="handleCellClick(this)">No</td>
+                        <td data-row="11" class="score-cell"></td>
                     </tr>
                     <tr>
                         <th class="vertical-th" colspan="5">Total Risk Score</th>

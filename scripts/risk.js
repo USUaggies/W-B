@@ -1,4 +1,4 @@
-const NUM_QUESTIONS = 6;
+const NUM_QUESTIONS = document.getElementById("risk-table").childNodes[1].childNodes[1].childNodes.length == 15 ? 10 : 12;
 
 function handleCellClick(cell) {
     const selectedRow = cell.dataset.row;
@@ -28,12 +28,12 @@ function updateTotal() {
     if (!noFly) 
         removeNoFly();
     document.getElementById("totalRisk").innerHTML = noFly ? "NO FLY" : `${total}`;
-    if (total < 5 && !noFly) {
+    if (total < 20 && !noFly) {
         riskCat = 0;
         document.getElementById("risk0").classList.remove("hidden");
         document.getElementById("risk1").classList.add("hidden");
         document.getElementById("risk2").classList.add("hidden");
-    } else if (total < 9 && !noFly) {
+    } else if (total < 30 && !noFly) {
         riskCat = 1;
         document.getElementById("risk0").classList.add("hidden");
         document.getElementById("risk1").classList.remove("hidden");
@@ -132,9 +132,7 @@ function updateDataTimestamp() {
     sessionStorage.setItem("modified", new Date().getTime());
     localStorage.setItem("modified", new Date().getTime());
 }
-// if (sessionStorage.getItem("performance") !== null) {
-//     document.getElementById("navbarSummary").classList.remove("disabled");
-// }
+
 document.getElementById("previous-button").addEventListener("click", function() {
     window.location.href = "../performance";
 });
