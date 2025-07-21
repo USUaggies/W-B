@@ -157,6 +157,10 @@ input.invalid {
     width: 100%;
 }
 
+.no-max-width {
+    max-width: none;
+}
+
 @media (max-width: 575px) {
     #dueBackTimeDiv {
         flex-wrap: wrap;

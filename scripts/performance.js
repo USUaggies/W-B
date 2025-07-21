@@ -595,7 +595,8 @@ function performanceCompute(station_id, winds, heading) {
     document.getElementById("perfTable").style.display = "flex";
     sessionStorage.setItem("performance", JSON.stringify(performanceData));
     updateDataTimestamp();
-    document.getElementById("navbarSummary").classList.remove("disabled");
+    if (sessionStorage.getItem("riskData"))
+        document.getElementById("navbarSummary").classList.remove("disabled");
     document.getElementById("navbarRisk").classList.remove("disabled");
     document.getElementById("next-button").disabled = false;
     updateAirports();
@@ -1168,7 +1169,8 @@ document.getElementById("next-button").addEventListener("click", function() {
     window.location.href = "../risk";
 });
 if (sessionStorage.getItem("performance") && sessionStorage.getItem("performance") !== "{}" && sessionStorage.getItem("performance") !== "") {
-    document.getElementById("navbarSummary").classList.remove("disabled");
+    if (sessionStorage.getItem("riskData") && !JSON.parse(sessionStorage.getItem("riskData"))['noFly'] && JSON.parse(sessionStorage.getItem("riskData"))['completed'])
+        document.getElementById("navbarSummary").classList.remove("disabled");
     document.getElementById("next-button").disabled = false;
     document.getElementById("navbarRisk").classList.remove("disabled");
     updateAirports();
