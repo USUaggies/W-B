@@ -78,7 +78,7 @@ const aircraft = [
 
         maxWeight: 2535,
 
-        aircraftArm: 96.88,
+        aircraftArm: 96.874,
 
         autopilot: "none"
 
@@ -142,7 +142,7 @@ const aircraft = [
 
         maxWeight: 2535,
 
-        aircraftArm: 97.18,
+        aircraftArm: 97.1,
 
         autopilot: "none"
 
@@ -266,11 +266,11 @@ const aircraft = [
 
         model: "DA40XLS",
 
-        emptyWeight: 1828.85,
+        emptyWeight: 1827.85,
 
         maxWeight: 2646,
 
-        aircraftArm: 98.45,
+        aircraftArm: 97.45,
 
         autopilot: "GFC"
 
@@ -319,6 +319,38 @@ const aircraft = [
         maxWeight: 2646,
 
         aircraftArm: 97.27,
+
+        autopilot: "GFC"
+
+    },
+
+    {
+
+        tail: "N158U",
+
+        model: "DA40XLS",
+
+        emptyWeight: 1825,
+
+        maxWeight: 2646,
+
+        aircraftArm: 97.45,
+
+        autopilot: "GFC"
+
+    },
+
+    {
+
+        tail: "N159U",
+
+        model: "DA40XLS",
+
+        emptyWeight: 1821,
+
+        maxWeight: 2646,
+
+        aircraftArm: 97.38,
 
         autopilot: "GFC"
 
@@ -436,11 +468,11 @@ const aircraft = [
 
         model: "DA40XLS",
 
-        emptyWeight: 1860,
+        emptyWeight: 1854,
 
         maxWeight: 2646,
 
-        aircraftArm: 97.99,
+        aircraftArm: 98.02,
 
         autopilot: "GFC"
 
@@ -452,11 +484,11 @@ const aircraft = [
 
         model: "DA40XLS",
 
-        emptyWeight: 1833.35,
+        emptyWeight: 1821.35,
 
         maxWeight: 2646,
 
-        aircraftArm: 97.7,
+        aircraftArm: 97.8,
 
         autopilot: "GFC"
 
