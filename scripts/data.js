@@ -13,7 +13,7 @@ function checkDataValidity() {
 function resetAllData() {
     sessionStorage.clear();
     localStorage.clear();
-    if (window.location.href != "https://angr.usu.edu/avte/weight-balance/") {
+    if (window.location.href != "https://qanr.usu.edu/avte/weight-balance/") {
         window.location.href = "../";
     }
 }
