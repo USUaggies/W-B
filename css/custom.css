@@ -222,6 +222,16 @@ input.invalid {
     }
 }
 
+@media (min-width: 768px) {
+    .navbar-nav.mr-auto {
+        flex: auto;
+    }
+
+    .feedback {
+        margin-left: auto;
+    }
+}
+
 @media (min-width: 992px) {
     .airport-select {
         width: 100%;
