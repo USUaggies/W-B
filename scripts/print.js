@@ -45,8 +45,10 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
     /**Fills HTML elements with weather data**/
     if (!("raw_text" in weatherData)) {
         document.getElementById("wIdent-" + suffix).innerHTML = weatherData.station_id;
-        var temp = parseFloat(weatherData.temp_c);
+        document.getElementById("wTime-" + suffix).innerHTML = weatherData.observation_time;
         document.getElementById("wWind-" + suffix).innerHTML = weatherData.wind_dir_degrees + " @ " + weatherData.wind_speed_kt + " kts";
+        document.getElementById("wCeilings-" + suffix).innerHTML = weatherData.sky_condition;
+        var temp = parseFloat(weatherData.temp_c);
         document.getElementById("wTempDew-" + suffix).innerHTML = temp + "&degC/" + ((weatherData.dewpoint_c) ? (weatherData.dewpoint_c + "&degC") : "---");
         document.getElementById("wVisibility-" + suffix).innerHTML = ((weatherData.visibility_statute_mi) ? parseFloat(weatherData.visibility_statute_mi) + " sm" : "MISSING");
         document.getElementById("wAltimeter-" + suffix).innerHTML = parseFloat(weatherData.altim_in_hg).toFixed(2) + " inHg";
@@ -59,13 +61,14 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
         var densityAlt = (145442.16 * (1 - ((17.326 * stationPressure) / (tempRankine)) ** 0.235));
         document.getElementById("wPressureAlt-" + suffix).innerHTML = pressureAlt.toFixed(0) + " ft";
         document.getElementById("wDensityAlt-" + suffix).innerHTML = densityAlt.toFixed(0) + " ft";
+        document.getElementById("wRemarks-" + suffix).innerHTML = weatherData.remarks;
     } else {
         if (isPrint) {
             document.getElementById("wIdent-" + suffix).innerHTML = weatherData.station_id;
             temp = parseFloat(weatherData.temp_c);
-            var dewpoint = parseFloat(weatherData.dewpoint_c);
+            dewpoint = parseFloat(weatherData.dewpoint_c);
             document.getElementById("wTemp-" + suffix).innerHTML = temp + "&degC";
-            document.getElementById("wDewpoint-" + suffix).innerHTML = dewpoint + "&degC";
+            document.getElementById("wDewpoint-" + suffix).innerHTML = dewpoint + "&degC";            
         } else {
             document.getElementById("wIdent-" + suffix).innerHTML = weatherData.station_id;
             temp = parseFloat(weatherData.temp_c);
@@ -118,6 +121,7 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
         }
         document.getElementById("wCeilings-" + suffix).innerHTML = ceilingString;
         document.getElementById("wAltimeter-" + suffix).innerHTML = parseFloat(weatherData.altim_in_hg).toFixed(2) + " inHg";
+        document.getElementById("wRemarks-" + suffix).innerHTML = weatherData["raw_text"].split("RMK ")[1];
         fldAlt = parseFloat(weatherData.elevation_m) * 3.281;
         pressureAlt = fldAlt + ((29.92 - parseFloat(weatherData.altim_in_hg)) * 1000);
         altimeterHg = parseFloat(weatherData.altim_in_hg);
@@ -353,7 +357,7 @@ function fillVSpeeds(computedData, modelData) {
 function addWeatherTable(i) {
     var div = document.createElement("div");
     div.classList.add("weatherDiv");
-    div.innerHTML = `<table class="table-weather table table-bordered table-sm table-striped"><tr><th class=centered colspan=4 id=wIdent-${i}>Weather<tr><th class=no-bottom-border>Time<th class=no-bottom-border>Wind Dir/Vel<th class=no-bottom-border>Visibility<th><tr><td id=wTime-${i} class=no-top-border><td id=wWind-${i} class=no-top-border><td id=wVisibility-${i} class=no-top-border><td><tr><th class=no-bottom-border>Clouds<th class=no-bottom-border>Temp/Dew<th class=no-bottom-border>Altimeter<th><tr><td id=wCeilings-${i} class=no-top-border><td id=wTempDew-${i} class=no-top-border><td id=wAltimeter-${i} class=no-top-border><td><tr style="border-top:2px solid #000"><th>Density Alt.<td id=wDensityAlt-${i}><th>Pressure Alt.<td id=wPressureAlt-${i}><tr><th>Headwind<td id=headWind-${i}><th>Crosswind<td id=crossWind-${i}><tr style="border-top:2px solid #000"><th class=centered colspan=2>Takeoff (<span id=runwayHdg-${i}></span>)<th class=centered colspan=2>Landing<tr><th>Ground Roll<td id=TODistance-${i}><th>Ground Roll<td id=LDGDistance-${i}><tr><th>Over 50'<td id=TO50Distance-${i}><th>Over 50'<td id=LDG50Distance-${i}><tr style="border-top:2px solid #000"><th>Touch and Go<td id=tgDistance-${i}><th>Rate of Climb<td id=rateClimb-${i}><tr class=hidden id=DA42-performance-${i}><th>Climb Gradient<td id=climbGrad-${i}><th>Single-Engine ROC<td id=SERateClimb-${i}></table><p class=taf id=TAF-${i}>`;
+    div.innerHTML = `<table class="table-weather table table-bordered table-sm table-striped"><tr><th class=centered colspan=4 id=wIdent-${i}>Weather<tr><th class=no-bottom-border>Time<th class=no-bottom-border>Wind Dir/Vel<th class=no-bottom-border>Visibility<th class=no-bottom-border>Altimeter<tr><td id=wTime-${i} class=no-top-border><td id=wWind-${i} class=no-top-border><td id=wVisibility-${i} class=no-top-border><td id=wAltimeter-${i} class=no-top-border><tr><th class=no-bottom-border>Clouds<th class=no-bottom-border>Temp/Dew<th class=no-bottom-border colspan=2>Remarks<tr><td id=wCeilings-${i} class=no-top-border><td id=wTempDew-${i} class=no-top-border><td id=wRemarks-${i} class=no-top-border colspan=2><tr style="border-top:2px solid #000"><th>Density Alt.<td id=wDensityAlt-${i}><th>Pressure Alt.<td id=wPressureAlt-${i}><tr><th>Headwind<td id=headWind-${i}><th>Crosswind<td id=crossWind-${i}><tr style="border-top:2px solid #000"><th class=centered colspan=2>Takeoff (<span id=runwayHdg-${i}></span>)<th class=centered colspan=2>Landing<tr><th>Ground Roll<td id=TODistance-${i}><th>Ground Roll<td id=LDGDistance-${i}><tr><th>Over 50'<td id=TO50Distance-${i}><th>Over 50'<td id=LDG50Distance-${i}><tr style="border-top:2px solid #000"><th>Touch and Go<td id=tgDistance-${i}><th>Rate of Climb<td id=rateClimb-${i}><tr class=hidden id=DA42-performance-${i}><th>Climb Gradient<td id=climbGrad-${i}><th>Single-Engine ROC<td id=SERateClimb-${i}></table><p class=taf id=TAF-${i}>`;
     document.getElementById(i % 2 == 0 ? "weatherCol1" : "weatherCol2").appendChild(div);
 }
 fillData();

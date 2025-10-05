@@ -56,7 +56,7 @@
             <div class="row">
                 <div class="col-1 airport-col"> Airports (click to remove) <div id="airport-container" class="airport-container"></div>
                 </div>
-                <div class="col-lg">
+                <div class="col-lg" data-stationid="" id="weatherCol">
                     <h4>Weather</h4>
                     <div class="input-group mb-3" id="weatherDiv">
                         <input autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="text" class="form-control " placeholder="Station ID" id="weatherID">
@@ -71,6 +71,10 @@
                             <form id="altWeatherForm">
                                 <tbody>
                                     <tr>
+                                        <th scope="col">Time</th>
+                                        <th id="alt-wTime"><input type="text" class="form-control" id="time" form="altWeatherForm" placeholder=""></th>
+                                    </tr>
+                                    <tr>
                                         <th scope="col">Wind Dir and Vel</th>
                                         <th id="alt-wWind"><input type="text" class="form-control" id="windHeading" form="altWeatherForm" placeholder="direction" required>&deg; @ <input type="text" class="form-control" id="windSpeed" form="altWeatherForm" placeholder="speed" required>kts</th>
                                     </tr>
@@ -79,12 +83,16 @@
                                         <th id="alt-wVisibility"><input type="text" class="form-control" id="visibility" form="altWeatherForm" placeholder="sm"></th>
                                     </tr>
                                     <tr>
+                                        <th scope="col">Clouds</th>
+                                        <th id="alt-wClouds"><input type="text" class="form-control" id="clouds" form="altWeatherForm" ></th>
+                                    </tr>
+                                    <tr>
                                         <th scope="col">Temperature</th>
-                                        <th id="alt-wTemp"><input type="text" class="form-control" id="temperature" form="altWeatherForm" placeholder="&deg C" required></th>
+                                        <th id="alt-wTemp"><input type="text" class="form-control" id="temperature" form="altWeatherForm" placeholder="&deg;C" required></th>
                                     </tr>
                                     <tr>
                                         <th scope="col">Dew Point</th>
-                                        <th id="alt-wDewpoint"><input type="text" class="form-control" id="dewpoint" form="altWeatherForm" placeholder="&deg C" required></th>
+                                        <th id="alt-wDewpoint"><input type="text" class="form-control" id="dewpoint" form="altWeatherForm" placeholder="&deg;C" required></th>
                                     </tr>
                                     <tr>
                                         <th scope="col">Altimeter</th>
@@ -93,6 +101,10 @@
                                     <tr>
                                         <th scope="col">Elevation</th>
                                         <th id="alt-wElevation"><input type="text" class="form-control" id="fieldAlt" form="altWeatherForm" placeholder="feet" required></th>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">Remarks</th>
+                                        <th id="alt-wRemarks"><input type="text" class="form-control" id="remarks" form="altWeatherForm" ></th>
                                     </tr>
                                     <tr>
                                         <th scope="col">Density Alt.</th>

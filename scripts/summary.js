@@ -68,8 +68,10 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
     /**Fills HTML elements with weather data**/
     if (!("raw_text" in weatherData)) {
         document.getElementById("wIdent-" + suffix).innerHTML = weatherData.station_id;
-        var temp = parseFloat(weatherData.temp_c);
+        document.getElementById("wTime-" + suffix).innerHTML = weatherData.observation_time;
         document.getElementById("wWind-" + suffix).innerHTML = weatherData.wind_dir_degrees + " @ " + weatherData.wind_speed_kt + " kts";
+        document.getElementById("wCeilings-" + suffix).innerHTML = weatherData.sky_condition;
+        var temp = parseFloat(weatherData.temp_c);
         document.getElementById("wTemp-" + suffix).innerHTML = temp + " &degC";
         document.getElementById("wDewpoint-" + suffix).innerHTML = weatherData.dewpoint_c + " &degC";
         document.getElementById("wVisibility-" + suffix).innerHTML = ((weatherData.visibility_statute_mi) ? parseFloat(weatherData.visibility_statute_mi) + " sm" : "MISSING");
@@ -83,6 +85,7 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
         var densityAlt = (145442.16 * (1 - ((17.326 * stationPressure) / (tempRankine)) ** 0.235));
         document.getElementById("wPressureAlt-" + suffix).innerHTML = pressureAlt.toFixed(0) + " ft";
         document.getElementById("wDensityAlt-" + suffix).innerHTML = densityAlt.toFixed(0) + " ft";
+        document.getElementById("wRemarks-" + suffix).innerHTML = weatherData.remarks;
     } else {
         if (isPrint) {
             document.getElementById("wIdent-" + suffix).innerHTML = weatherData.station_id;
@@ -98,6 +101,7 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
             document.getElementById("wTemp-" + suffix).innerHTML = temp + " &degC";
             document.getElementById("wDewpoint-" + suffix).innerHTML = dewpoint + " &degC";
         }
+        document.getElementById("wRemarks-" + suffix).innerHTML = weatherData["raw_text"].split("RMK ")[1];
         var obsTime = new Date(weatherData.observation_time);
         document.getElementById("wTime-" + suffix).innerHTML = zeroPad(obsTime.getHours(), 2) + ":" + zeroPad(obsTime.getMinutes(), 2) +
             " (UTC " + -(obsTime.getTimezoneOffset() / 60) + ")";
@@ -385,176 +389,20 @@ function fillVSpeeds(computedData, modelData) {
     document.getElementById("Va").innerHTML = calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.va, modelData.vSpeeds.interpolate.includes("va"));
 }
 
-function printResults() {
-    /**Called when user clicks print button**/
-    window.open("/print");
-}
-
-function emailResults() {
-    /**Called when user clicks email button (not implemented)
-     * We will open a mailto link with the subject and body filled in with info
-     * Still need to come up with body text to send. Can't send the canvas image or tables, only text**/
-    var aircraftObj = JSON.parse(localStorage.getItem("userInput")).obj;
-    var modelData = aircraftModels.find(x => x.model === aircraftObj.model);
-    var userData = JSON.parse(localStorage.getItem("userInput"));
-    var allWeatherData = JSON.parse(sessionStorage.getItem("weather"));
-    var computedData = JSON.parse(localStorage.getItem("computedData"));
-    var allPerformanceData = JSON.parse(sessionStorage.getItem("performance"));
-    var resultCG = JSON.parse(localStorage.getItem("CG"));
-    var tailNumber = userData.obj.tail;
-    var aircraftObj = JSON.parse(localStorage.getItem("userInput")).obj;
-    var riskData = JSON.parse(sessionStorage.getItem("riskData"));
-    var bodyString = "";
-    if (!resultCG.validCG) {
-        bodyString += "!!!!CG NOT VALID. CHECK VALUES.!!!!"
-    } else {
-        var now = new Date();
-        bodyString += "Prepared on " + now + "%0d%0A %0d%0A";
-        bodyString += "Weight and Balance %0d%0A";
-        bodyString += "Empty: " + aircraftObj.emptyWeight + " lbs | CG: " + aircraftObj.aircraftArm + "%0d%0A";
-        if (aircraftObj.model === "DA42") {
-            bodyString += "Nose Baggage: " + userData.noseWeight + " lbs %0d%0A";
-            if (aircraftObj.deIce) {
-                bodyString += "De-icing Fluid: " + userData.deIceWeight + " lbs%0d%0A";
-            }
-        }
-        bodyString += "Front: " + userData.frontStationWeight + " lbs %0d%0ARear: " + userData.rearStationWeight + " lbs %0d%0A";
-        bodyString += "Baggage: " + userData.baggage1Weight + " lbs %0d%0A";
-        if ((aircraftObj.model === "DA40XL") || aircraftObj.model === "DA42" || aircraftObj.model === "C172S") {
-            bodyString += "Baggage 2: " + userData.baggage2Weight + " lbs %0d%0A";
-        }
-        bodyString += "Zero Fuel: " + computedData.zeroFuelWeight + " lbs | CG: " + computedData.zeroFuelCG + " %0d%0A";
-        bodyString += "Fuel: " + userData.fuelWeight + " lbs %0d%0A";
-        if (aircraftObj.auxTanks) {
-            bodyString += "Aux Fuel: " + userData.auxFuelWeight + " lbs %0d%0A";
-        }
-        bodyString += "Takeoff Weight: " + computedData.takeOffWeight + " lbs | Takeoff CG: " + computedData.takeoffCG + "%0d%0A";
-        bodyString += "Allowed CG Range: " + resultCG.fwdCG + " - " + resultCG.aftCG + "%0d%0A";
-        bodyString += "Fuel Burn: " + userData.fuelBurnWeight + " lbs %0d%0A";
-        bodyString += "Landing Weight: " + computedData.landingWeight + " lbs | Landing CG: " + computedData.landingCG + "%0d%0A %0d%0A";
-        bodyString += "V-Speeds: %0d%0A"
-        if (aircraftObj.model.includes("DA40")) {
-            bodyString += `Vr: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.vr, modelData.vSpeeds.interpolate.includes("vr"))} 
-					Vy: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.vy, modelData.vSpeeds.interpolate.includes("vy"))} 
-					Vg: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.vg, modelData.vSpeeds.interpolate.includes("vg"))} 
-					Va: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.va, modelData.vSpeeds.interpolate.includes("va"))} 
-					Dmms: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.dmms, modelData.vSpeeds.interpolate.includes("dmms"))} %0d%0A %0d%0A`;
-        } else if (aircraftObj.model == ("DA42")) {
-            bodyString += `Vr: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.vr, modelData.vSpeeds.interpolate.includes("vr"))} 
-					Vy: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.vy, modelData.vSpeeds.interpolate.includes("vy"))} 
-					Va: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.va, modelData.vSpeeds.interpolate.includes("va"))} 
-					Vyse: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.vyse, modelData.vSpeeds.interpolate.includes("vyse"))} 
-					Vmc: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.vmc, modelData.vSpeeds.interpolate.includes("vmc"))} 
-					Dmms: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.dmms, modelData.vSpeeds.interpolate.includes("dmms"))} %0d%0A %0d%0A`;
-        } else if (aircraftObj.model == "C172S") {
-            bodyString += `Vr: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.vr, modelData.vSpeeds.interpolate.includes("vr"))} 
-					Vx: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.vx, modelData.vSpeeds.interpolate.includes("vx"))} 
-					Vy: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.vy, modelData.vSpeeds.interpolate.includes("vy"))} 
-					Vg: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.vg, modelData.vSpeeds.interpolate.includes("vg"))} 
-					Va: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.va, modelData.vSpeeds.interpolate.includes("va"))} 
-					Dmms: ${calculateSpeed(computedData.takeOffWeight, modelData.vSpeeds.dmms, modelData.vSpeeds.interpolate.includes("dmms"))} %0d%0A %0d%0A`;
-        }
-        if (riskData) {
-            bodyString += `Risk Assessment:%0d%0A`
-            bodyString += `Score: ${riskData.riskScore}%0d%0A`;
-            if (riskData.riskCat == 0) {
-                bodyString += "No unusual hazards. Use normal flight planning and established personal minimums and operating procedures %0d%0A %0d%0A";
-            } else if (riskData.riskCat == 1) {
-                bodyString += "Slightly increased risk. Conduct flight planning with extra caution. Review personal minimums and operating procedures %0d%0A %0d%0A";
-            } else if (riskData.riskCat == 2) {
-                bodyString += "Conditions present very high risk. Conduct flight planning with extra care and review all elements that present the most risk. Consult with more experienced pilots or flight instructors for guidance. Consider delaying flight until conditions improve %0d%0A %0d%0A";
-            }
-        }
-        if (sessionStorage.getItem("weather") !== null) {
-            for (airport in allWeatherData) {
-                let weatherData = allWeatherData[airport];
-                bodyString += airport + " Weather %0d%0A"
-                if ("raw_text" in weatherData.metar) {
-                    bodyString += weatherData.metar.raw_text + "%0d%0A";
-                } else {
-                    bodyString += "METAR not available (user inputted).%0d%0A";
-                }
-                if (weatherData.taf) {
-                    bodyString += weatherData.taf.raw_text + "%0d%0A %0d%0A";
-                } else {
-                    bodyString += "TAF not available.%0d%0A %0d%0A";
-                }
-            }
-        } else {
-            bodyString += "Weather not available%0d%0A %0d%0A";
-        }
-        if (sessionStorage.getItem("performance") !== null) {
-            for (airport in allPerformanceData) {
-                let performanceData = allPerformanceData[airport];
-                if (userData.obj.tail !== performanceData.tail) {
-                    bodyString += "Performance data needs to be recomputed. See Weather & Performance Tab."
-                } else {
-                    bodyString += `Performance Data (${airport})%0d%0ARunway Heading: ` + performanceData.runwayHdg + "%0d%0A";
-                    bodyString += "Headwind: " + performanceData.headWind.toFixed(0) + "%0d%0A";
-                    bodyString += "Crosswind: "
-                    if (performanceData.crossWind < 0) {
-                        bodyString += -performanceData.crossWind.toFixed(0) + " (Right)%0d%0A";
-                    } else if (performanceData.crossWind === 0) {
-                        bodyString += performanceData.crossWind.toFixed(0) + "%0d%0A";
-                    } else {
-                        bodyString += performanceData.crossWind.toFixed(0) + " (Left)%0d%0A";
-                    }
-                    bodyString += "Takeoff: Ground Roll: " + performanceData.takeoffDistance.toFixed(0) + " ft. Over 50': " + performanceData.takeoff50Distance.toFixed(0) + " ft.%0d%0A";
-                    bodyString += "Landing: Ground Roll: " + performanceData.landingDistance.toFixed(0) + " ft. Over 50': " + performanceData.landing50Distance.toFixed(0) + " ft.%0d%0A";
-                    bodyString += "Rate of Climb: " + performanceData.climbPerf.toFixed(0) + " FPM %0d%0A";
-                    if (aircraftObj.model == "DA42") {
-                        bodyString += "Single-Engine Rate of Climb: " + (performanceData.SEClimbPerf / 10).toFixed(0) * 10 + " FPM %0d%0A";
-                        bodyString += "Climb Gradient: " + performanceData.climbGrad + " %0d%0A";
-                    }
-                }
-            }
-        } else {
-            bodyString += "Performance data not available"
-        }
-    }
-    window.open('mailto:dispatchusu@gmail.com?subject=' + tailNumber + ' Weight and Balance&body=' +
-        bodyString);
-}
-
-function waitForFrame() {
-    return new Promise(resolve => {
-        if (document.getElementById("picture-iframe").contentWindow.document.getElementById("buttonRow")) {
-            return resolve(document.getElementById("picture-iframe").contentWindow.document.getElementById("buttonRow"));
-        }
-        const observer = new MutationObserver(mutations => {
-            if (document.getElementById("picture-iframe").contentWindow.document.body) {
-                observer.disconnect();
-                resolve(document.getElementById("picture-iframe").contentWindow.document.body);
-            }
-        });
-        observer.observe(document.getElementById("picture-iframe").contentWindow.document.documentElement, {
-            childList: true,
-            subtree: true,
-            attributes: true
-        });
-    });
-}
-
 async function savePicture() {
     let saveButton = document.getElementById("saveButton");
     saveButton.disabled = true;
     let html = `<html>${document.getElementById("print-iframe").contentWindow.document.documentElement.innerHTML}</html>`;
     let iframe = document.createElement("iframe");
     iframe.id = "picture-iframe";
-    iframe.style.width = "1000px";
+    iframe.style.width = "8.5in";
     iframe.style.height = "100%";
     document.body.appendChild(iframe);
-    iframe.contentDocument.open();
-    iframe.contentDocument.write(html);
-    iframe.contentDocument.close();
-    let tailNum = JSON.parse(localStorage.getItem("userInput")).obj.tail;
-    let date = new Date();
-    let formatedDate = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()} ${zeroPad(date.getHours(), 2)}${zeroPad(date.getMinutes(), 2)}`;
-    let buttonPromise = waitForFrame();
-    buttonPromise.catch(error => {
-        console.error("Error in promise:", error);
-    });
-    buttonPromise.then((buttonRow) => {
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    iframe.src =  url;
+    document.body.appendChild(iframe);
+    iframe.onload = () => {
         var destCtx = document.getElementById("picture-iframe").contentWindow.document.getElementById("cgCanvas").getContext('2d');
         destCtx.drawImage(document.getElementById("cgCanvas"), 0, 0, document.getElementById("picture-iframe").contentWindow.document.getElementById("cgCanvas").width, document.getElementById("picture-iframe").contentWindow.document.getElementById("cgCanvas").height);
         html2canvas(document.getElementById("picture-iframe").contentWindow.document.getElementById("content"), {
@@ -571,14 +419,17 @@ async function savePicture() {
             document.body.removeChild(iframe);
             saveButton.disabled = false;
         });
-    });
+    }
+    let tailNum = JSON.parse(localStorage.getItem("userInput")).obj.tail;
+    let date = new Date();
+    let formatedDate = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()} ${zeroPad(date.getHours(), 2)}${zeroPad(date.getMinutes(), 2)}`;
 }
 
 function addWeatherTable(i) {
     var row = document.createElement("div");
     row.classList.add("row");
     row.classList.add("weather-row");
-    row.innerHTML = `<div class=col-lg><h4>Weather</h4><div class=container id=weatherData-${i}><p id=wRaw-${i}><table class="table table-bordered table-sm table-striped"><tr><th scope=col>Station Identifier<th id=wIdent-${i}><tr><th scope=col>Time<th id=wTime-${i}><tr><th scope=col>Wind Dir and Vel<th id=wWind-${i}><tr><th scope=col>Visibility<th id=wVisibility-${i}><tr><th scope=col>Clouds<th id=wCeilings-${i}><tr><th scope=col>Temperature<th id=wTemp-${i}><tr><th scope=col>Dew Point<th id=wDewpoint-${i}><tr><th scope=col>Altimeter<th id=wAltimeter-${i}><tr><th scope=col>Density Alt.<th id=wDensityAlt-${i}><tr><th scope=col>Pressure Alt.<th id=wPressureAlt-${i}></table><div id=weatherTAF-${i}><h5>TAF</h5><p id=TAF-${i}></div></div></div><div class=col-lg><h4>Takeoff and Landing Performance</h4><p>Performance data is an estimate only and does not take into consideration runway condition, aircraft condition, or pilot technique.<div class=container><h5 id=runwayHdg-${i}>Runway</h5><table class="table table-bordered table-sm"><tr><th scope=row>Head Wind<td id=headWind-${i}><tr><th scope=row>Cross Wind<td id=xWind-${i}><tr><th scope=row>Takeoff<td id=TODistance-${i}>Ground Roll:<td id=TO50Distance-${i}>Over 50':<tr><th scope=row>Landing<td id=LDGDistance-${i}>Ground Roll:<td id=LDG50Distance-${i}>Over 50':<tr><th scope=row colspan=2>Touch and Go Distance (50')<td id=tgDistance-${i}><tr><th scope=col style="text-align: center;">Rate of Climb<th scope=col style="text-align: center;">Single-Engine ROC<th scope=col style="text-align: center;">Climb Gradient<tr><td id=climbFPM-${i} style="text-align: center;"><td id=SEClimbFPM-${i} style="text-align: center;"><td id=climbGrad-${i} style="text-align: center;"></table></div></div>`;
+    row.innerHTML = `<div class=col-lg><h4>Weather</h4><div class=container id=weatherData-${i}><p id=wRaw-${i}><table class="table table-bordered table-sm table-striped"><tr><th scope=col>Station Identifier<th id=wIdent-${i}><tr><th scope=col>Time<th id=wTime-${i}><tr><th scope=col>Wind Dir and Vel<th id=wWind-${i}><tr><th scope=col>Visibility<th id=wVisibility-${i}><tr><th scope=col>Clouds<th id=wCeilings-${i}><tr><th scope=col>Temperature<th id=wTemp-${i}><tr><th scope=col>Dew Point<th id=wDewpoint-${i}><tr><th scope=col>Altimeter<th id=wAltimeter-${i}><tr><th scope=col>Density Alt.<th id=wDensityAlt-${i}><tr><th scope=col>Pressure Alt.<th id=wPressureAlt-${i}><tr><th scope=col>Remarks<th id=wRemarks-${i}></table><div id=weatherTAF-${i}><h5>TAF</h5><p id=TAF-${i}></div></div></div><div class=col-lg><h4>Takeoff and Landing Performance</h4><p>Performance data is an estimate only and does not take into consideration runway condition, aircraft condition, or pilot technique.<div class=container><h5 id=runwayHdg-${i}>Runway</h5><table class="table table-bordered table-sm"><tr><th scope=row>Head Wind<td id=headWind-${i}><tr><th scope=row>Cross Wind<td id=xWind-${i}><tr><th scope=row>Takeoff<td id=TODistance-${i}>Ground Roll:<td id=TO50Distance-${i}>Over 50':<tr><th scope=row>Landing<td id=LDGDistance-${i}>Ground Roll:<td id=LDG50Distance-${i}>Over 50':<tr><th scope=row colspan=2>Touch and Go Distance (50')<td id=tgDistance-${i}><tr><th scope=col style="text-align: center;">Rate of Climb<th scope=col style="text-align: center;">Single-Engine ROC<th scope=col style="text-align: center;">Climb Gradient<tr><td id=climbFPM-${i} style="text-align: center;"><td id=SEClimbFPM-${i} style="text-align: center;"><td id=climbGrad-${i} style="text-align: center;"></table></div></div>`;
     document.getElementById("main").appendChild(row);
 }
 

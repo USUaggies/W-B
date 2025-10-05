@@ -80,6 +80,10 @@ p.taf::after {
     .weatherDiv {
         page-break-inside: avoid;
     }
+    
+    .weatherDiv > table{
+        table-layout: fixed;
+    }
 }
 
 h4.centered {

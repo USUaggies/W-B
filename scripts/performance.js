@@ -8,8 +8,22 @@ function getWeather() {
     if (document.getElementById("runwaySelect"))
         document.getElementById("runwaySelect").style.display = "none";
     document.getElementById("weatherData").style.display = "none";
+    document.getElementById("weatherCol").dataset.stationid = "";
     document.getElementById("perfTable").style.display = "none";
     document.getElementById("weatherInput").style.display = "none";
+    document.getElementById("weatherInfo").innerHTML = "";
+    document.getElementById("time").value = "";
+    document.getElementById("windHeading").value = "";
+    document.getElementById("windSpeed").value = "";
+    document.getElementById("visibility").value = "";
+    document.getElementById("clouds").value = "";
+    document.getElementById("temperature").value = "";
+    document.getElementById("dewpoint").value = "";
+    document.getElementById("remarks").value = "";
+    document.getElementById("altimeter").value = "";
+    document.getElementById("fieldAlt").value = "";
+    document.getElementById("alt-wDensityAlt").innerHTML = "";
+    document.getElementById("alt-wPressureAlt").innerHTML = "";
     var stationID = document.getElementById("weatherID").value.toUpperCase();
     if (stationID[0] == "*") {
         stationID = stationID.substring(1);
@@ -26,6 +40,7 @@ function getWeather() {
         document.getElementById("weatherSubmit").innerHTML = "Submit";
         return;
     }
+    document.getElementById("weatherCol").dataset.stationid = stationID;
     document.getElementById("weatherInput").style.display = "none";
     /*Section retrieves weather from aviationweather.gov using simple PHP backend.
      * Won't work if no PHP server setup*/
@@ -93,7 +108,7 @@ function getWeather() {
 function inputWeather(weatherData = null) {
     /**We call this when fetching weather data fails so user can manually input**/
     document.getElementById("weatherAltTitle").innerHTML = "Weather retrieval failed. " +
-        "Check Station ID, if correct, server not working. Try again or manually input required data below.";
+        "Check the Station ID. If it's correct, the server is not working. Try again or manually input required data below.";
     document.getElementById("weatherInput").style.display = "block";
     document.getElementById("weatherData").style.display = "none";
     if (!weatherData) return;
@@ -142,6 +157,8 @@ function weatherInputClick() {
     if (!weatherData[station_id]["metar"])
         weatherData[station_id]["metar"] = {};
     weatherData[station_id]["metar"]["station_id"] = station_id;
+    weatherData[station_id]["metar"]["observation_time"] = document.getElementById("time").value;
+    weatherData[station_id]["metar"]["sky_condition"] = document.getElementById("clouds").value;
     weatherData[station_id]["metar"]["temp_c"] = parseFloat(document.getElementById("temperature").value);
     weatherData[station_id]["metar"]["dewpoint_c"] = parseFloat(document.getElementById("dewpoint").value);
     weatherData[station_id]["metar"]["visibility_statute_mi"] = parseFloat(document.getElementById("visibility").value);
@@ -149,6 +166,8 @@ function weatherInputClick() {
     weatherData[station_id]["metar"]["altim_in_hg"] = parseFloat(document.getElementById("altimeter").value);
     weatherData[station_id]["metar"]["wind_dir_degrees"] = parseFloat(document.getElementById("windHeading").value);
     weatherData[station_id]["metar"]["wind_speed_kt"] = parseFloat(document.getElementById("windSpeed").value);
+    weatherData[station_id]["metar"]["remarks"] = document.getElementById("remarks").value;
+    weatherData[station_id]["metar"]["manual"] = true;
     sessionStorage.setItem("weather", JSON.stringify(weatherData));
     updateDataTimestamp();
     var pressureAlt = weatherData[station_id]["metar"]["elevation_m"] * 3.28084 + ((29.92 - parseFloat(weatherData[station_id]["metar"].altim_in_hg)) * 1000);
@@ -368,12 +387,9 @@ function runwayChange(str, station_id = null) {
         displayError("Invalid runway heading", 2);
         return;
     }
-    if (!station_id) {
-        station_id = document.getElementById("weatherID").value.toUpperCase();
-        if (station_id[0] == "*") {
-            station_id = station_id.substring(1);
-        }
-    }
+    station_id = document.getElementById("weatherCol").dataset.stationid;
+
+
     var allWeatherData = JSON.parse(sessionStorage.getItem("weather"));
     if (allWeatherData && allWeatherData[station_id] && allWeatherData[station_id]["metar"]) {
         var weatherData = allWeatherData[station_id]["metar"];
@@ -458,7 +474,7 @@ function getRunways(weatherData) {
                             }
                         }
                         var autoChange = false;
-                        var output = '<select class="form-control" id="runwaySelect" onChange="autoRunwayChange()"><option value="0">Enter Runway Heading</option>';
+                        var output = `<select class="form-control" id="runwaySelect" onChange="autoRunwayChange()"><option value="0">Enter Runway Heading</option>`;
                         for (var key in runways) {
                             if (key == best) {
                                 output += '<option value="' + key + '0" selected>' + key + ' (Length: ' + runways[key] + ' ft)</option>';
