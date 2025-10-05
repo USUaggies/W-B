@@ -230,6 +230,10 @@ input.invalid {
     .feedback {
         margin-left: auto;
     }
+
+    .feedback > a {
+        height: 36px;
+    }
 }
 
 @media (min-width: 992px) {
@@ -291,6 +295,10 @@ input.invalid {
 .nav-button-row {
     justify-content: space-between;
     margin-bottom: 10px;
+}
+
+.nav-item {
+    align-content: center;
 }
 
 .next-only {
