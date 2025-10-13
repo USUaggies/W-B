@@ -183,7 +183,13 @@ function setWeather(weatherData) {
     } else {
         document.getElementById("timeDiff").style.color = "red";
     }
-    document.getElementById("wCat").innerHTML = weatherData.flight_category;
+
+    if (Object.keys(weatherData.flight_category) == 0) {
+        document.getElementById("wCat").innerHTML = "MISSING";
+    } else {
+        document.getElementById("wCat").innerHTML = weatherData.flight_category;
+    }
+
     switch (weatherData.flight_category) {
         case "VFR":
             document.getElementById("wCat").style.color = "white";
@@ -250,12 +256,16 @@ function setWeather(weatherData) {
             ceilingString += "<p style='margin: 0'>" + ceilingAttribute["sky_cover"] + " @ " + ceilingAttribute["cloud_base_ft_agl"] + "'</p>";
         }
     } else {
-        ceilingAttribute = rawCeilings["@attributes"];
-        if (ceilingAttribute["sky_cover"] === "CLR" || ceilingAttribute["sky_cover"] === "SKC") {
-            ceilingString = "Clear";
+        if (rawCeilings) {
+            ceilingAttribute = rawCeilings["@attributes"];
+            if (ceilingAttribute["sky_cover"] === "CLR" || ceilingAttribute["sky_cover"] === "SKC") {
+                ceilingString = "Clear";
+            } else {
+                ceilingString += "<p style='margin: 0'>" + ceilingAttribute["sky_cover"] + " @ " +
+                    ceilingAttribute["cloud_base_ft_agl"] + "'</p>";
+            }
         } else {
-            ceilingString += "<p style='margin: 0'>" + ceilingAttribute["sky_cover"] + " @ " +
-                ceilingAttribute["cloud_base_ft_agl"] + "'</p>";
+            ceilingString = "MISSING";
         }
     }
     document.getElementById("wCeilings").innerHTML = ceilingString;

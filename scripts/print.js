@@ -105,7 +105,7 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
                 var ceilingAttribute = rawCeilings[i]["@attributes"];
                 ceilingString += "<p style='margin: 0'>" + ceilingAttribute["sky_cover"] + " @ " + ceilingAttribute["cloud_base_ft_agl"] + "'</p>";
             }
-        } else {
+        } else if (rawCeilings) {
             ceilingAttribute = rawCeilings["@attributes"];
             if (ceilingAttribute["sky_cover"] === "CLR" || ceilingAttribute["sky_cover"] === "SKC") {
                 ceilingString = "Clear";
@@ -113,6 +113,8 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
                 ceilingString += "<p style='margin: 0'>" + ceilingAttribute["sky_cover"] + " @ " +
                     ceilingAttribute["cloud_base_ft_agl"] + "'</p>";
             }
+        } else {
+            ceilingString = "MISSING";
         }
         document.getElementById("wCeilings-" + suffix).innerHTML = ceilingString;
         document.getElementById("wAltimeter-" + suffix).innerHTML = parseFloat(weatherData.altim_in_hg).toFixed(2) + " inHg";
