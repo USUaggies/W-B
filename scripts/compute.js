@@ -1,3 +1,9 @@
+let weatherMessage = "The aviationweather.gov API is not working, hopefully they will fix it soon. For now, enter weather manually or do a paper weight and balance"
+let weatherMessageP = document.createElement("p");
+weatherMessageP.innerHTML = weatherMessage;
+weatherMessageP.style = "color: red";
+document.getElementById("form_input").prepend(weatherMessageP);
+
 function fillData() {
     /**We run this initially to import the aircraft from aircraft.js and populate the dropdown(select) menu
      **/
