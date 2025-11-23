@@ -11,14 +11,6 @@ function getWeather() {
     document.getElementById("perfTable").style.display = "none";
     document.getElementById("weatherInput").style.display = "none";
     var stationID = document.getElementById("weatherID").value.toUpperCase();
-    if (stationID[0] == "*") {
-        stationID = stationID.substring(1);
-    } else if (!ALLOWED_AIRPORTS.includes(stationID)) {
-        displayError("Unapproved airport", 1);
-        document.getElementById("weatherSubmit").disabled = false;
-        document.getElementById("weatherSubmit").innerHTML = "Submit";
-        return;
-    }
     var weatherData = JSON.parse(sessionStorage.getItem("weather"));
     if (!weatherData) weatherData = {};
     if (stationID === "") {
