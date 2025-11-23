@@ -59,6 +59,11 @@ function getWeather() {
                         setWeather(weatherData[stationID].metar);
                         runwayChange(document.getElementById("runwayHdg").value, stationID);
                     } else {
+                        if (stationID.length == 3) {
+                            document.getElementById("weatherID").value = "K" + stationID;
+                            getWeather();
+                            return;
+                        }
                         document.getElementById("runwaySelectDiv").innerHTML = "";
                         document.getElementById("runwayHdg").value = "";
                         runwayChange("", stationID);
@@ -66,6 +71,11 @@ function getWeather() {
                     }
                 } catch (e) {
                     /*Most likely due to the PHP server not being setup/running*/
+                    if (stationID.length == 3) {
+                        document.getElementById("weatherID").value = "K" + stationID;
+                        getWeather();
+                        return;
+                    }
                     console.error(e);
                     document.getElementById("runwaySelectDiv").innerHTML = "";
                     document.getElementById("runwayHdg").value = "";
