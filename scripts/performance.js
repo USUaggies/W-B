@@ -125,9 +125,6 @@ function weatherInputClick() {
     displayError("");
     var weatherData = JSON.parse(sessionStorage.getItem("weather"));
     var station_id = document.getElementById("weatherID").value.toUpperCase();
-    if (station_id[0] == "*") {
-        station_id = station_id.substring(1);
-    }
     if (!weatherData) weatherData = {};
     if (!weatherData[station_id])
         weatherData[station_id] = {};
@@ -362,9 +359,6 @@ function runwayChange(str, station_id = null) {
     }
     if (!station_id) {
         station_id = document.getElementById("weatherID").value.toUpperCase();
-        if (station_id[0] == "*") {
-            station_id = station_id.substring(1);
-        }
     }
     var allWeatherData = JSON.parse(sessionStorage.getItem("weather"));
     if (allWeatherData && allWeatherData[station_id] && allWeatherData[station_id]["metar"]) {
@@ -489,9 +483,6 @@ function autoRunwayChange() {
         value += "0";
     }
     var station_id = document.getElementById("weatherID").value.toUpperCase();
-    if (station_id[0] == "*") {
-        station_id = station_id.substring(1);
-    }
     runwayChange(value, station_id);
     document.getElementById("runwayHdg").value = value;
 }
