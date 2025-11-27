@@ -170,11 +170,11 @@ const aircraft = [
 
         model: "DA40CS",
 
-        emptyWeight: 1727.19,
+        emptyWeight: 1725.598,
 
         maxWeight: 2646,
 
-        aircraftArm: 96.68,
+        aircraftArm: 96.676,
 
         autopilot: "KAP"
 
@@ -422,11 +422,11 @@ const aircraft = [
 
         model: "DA40XLS",
 
-        emptyWeight: 1819.94,
+        emptyWeight: 1818.35,
 
         maxWeight: 2646,
 
-        aircraftArm: 98.301,
+        aircraftArm: 98.2986,
 
         autopilot: "GFC"
 
@@ -457,6 +457,22 @@ const aircraft = [
         maxWeight: 2646,
 
         aircraftArm: 97.74,
+
+        autopilot: "GFC"
+
+    },
+
+    {
+
+        tail: "N712PA",
+
+        model: "DA40XLS",
+
+        emptyWeight: 1796.7,
+
+        maxWeight: 2646,
+
+        aircraftArm: 97.04,
 
         autopilot: "GFC"
 
