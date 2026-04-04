@@ -74,11 +74,11 @@ const aircraft = [
 
         model: "DA40F",
 
-        emptyWeight: 1697,
+        emptyWeight: 1695.41,
 
         maxWeight: 2535,
 
-        aircraftArm: 96.874,
+        aircraftArm: 96.87,
 
         autopilot: "none"
 
