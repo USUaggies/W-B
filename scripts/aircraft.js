@@ -74,11 +74,11 @@ const aircraft = [
 
         model: "DA40F",
 
-        emptyWeight: 1695.41,
+        emptyWeight: 1695.408,
 
         maxWeight: 2535,
 
-        aircraftArm: 96.87,
+        aircraftArm: 96.8701,
 
         autopilot: "none"
 
@@ -154,11 +154,11 @@ const aircraft = [
 
         model: "DA40CS",
 
-        emptyWeight: 1728.91,
+        emptyWeight: 1728.908,
 
         maxWeight: 2535,
 
-        aircraftArm: 96.77,
+        aircraftArm: 96.7661,
 
         autopilot: "KAP"
 
@@ -202,11 +202,11 @@ const aircraft = [
 
         model: "DA40CS",
 
-        emptyWeight: 1800,
+        emptyWeight: 1798.41,
 
         maxWeight: 2646,
 
-        aircraftArm: 97.37,
+        aircraftArm: 97.3668,
 
         autopilot: "none"
 
@@ -346,11 +346,11 @@ const aircraft = [
 
         model: "DA40XLS",
 
-        emptyWeight: 1832.008,
+        emptyWeight: 1825.928,
 
         maxWeight: 2646,
 
-        aircraftArm: 98.0574,
+        aircraftArm: 98.0759,
 
         autopilot: "GFC"
 
@@ -480,6 +480,22 @@ const aircraft = [
 
     {
 
+        tail: "N72MZ",
+
+        model: "DA40XLS",
+
+        emptyWeight: 1771.5,
+
+        maxWeight: 2646,
+
+        aircraftArm: 99.91,
+
+        autopilot: "GFC"
+
+    },
+
+    {
+
         tail: "N734M",
 
         model: "DA40XLS",
@@ -500,11 +516,11 @@ const aircraft = [
 
         model: "DA40XLS",
 
-        emptyWeight: 1821.35,
+        emptyWeight: 1810,
 
         maxWeight: 2646,
 
-        aircraftArm: 97.8,
+        aircraftArm: 97.99,
 
         autopilot: "GFC"
 
@@ -516,11 +532,11 @@ const aircraft = [
 
         model: "DA40XLS",
 
-        emptyWeight: 1797.38,
+        emptyWeight: 1798.18,
 
         maxWeight: 2646,
 
-        aircraftArm: 97.1031,
+        aircraftArm: 97.01,
 
         autopilot: "GFC"
 
@@ -568,11 +584,11 @@ const aircraft = [
 
         model: "DA40XLS",
 
-        emptyWeight: 1819.81,
+        emptyWeight: 1817.213,
 
         maxWeight: 2646,
 
-        aircraftArm: 97.98,
+        aircraftArm: 97.92,
 
         autopilot: "GFC"
 
