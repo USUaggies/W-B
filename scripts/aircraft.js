@@ -403,6 +403,22 @@ const aircraft = [
     },
 
     {
+
+        tail: "N448US",
+
+        model: "DA40XLS",
+
+        emptyWeight: 1790,
+
+        maxWeight: 2646,
+
+        aircraftArm: 98.36,
+
+        autopilot: "GFC"
+
+    },
+
+    {
         tail: "N451DS",
 
         model: "DA40XLS",
