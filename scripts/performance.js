@@ -2,6 +2,18 @@ function getWeather() {
     /**Called when submit button is clicked
      * tries to retieve AWS METAR for the provided Station ID
      * Uses PHP backend to get the XML weather and return it as JSON format**/
+    let overlay = document.getElementById("main-overlay")
+    if (!overlay) {
+        const content = document.querySelector('#content > div');
+        overlay = document.createElement('div');
+        overlay.id = 'main-overlay'; // Optional: add a class
+        content.parentNode.insertBefore(overlay, content);
+        const loader = document.createElement("span");
+        loader.classList.add("loader");
+        overlay.appendChild(loader);   
+    }
+    overlay.style.visibility = "visible";
+    
     document.getElementById("weatherSubmit").disabled = true;
     document.getElementById("weatherSubmit").innerHTML = "Loading";
     document.getElementById("runwayHdg").value = "";
@@ -69,10 +81,16 @@ function getWeather() {
                         runwayChange("", stationID);
                         inputWeather();
                     }
+                    overlay.style.visibility = "hidden";
+                    document.getElementById("weatherSubmit").disabled = false;
+                    document.getElementById("weatherSubmit").innerHTML = "Submit";
                 } catch (e) {
                     /*Most likely due to the PHP server not being setup/running*/
                     if (stationID.length == 3) {
                         document.getElementById("weatherID").value = "K" + stationID;
+                        overlay.style.visibility = "hidden";
+                        document.getElementById("weatherSubmit").disabled = false;
+                        document.getElementById("weatherSubmit").innerHTML = "Submit";
                         getWeather();
                         return;
                     }
@@ -81,7 +99,7 @@ function getWeather() {
                     document.getElementById("runwayHdg").value = "";
                     runwayChange("", stationID);
                     inputWeather();
-                } finally {
+                    overlay.style.visibility = "hidden";
                     document.getElementById("weatherSubmit").disabled = false;
                     document.getElementById("weatherSubmit").innerHTML = "Submit";
                 }
