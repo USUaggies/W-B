@@ -66,14 +66,18 @@ function fillPrintData() {
 
 function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
     /**Fills HTML elements with weather data**/
-    if (!("raw_text" in weatherData)) {
+    if (weatherData.manually_entered) {
         document.getElementById("wIdent-" + suffix).innerHTML = weatherData.station_id;
         var temp = parseFloat(weatherData.temp_c);
+        document.getElementById("wTime-" + suffix).innerHTML = weatherData.obs_time;
         document.getElementById("wWind-" + suffix).innerHTML = weatherData.wind_dir_degrees + " @ " + weatherData.wind_speed_kt + " kts";
+        document.getElementById("wCeilings-" + suffix).innerHTML = weatherData.clouds;
         document.getElementById("wTemp-" + suffix).innerHTML = temp + " &degC";
         document.getElementById("wDewpoint-" + suffix).innerHTML = weatherData.dewpoint_c + " &degC";
         document.getElementById("wVisibility-" + suffix).innerHTML = ((weatherData.visibility_statute_mi) ? parseFloat(weatherData.visibility_statute_mi) + " sm" : "MISSING");
         document.getElementById("wAltimeter-" + suffix).innerHTML = parseFloat(weatherData.altim_in_hg).toFixed(2) + " inHg";
+        document.getElementById("wWx-" + suffix).innerHTML = weatherData.wx_string ? weatherData.wx_string : "N/A";
+        document.getElementById("wRmks-" + suffix).innerHTML = weatherData.remarks;
         var fldAlt = parseFloat(weatherData.elevation_m) * 3.281;
         var pressureAlt = fldAlt + ((29.92 - parseFloat(weatherData.altim_in_hg)) * 1000);
         var altimeterHg = parseFloat(weatherData.altim_in_hg);
@@ -98,6 +102,8 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
             document.getElementById("wTemp-" + suffix).innerHTML = temp + " &degC";
             document.getElementById("wDewpoint-" + suffix).innerHTML = dewpoint + " &degC";
         }
+        document.getElementById("wWx-" + suffix).innerHTML = weatherData.wx_string ? weatherData.wx_string : "N/A";
+        document.getElementById("wRmks-" + suffix).innerHTML = weatherData.raw_text.split("RMK")[1];
         var obsTime = new Date(weatherData.observation_time);
         document.getElementById("wTime-" + suffix).innerHTML = zeroPad(obsTime.getHours(), 2) + ":" + zeroPad(obsTime.getMinutes(), 2) +
             " (UTC " + -(obsTime.getTimezoneOffset() / 60) + ")";
@@ -357,6 +363,7 @@ function calculateSpeed(weight, speedObj, interpolate = false) {
         }
     }
     if (!interpolate) return higherSpeed;
+    if (!lowerSpeed) return higherSpeed;
     let ratio = (weight - lowerWeight) / (higherWeight - lowerWeight);
     return Math.round(lowerSpeed + (higherSpeed - lowerSpeed) * ratio);
 }
@@ -516,91 +523,273 @@ function emailResults() {
         bodyString);
 }
 
-function waitForFrame() {
-    return new Promise(resolve => {
-        if (document.getElementById("picture-iframe").contentWindow.document.getElementById("buttonRow")) {
-            return resolve(document.getElementById("picture-iframe").contentWindow.document.getElementById("buttonRow"));
+function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
+function waitForPrintIframe(timeoutMs = 5000) {
+    const iframe = document.getElementById("print-iframe");
+    return new Promise((resolve, reject) => {
+        if (!iframe) return reject(new Error("print-iframe not found"));
+        const start = Date.now();
+        function check() {
+            try {
+                const idoc = iframe.contentWindow && iframe.contentWindow.document;
+                if (idoc && idoc.getElementById("content") && idoc.getElementById("cgCanvas") && idoc.readyState === "complete") {
+                    return resolve(idoc);
+                }
+            } catch (e) { /* cross-origin not expected */ }
+            if (Date.now() - start > timeoutMs) return reject(new Error("print iframe timed out"));
+            setTimeout(check, 100);
         }
-        const observer = new MutationObserver(mutations => {
-            if (document.getElementById("picture-iframe").contentWindow.document.body) {
-                observer.disconnect();
-                resolve(document.getElementById("picture-iframe").contentWindow.document.body);
-            }
-        });
-        observer.observe(document.getElementById("picture-iframe").contentWindow.document.documentElement, {
-            childList: true,
-            subtree: true,
-            attributes: true
-        });
+        if (iframe.contentWindow && iframe.contentWindow.document && iframe.contentWindow.document.readyState === "complete" && iframe.contentWindow.document.getElementById("content")) {
+            return resolve(iframe.contentWindow.document);
+        }
+        iframe.addEventListener("load", () => setTimeout(check, 100), { once: true });
+        check();
     });
 }
 
 async function savePicture() {
-    let saveButton = document.getElementById("saveButton");
+    const saveButton = document.getElementById("saveButton");
     saveButton.disabled = true;
-    let html = `<html>${document.getElementById("print-iframe").contentWindow.document.documentElement.innerHTML}</html>`;
-    let iframe = document.createElement("iframe");
-    iframe.id = "picture-iframe";
-    iframe.style.width = "1000px";
-    iframe.style.height = "100%";
-    document.body.appendChild(iframe);
-    iframe.contentDocument.open();
-    iframe.contentDocument.write(html);
-    iframe.contentDocument.close();
-    let tailNum = JSON.parse(localStorage.getItem("userInput")).obj.tail;
-    let date = new Date();
-    let formatedDate = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()} ${zeroPad(date.getHours(), 2)}${zeroPad(date.getMinutes(), 2)}`;
-    let buttonPromise = waitForFrame();
-    buttonPromise.catch(error => {
-        console.error("Error in promise:", error);
-    });
-    buttonPromise.then((buttonRow) => {
-        var destCtx = document.getElementById("picture-iframe").contentWindow.document.getElementById("cgCanvas").getContext('2d');
-        destCtx.drawImage(document.getElementById("cgCanvas"), 0, 0, document.getElementById("picture-iframe").contentWindow.document.getElementById("cgCanvas").width, document.getElementById("picture-iframe").contentWindow.document.getElementById("cgCanvas").height);
-        html2canvas(document.getElementById("picture-iframe").contentWindow.document.getElementById("content"), {
-            logging: true
-        }).then(function(canvas) {
-            var anchorTag = document.createElement("a");
-            document.body.appendChild(anchorTag);
-            document.getElementById("previewImg").appendChild(canvas);
-            anchorTag.download = `${tailNum} ${formatedDate}.png`;
-            anchorTag.href = canvas.toDataURL();
-            anchorTag.target = '_blank';
-            anchorTag.click();
-            buttonRow.style.display = "flex";
-            document.body.removeChild(iframe);
-            saveButton.disabled = false;
+    // Preserve gesture on iOS by opening blank window synchronously
+    let openedWindow = null;
+    const ios = isIOS();
+    if (ios) {
+        openedWindow = window.open('', '_blank');
+        // If blocked, openedWindow will be null - we will fallback to _blank later
+    }
+    try {
+        const printDoc = await waitForPrintIframe();
+        // Ensure print canvas is up-to-date: copy CG from main page
+        const srcCanvas = document.getElementById("cgCanvas");
+        const destCanvas = printDoc.getElementById("cgCanvas");
+        if (srcCanvas && destCanvas) {
+            const destCtx = destCanvas.getContext('2d');
+            destCtx.clearRect(0, 0, destCanvas.width, destCanvas.height);
+            destCtx.drawImage(srcCanvas, 0, 0, destCanvas.width, destCanvas.height);
+        }
+        // Allow paint
+        await new Promise(r => setTimeout(r, 200));
+        const contentEl = printDoc.getElementById("content");
+        if (!contentEl) throw new Error("print content not found");
+        const canvas = await html2canvas(contentEl, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: "#ffffff",
+            windowWidth: printDoc.documentElement.scrollWidth,
+            windowHeight: printDoc.documentElement.scrollHeight
         });
-    });
+        const tailData = JSON.parse(localStorage.getItem("userInput") || "{}");
+        const tailNum = (tailData.obj && tailData.obj.tail) ? tailData.obj.tail : "summary";
+        const date = new Date();
+        const fileName = `${tailNum} ${zeroPad(date.getDate(), 2)}-${zeroPad(date.getMonth() + 1, 2)}-${date.getFullYear()} ${zeroPad(date.getHours(), 2)}${zeroPad(date.getMinutes(), 2)}.png`;
+        // Prefer Web Share API with files on iOS
+        const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
+        if (!blob) throw new Error("canvas toBlob failed");
+        const blobUrl = URL.createObjectURL(blob);
+        // Try native share first (iOS 14+ supports files)
+        if (ios && navigator.share && navigator.canShare) {
+            try {
+                const file = new File([blob], fileName, { type: "image/png" });
+                if (navigator.canShare({ files: [file] })) {
+                    if (openedWindow) { openedWindow.close(); openedWindow = null; }
+                    await navigator.share({ files: [file], title: fileName, text: fileName });
+                    URL.revokeObjectURL(blobUrl);
+                    saveButton.disabled = false;
+                    return;
+                }
+            } catch (shareErr) {
+                // Share cancelled or failed - fallback to window open
+                if (shareErr && shareErr.name === 'AbortError') {
+                    URL.revokeObjectURL(blobUrl);
+                    saveButton.disabled = false;
+                    if (openedWindow) openedWindow.close();
+                    return;
+                }
+            }
+        }
+        if (ios) {
+            // iOS does not support download attribute - open image in new tab for user to long-press Save
+            if (openedWindow) {
+                openedWindow.location.href = blobUrl;
+                // Also show in-page fallback for user to save
+                const preview = document.getElementById("previewImg");
+                if (preview) {
+                    preview.style.display = "block";
+                    preview.innerHTML = `<p style="margin-top:1rem">Tap and hold image to Save: <br><a href="${blobUrl}" target="_blank" rel="noopener">Open Image</a></p>`;
+                    preview.appendChild(canvas);
+                    canvas.style.maxWidth = "100%";
+                    canvas.style.height = "auto";
+                }
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+            } else {
+                window.open(blobUrl, '_blank');
+                setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+            }
+        } else {
+            // Desktop: use download attribute with object URL
+            const anchor = document.createElement("a");
+            anchor.download = fileName;
+            anchor.href = blobUrl;
+            anchor.rel = "noopener";
+            document.body.appendChild(anchor);
+            anchor.click();
+            anchor.remove();
+            // Show preview as before
+            const preview = document.getElementById("previewImg");
+            if (preview) {
+                preview.appendChild(canvas);
+                canvas.style.maxWidth = "100%";
+            }
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 5000);
+        }
+    } catch (err) {
+        console.error("savePicture failed:", err);
+        alert("Save failed: " + (err.message || err));
+        if (openedWindow) openedWindow.close();
+    } finally {
+        saveButton.disabled = false;
+    }
 }
 
 function addWeatherTable(i) {
     var row = document.createElement("div");
     row.classList.add("row");
     row.classList.add("weather-row");
-    row.innerHTML = `<div class=col-lg><h4>Weather</h4><div class=container id=weatherData-${i}><p id=wRaw-${i}><table class="table table-bordered table-sm table-striped"><tr><th scope=col>Station Identifier<th id=wIdent-${i}><tr><th scope=col>Time<th id=wTime-${i}><tr><th scope=col>Wind Dir and Vel<th id=wWind-${i}><tr><th scope=col>Visibility<th id=wVisibility-${i}><tr><th scope=col>Clouds<th id=wCeilings-${i}><tr><th scope=col>Temperature<th id=wTemp-${i}><tr><th scope=col>Dew Point<th id=wDewpoint-${i}><tr><th scope=col>Altimeter<th id=wAltimeter-${i}><tr><th scope=col>Density Alt.<th id=wDensityAlt-${i}><tr><th scope=col>Pressure Alt.<th id=wPressureAlt-${i}></table><div id=weatherTAF-${i}><h5>TAF</h5><p id=TAF-${i}></div></div></div><div class=col-lg><h4>Takeoff and Landing Performance</h4><p>Performance data is an estimate only and does not take into consideration runway condition, aircraft condition, or pilot technique.<div class=container><h5 id=runwayHdg-${i}>Runway</h5><table class="table table-bordered table-sm"><tr><th scope=row>Head Wind<td id=headWind-${i}><tr><th scope=row>Cross Wind<td id=xWind-${i}><tr><th scope=row>Takeoff<td id=TODistance-${i}>Ground Roll:<td id=TO50Distance-${i}>Over 50':<tr><th scope=row>Landing<td id=LDGDistance-${i}>Ground Roll:<td id=LDG50Distance-${i}>Over 50':<tr><th scope=row colspan=2>Touch and Go Distance (50')<td id=tgDistance-${i}><tr><th scope=col style="text-align: center;">Rate of Climb<th scope=col style="text-align: center;">Single-Engine ROC<th scope=col style="text-align: center;">Climb Gradient<tr><td id=climbFPM-${i} style="text-align: center;"><td id=SEClimbFPM-${i} style="text-align: center;"><td id=climbGrad-${i} style="text-align: center;"></table></div></div>`;
+    row.innerHTML = `<div class=col-lg><h4>Weather</h4><div class=container id=weatherData-${i}><p id=wRaw-${i}><table class="table table-bordered table-sm table-striped"><tr><th scope=col>Station Identifier<th id=wIdent-${i}><tr><th scope=col>Time<th id=wTime-${i}><tr><th scope=col>Wind Dir and Vel<th id=wWind-${i}><tr><th scope=col>Visibility<th id=wVisibility-${i}><tr><th scope=col>Weather<th id=wWx-${i}><tr><th scope=col>Clouds<th id=wCeilings-${i}><tr><th scope=col>Temperature<th id=wTemp-${i}><tr><th scope=col>Dew Point<th id=wDewpoint-${i}><tr><th scope=col>Altimeter<th id=wAltimeter-${i}><tr><th scope=col>Density Alt.<th id=wDensityAlt-${i}><tr><th scope=col>Pressure Alt.<th id=wPressureAlt-${i}><tr><th scope=col>Remarks<th id=wRmks-${i}></table><div id=weatherTAF-${i}><h5>TAF</h5><p id=TAF-${i}></div></div></div><div class=col-lg><h4>Takeoff and Landing Performance</h4><p>Performance data is an estimate only and does not take into consideration runway condition, aircraft condition, or pilot technique.<div class=container><h5 id=runwayHdg-${i}>Runway</h5><table class="table table-bordered table-sm"><tr><th scope=row>Head Wind<td id=headWind-${i}><tr><th scope=row>Cross Wind<td id=xWind-${i}><tr><th scope=row>Takeoff<td id=TODistance-${i}>Ground Roll:<td id=TO50Distance-${i}>Over 50':<tr><th scope=row>Landing<td id=LDGDistance-${i}>Ground Roll:<td id=LDG50Distance-${i}>Over 50':<tr><th scope=row colspan=2>Touch and Go Distance (50')<td id=tgDistance-${i}><tr><th scope=col style="text-align: center;">Rate of Climb<th scope=col style="text-align: center;">Single-Engine ROC<th scope=col style="text-align: center;">Climb Gradient<tr><td id=climbFPM-${i} style="text-align: center;"><td id=SEClimbFPM-${i} style="text-align: center;"><td id=climbGrad-${i} style="text-align: center;"></table></div></div>`;
     document.getElementById("main").appendChild(row);
 }
 
+let _printState = { savedHTML: null, savedScrollY: 0, isSwapped: false };
+
 function printPage() {
+    const iframe = document.getElementById("print-iframe");
+    const ios = isIOS();
+    // iOS Safari does not reliably print iframes - use explicit body swap which is gesture-safe
+    if (ios) {
+        waitForPrintIframe().then(() => {
+            doBodySwapPrint();
+        }).catch((e) => {
+            console.warn("print iframe not ready, still trying body swap", e);
+            doBodySwapPrint();
+        });
+        return;
+    }
+    // Desktop: try printing the iframe directly (no DOM destruction, no reload needed)
+    if (iframe && iframe.contentWindow) {
+        waitForPrintIframe().then((printDoc) => {
+            try {
+                const srcCanvas = document.getElementById("cgCanvas");
+                const destCanvas = printDoc.getElementById("cgCanvas");
+                if (srcCanvas && destCanvas) {
+                    const destCtx = destCanvas.getContext('2d');
+                    destCtx.clearRect(0, 0, destCanvas.width, destCanvas.height);
+                    destCtx.drawImage(srcCanvas, 0, 0, destCanvas.width, destCanvas.height);
+                }
+            } catch (e) { console.warn("CG copy failed", e); }
+            setTimeout(() => {
+                try {
+                    iframe.contentWindow.focus();
+                    iframe.contentWindow.print();
+                } catch (e) {
+                    console.warn("iframe print failed, falling back to body swap", e);
+                    doBodySwapPrint();
+                }
+            }, 200);
+        }).catch((e) => {
+            console.warn("print iframe not ready, fallback", e);
+            doBodySwapPrint();
+        });
+        return;
+    }
+    doBodySwapPrint();
+}
+
+function doBodySwapPrint() {
     beforePrint();
-    setTimeout(window.print, 500)
+    // window.print() must be called synchronously after DOM swap but allow paint
+    setTimeout(() => {
+        window.print();
+        // afterPrint will restore via event or timeout
+    }, 400);
 }
 
 function beforePrint() {
-    let normalContent = document.getElementById("normal-content");
-    let cgCvs = document.getElementById("cgCanvas");
-    let newHtml = document.getElementById("print-iframe").contentWindow.document.body.innerHTML;
-    normalContent.parentNode.removeChild(normalContent);
-    document.body.innerHTML = newHtml
-    var destCtx = document.getElementById("cgCanvas").getContext('2d');
-    var destCvs = document.getElementById("cgCanvas");
-    destCtx.drawImage(cgCvs, 0, 0, destCvs.width, destCvs.height);
+    if (_printState.isSwapped) return;
+    const normalContent = document.getElementById("normal-content");
+    const iframe = document.getElementById("print-iframe");
+    if (!normalContent || !iframe || !iframe.contentWindow) return;
+    try {
+        _printState.savedHTML = document.body.innerHTML;
+        _printState.savedScrollY = window.scrollY;
+        _printState.isSwapped = true;
+        const srcCanvas = document.getElementById("cgCanvas");
+        const newHtml = iframe.contentWindow.document.body.innerHTML;
+        // Hide normal content instead of removing to keep reference but we replace body for clean print
+        document.body.innerHTML = newHtml;
+        // Ensure html2canvas/print styles are applied
+        document.body.classList.add("print-swap");
+        const destCanvas = document.getElementById("cgCanvas");
+        if (srcCanvas && destCanvas) {
+            const destCtx = destCanvas.getContext('2d');
+            destCtx.drawImage(srcCanvas, 0, 0, destCanvas.width, destCanvas.height);
+        }
+    } catch (e) {
+        console.error("beforePrint failed", e);
+    }
 }
 
 function afterPrint() {
-    location.reload();
+    if (!_printState.isSwapped) return;
+    try {
+        if (_printState.savedHTML !== null) {
+            document.body.innerHTML = _printState.savedHTML;
+            _printState.isSwapped = false;
+            if (!document.getElementById("normal-content") || !document.getElementById("cgCanvas")) {
+                location.reload();
+            } else {
+                window.onbeforeprint = beforePrint;
+                window.onafterprint = afterPrint;
+                window.scrollTo(0, _printState.savedScrollY);
+                // Canvas was restored from savedHTML but its bitmap is blank after innerHTML restore - redraw CG
+                try {
+                    const colors = JSON.parse(localStorage.getItem("colors") || "null");
+                    const computedData = JSON.parse(localStorage.getItem("computedData") || "null");
+                    const userData = JSON.parse(localStorage.getItem("userInput") || "null");
+                    if (computedData && userData && colors) {
+                        const modelData = aircraftModels.find(x => x.model === userData.obj.model);
+                        if (modelData) drawCG(computedData, userData, modelData, colors);
+                    }
+                } catch (e) {}
+                // Re-attach print iframe fallback listeners if needed
+            }
+        } else {
+            location.reload();
+        }
+    } catch (e) {
+        location.reload();
+    }
 }
+// iOS does not fire afterprint reliably - use matchMedia fallback
+if (window.matchMedia) {
+    const mql = window.matchMedia('print');
+    const onPrintChange = (m) => {
+        if (!m.matches) {
+            setTimeout(afterPrint, 500);
+        }
+    };
+    if (mql.addEventListener) mql.addEventListener('change', onPrintChange);
+    else if (mql.addListener) mql.addListener(onPrintChange);
+}
+// Also handle visibilitychange as backup for iOS
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && _printState.isSwapped) {
+        setTimeout(afterPrint, 800);
+    }
+});
 
 
 function reset() {

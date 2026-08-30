@@ -73,12 +73,20 @@
                                     <form id="altWeatherForm">
                                         <tbody>
                                             <tr>
+                                                <th scope="col">Time</th>
+                                                <th id="alt-wTime"><input type="text" class="form-control" id="time" form="altWeatherForm" placeholder="hh:mm" required></th>
+                                            </tr>
+                                            <tr>
                                                 <th scope="col">Wind Dir and Vel</th>
                                                 <th id="alt-wWind"><input type="text" class="form-control" id="windHeading" form="altWeatherForm" placeholder="direction" required>&deg; @ <input type="text" class="form-control" id="windSpeed" form="altWeatherForm" placeholder="speed" required>kts</th>
                                             </tr>
                                             <tr>
                                                 <th scope="col">Visibility</th>
                                                 <th id="alt-wVisibility"><input type="text" class="form-control" id="visibility" form="altWeatherForm" placeholder="sm"></th>
+                                            </tr>
+                                            <tr>
+                                                <th scope="col">Clouds</th>
+                                                <th id="alt-wVisibility"><input type="text" class="form-control" id="clouds" form="altWeatherForm"></th>
                                             </tr>
                                             <tr>
                                                 <th scope="col">Temperature</th>
@@ -91,6 +99,10 @@
                                             <tr>
                                                 <th scope="col">Altimeter</th>
                                                 <th id="alt-wAltimeter"><input type="text" class="form-control" id="altimeter" form="altWeatherForm" placeholder="inHg" required></th>
+                                            </tr>
+                                            <tr>
+                                                <th scope="col">Remarks</th>
+                                                <th id="alt-wRemarks"><input type="text" class="form-control" id="remarks" form="altWeatherForm"></th>
                                             </tr>
                                             <tr>
                                                 <th scope="col">Elevation</th>

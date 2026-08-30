@@ -1,8 +1,32 @@
-function getWeather() {
+var unsaved = false;
+window.addEventListener('beforeunload', (event) => {
+  if (!unsaved) return;
+  
+  // Standard way to trigger the browser confirmation dialog
+  event.preventDefault();
+  event.returnValue = ''; // Required for legacy browser support
+});
+
+const zeroPad = (num, places) => String(num).padStart(places, '0');
+
+function getWeather(correctedIdentifier = false) {
     /**Called when submit button is clicked
      * tries to retieve AWS METAR for the provided Station ID
      * Uses PHP backend to get the XML weather and return it as JSON format**/
+    clearManualWeather();
+    let stationID = document.getElementById("weatherID").value.trim().toUpperCase();
+    if (stationID === "") {
+        document.getElementById("weatherSubmit").disabled = false;
+        document.getElementById("weatherSubmit").innerHTML = "Submit";
+        return;
+    }
+    if (!correctedIdentifier && unsaved) {
+        if (!confirm("The previous weather and runway information hasn't been saved. Are you sure you want to lose it?")) {
+            return;
+        }
+    }
     let overlay = document.getElementById("main-overlay")
+    unsaved = true;
     if (!overlay) {
         const content = document.querySelector('#content > div');
         overlay = document.createElement('div');
@@ -22,14 +46,8 @@ function getWeather() {
     document.getElementById("weatherData").style.display = "none";
     document.getElementById("perfTable").style.display = "none";
     document.getElementById("weatherInput").style.display = "none";
-    var stationID = document.getElementById("weatherID").value.trim().toUpperCase();
     var weatherData = JSON.parse(sessionStorage.getItem("weather"));
     if (!weatherData) weatherData = {};
-    if (stationID === "") {
-        document.getElementById("weatherSubmit").disabled = false;
-        document.getElementById("weatherSubmit").innerHTML = "Submit";
-        return;
-    }
     document.getElementById("weatherInput").style.display = "none";
     /*Section retrieves weather from aviationweather.gov using simple PHP backend.
      * Won't work if no PHP server setup*/
@@ -73,7 +91,7 @@ function getWeather() {
                     } else {
                         if (stationID.length == 3) {
                             document.getElementById("weatherID").value = "K" + stationID;
-                            getWeather();
+                            getWeather(true);
                             return;
                         }
                         document.getElementById("runwaySelectDiv").innerHTML = "";
@@ -91,7 +109,7 @@ function getWeather() {
                         overlay.style.visibility = "hidden";
                         document.getElementById("weatherSubmit").disabled = false;
                         document.getElementById("weatherSubmit").innerHTML = "Submit";
-                        getWeather();
+                        getWeather(true);
                         return;
                     }
                     console.error(e);
@@ -120,6 +138,30 @@ function inputWeather(weatherData = null) {
     if (weatherData.wind_dir_degrees) {
         document.getElementById("windHeading").value = weatherData.wind_dir_degrees;
     }
+    if (weatherData.sky_condition) {
+        let rawCeilings = weatherData.sky_condition;
+        let ceilingString = "";
+        if (Array.isArray(rawCeilings)) {
+            for (var i = 0; i < rawCeilings.length; i++) {
+                ceilingAttribute = rawCeilings[i]["@attributes"];
+                ceilingString += ceilingAttribute["sky_cover"] + "@" + ceilingAttribute["cloud_base_ft_agl"] + " ";
+            }
+        } else {
+            if (rawCeilings) {
+                ceilingAttribute = rawCeilings["@attributes"];
+                if (ceilingAttribute["sky_cover"] === "CLR" || ceilingAttribute["sky_cover"] === "SKC") {
+                    ceilingString = "Clear";
+                } else {
+                    ceilingString += ceilingAttribute["sky_cover"] + "@" + ceilingAttribute["cloud_base_ft_agl"] + " ";
+                }
+            }
+        }
+        document.getElementById("clouds").value = ceilingString;
+    }
+    if (weatherData.observation_time) {
+        let obsTime = new Date(weatherData.observation_time);
+        document.getElementById("time").value = obsTime.getHours() + ":" + zeroPad(obsTime.getMinutes(), 2);
+    }
     if (weatherData.wind_speed_kt) {
         document.getElementById("windSpeed").value = weatherData.wind_speed_kt;
     }
@@ -135,9 +177,21 @@ function inputWeather(weatherData = null) {
     if (weatherData.altim_in_hg) {
         document.getElementById("altimeter").value = weatherData.altim_in_hg;
     }
+    if (weatherData.raw_text) {
+        document.getElementById("remarks").value = weatherData.raw_text.split("RMK ")[1];
+    }
     if (weatherData.elevation_m) {
         document.getElementById("fieldAlt").value = Math.round(parseFloat(weatherData.elevation_m) * 3.28084);
     }
+}
+
+function clearManualWeather() {
+    let inputIDs = ["time", "windHeading", "windSpeed", "visibility", "clouds", "temperature", "dewpoint", "altimeter", "remarks", "fieldAlt"];
+    inputIDs.forEach(id => {
+        document.getElementById(id).value = "";
+    });
+    document.getElementById("alt-wDensityAlt").innerHTML = "";
+    document.getElementById("alt-wPressureAlt").innerHTML = "";
 }
 
 function weatherInputClick() {
@@ -158,14 +212,18 @@ function weatherInputClick() {
         weatherData[station_id] = {};
     if (!weatherData[station_id]["metar"])
         weatherData[station_id]["metar"] = {};
+    weatherData[station_id]["metar"]["manually_entered"] = true;
     weatherData[station_id]["metar"]["station_id"] = station_id;
+    weatherData[station_id]["metar"]["obs_time"] = document.getElementById("time").value;
     weatherData[station_id]["metar"]["temp_c"] = parseFloat(document.getElementById("temperature").value);
     weatherData[station_id]["metar"]["dewpoint_c"] = parseFloat(document.getElementById("dewpoint").value);
     weatherData[station_id]["metar"]["visibility_statute_mi"] = parseFloat(document.getElementById("visibility").value);
+    weatherData[station_id]["metar"]["clouds"] = document.getElementById("clouds").value;
     weatherData[station_id]["metar"]["elevation_m"] = parseFloat(document.getElementById("fieldAlt").value) / 3.28084;
     weatherData[station_id]["metar"]["altim_in_hg"] = parseFloat(document.getElementById("altimeter").value);
     weatherData[station_id]["metar"]["wind_dir_degrees"] = parseFloat(document.getElementById("windHeading").value);
     weatherData[station_id]["metar"]["wind_speed_kt"] = parseFloat(document.getElementById("windSpeed").value);
+    weatherData[station_id]["metar"]["remarks"] = document.getElementById("remarks").value;
     sessionStorage.setItem("weather", JSON.stringify(weatherData));
     updateDataTimestamp();
     var pressureAlt = weatherData[station_id]["metar"]["elevation_m"] * 3.28084 + ((29.92 - parseFloat(weatherData[station_id]["metar"].altim_in_hg)) * 1000);
@@ -185,7 +243,6 @@ function weatherInputClick() {
 
 function setWeather(weatherData) {
     /**Fills the weather table with retrieved weather data**/
-    const zeroPad = (num, places) => String(num).padStart(places, '0');
     document.getElementById("weatherData").style.display = "block";
     document.getElementById("wRaw").innerHTML = weatherData.raw_text;
     var obsTime = new Date(weatherData.observation_time);
@@ -265,11 +322,11 @@ function setWeather(weatherData) {
         document.getElementById("wVisibility").innerHTML = "MISSING";
         document.getElementById("wVisibility").style.backgroundColor = "#ffc107";
     }
-    var rawCeilings = weatherData.sky_condition;
-    var ceilingString = "";
+    let rawCeilings = weatherData.sky_condition;
+    let ceilingString = "";
     if (Array.isArray(rawCeilings)) {
         for (var i = 0; i < rawCeilings.length; i++) {
-            var ceilingAttribute = rawCeilings[i]["@attributes"];
+            ceilingAttribute = rawCeilings[i]["@attributes"];
             ceilingString += "<p style='margin: 0'>" + ceilingAttribute["sky_cover"] + " @ " + ceilingAttribute["cloud_base_ft_agl"] + "'</p>";
         }
     } else {
@@ -286,10 +343,22 @@ function setWeather(weatherData) {
         }
     }
     document.getElementById("wCeilings").innerHTML = ceilingString;
-    var temp = parseFloat(weatherData.temp_c);
-    var dewpoint = parseFloat(weatherData.dewpoint_c);
-    document.getElementById("wTemp").innerHTML = temp + " &degC (" + Math.round(temp * 9 / 5 + 32) + " &degF)";
-    document.getElementById("wDewpoint").innerHTML = dewpoint + " &degC (" + Math.round(dewpoint * 9 / 5 + 32) + " &degF)";
+    if (weatherData.temp_c) {
+        var temp = parseFloat(weatherData.temp_c);
+        document.getElementById("wTemp").innerHTML = temp + " &degC (" + Math.round(temp * 9 / 5 + 32) + " &degF)";
+        document.getElementById("wTemp").style.backgroundColor = "white";
+    } else {
+        document.getElementById("wTemp").innerHTML = "MISSING";
+        document.getElementById("wTemp").style.backgroundColor = "#ffc107";
+    }
+    if (weatherData.dewpoint_c) {
+        var dewpoint = parseFloat(weatherData.dewpoint_c);
+        document.getElementById("wDewpoint").innerHTML = dewpoint + " &degC (" + Math.round(dewpoint * 9 / 5 + 32) + " &degF)";
+        document.getElementById("wDewpoint").style.backgroundColor = "white";
+    } else {
+        document.getElementById("wDewpoint").innerHTML = "MISSING";
+        document.getElementById("wDewpoint").style.backgroundColor = "#ffc107";
+    }
     document.getElementById("wAltimeter").innerHTML = parseFloat(weatherData.altim_in_hg).toFixed(2) + " inHg";
     var fldAlt = parseFloat(weatherData.elevation_m) * 3.28084;
     var pressureAlt = fldAlt + ((29.92 - parseFloat(weatherData.altim_in_hg)) * 1000);
@@ -612,7 +681,12 @@ function performanceCompute(station_id, winds, heading) {
         "runwayHdg": heading
     }
     performanceData[station_id] = airportPerformance;
-    displayError("");
+    if (isNaN(takeoffDistance)) {
+        displayError("Complete the METAR and click 'SUMBIT'", 2);
+        unsaved = true;
+    } else {
+        unsaved = false;
+    }
     document.getElementById("perfTable").style.display = "flex";
     sessionStorage.setItem("performance", JSON.stringify(performanceData));
     updateDataTimestamp();

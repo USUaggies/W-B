@@ -43,13 +43,17 @@ function fillData() {
 
 function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
     /**Fills HTML elements with weather data**/
-    if (!("raw_text" in weatherData)) {
+    if (weatherData.manually_entered) {
+        document.getElementById("wTime-" + suffix).innerHTML = weatherData.obs_time;
         document.getElementById("wIdent-" + suffix).innerHTML = weatherData.station_id;
         var temp = parseFloat(weatherData.temp_c);
         document.getElementById("wWind-" + suffix).innerHTML = weatherData.wind_dir_degrees + " @ " + weatherData.wind_speed_kt + " kts";
+        document.getElementById("wCeilings-" + suffix).innerHTML = weatherData.clouds;
         document.getElementById("wTempDew-" + suffix).innerHTML = temp + "&degC/" + ((weatherData.dewpoint_c) ? (weatherData.dewpoint_c + "&degC") : "---");
         document.getElementById("wVisibility-" + suffix).innerHTML = ((weatherData.visibility_statute_mi) ? parseFloat(weatherData.visibility_statute_mi) + " sm" : "MISSING");
         document.getElementById("wAltimeter-" + suffix).innerHTML = parseFloat(weatherData.altim_in_hg).toFixed(2) + " inHg";
+        document.getElementById("wWx-" + suffix).innerHTML = weatherData.wx_string ? weatherData.wx_string : "N/A";
+        document.getElementById("wRmks-" + suffix).innerHTML = weatherData.remarks;
         var fldAlt = parseFloat(weatherData.elevation_m) * 3.281;
         var pressureAlt = fldAlt + ((29.92 - parseFloat(weatherData.altim_in_hg)) * 1000);
         var altimeterHg = parseFloat(weatherData.altim_in_hg);
@@ -63,7 +67,7 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
         if (isPrint) {
             document.getElementById("wIdent-" + suffix).innerHTML = weatherData.station_id;
             temp = parseFloat(weatherData.temp_c);
-            var dewpoint = parseFloat(weatherData.dewpoint_c);
+            dewpoint = parseFloat(weatherData.dewpoint_c);
             document.getElementById("wTemp-" + suffix).innerHTML = temp + "&degC";
             document.getElementById("wDewpoint-" + suffix).innerHTML = dewpoint + "&degC";
         } else {
@@ -71,6 +75,8 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
             temp = parseFloat(weatherData.temp_c);
             dewpoint = parseFloat(weatherData.dewpoint_c);
             document.getElementById("wTempDew-" + suffix).innerHTML = temp + "&degC/" + dewpoint + "&degC";
+            document.getElementById("wWx-" + suffix).innerHTML = weatherData.wx_string ? weatherData.wx_string : "N/A";
+            document.getElementById("wRmks-" + suffix).innerHTML = weatherData.raw_text.split("RMK")[1];
         }
         var obsTime = new Date(weatherData.observation_time);
         document.getElementById("wTime-" + suffix).innerHTML = zeroPad(obsTime.getHours(), 2) + ":" + zeroPad(obsTime.getMinutes(), 2) +
@@ -103,15 +109,15 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
         if (Array.isArray(rawCeilings)) {
             for (var i = 0; i < rawCeilings.length; i++) {
                 var ceilingAttribute = rawCeilings[i]["@attributes"];
-                ceilingString += "<p style='margin: 0'>" + ceilingAttribute["sky_cover"] + " @ " + ceilingAttribute["cloud_base_ft_agl"] + "'</p>";
+                ceilingString += "<span style='white-space: nowrap; display: inline-block;'>" + ceilingAttribute["sky_cover"] + " @ " + ceilingAttribute["cloud_base_ft_agl"] + "'</span> ";
             }
         } else if (rawCeilings) {
             ceilingAttribute = rawCeilings["@attributes"];
             if (ceilingAttribute["sky_cover"] === "CLR" || ceilingAttribute["sky_cover"] === "SKC") {
                 ceilingString = "Clear";
             } else {
-                ceilingString += "<p style='margin: 0'>" + ceilingAttribute["sky_cover"] + " @ " +
-                    ceilingAttribute["cloud_base_ft_agl"] + "'</p>";
+                ceilingString += "<span style='white-space: nowrap; display: inline-block;'>" + ceilingAttribute["sky_cover"] + " @ " +
+                    ceilingAttribute["cloud_base_ft_agl"] + "'</span> ";
             }
         } else {
             ceilingString = "MISSING";
@@ -321,6 +327,7 @@ function calculateSpeed(weight, speedObj, interpolate = false) {
         }
     }
     if (!interpolate) return higherSpeed;
+    if (!lowerSpeed) return higherSpeed;
     let ratio = (weight - lowerWeight) / (higherWeight - lowerWeight);
     return Math.round(lowerSpeed + (higherSpeed - lowerSpeed) * ratio);
 }
@@ -353,7 +360,7 @@ function fillVSpeeds(computedData, modelData) {
 function addWeatherTable(i) {
     var div = document.createElement("div");
     div.classList.add("weatherDiv");
-    div.innerHTML = `<table class="table-weather table table-bordered table-sm table-striped"><tr><th class=centered colspan=4 id=wIdent-${i}>Weather<tr><th class=no-bottom-border>Time<th class=no-bottom-border>Wind Dir/Vel<th class=no-bottom-border>Visibility<th><tr><td id=wTime-${i} class=no-top-border><td id=wWind-${i} class=no-top-border><td id=wVisibility-${i} class=no-top-border><td><tr><th class=no-bottom-border>Clouds<th class=no-bottom-border>Temp/Dew<th class=no-bottom-border>Altimeter<th><tr><td id=wCeilings-${i} class=no-top-border><td id=wTempDew-${i} class=no-top-border><td id=wAltimeter-${i} class=no-top-border><td><tr style="border-top:2px solid #000"><th>Density Alt.<td id=wDensityAlt-${i}><th>Pressure Alt.<td id=wPressureAlt-${i}><tr><th>Headwind<td id=headWind-${i}><th>Crosswind<td id=crossWind-${i}><tr style="border-top:2px solid #000"><th class=centered colspan=2>Takeoff (<span id=runwayHdg-${i}></span>)<th class=centered colspan=2>Landing<tr><th>Ground Roll<td id=TODistance-${i}><th>Ground Roll<td id=LDGDistance-${i}><tr><th>Over 50'<td id=TO50Distance-${i}><th>Over 50'<td id=LDG50Distance-${i}><tr style="border-top:2px solid #000"><th>Touch and Go<td id=tgDistance-${i}><th>Rate of Climb<td id=rateClimb-${i}><tr class=hidden id=DA42-performance-${i}><th>Climb Gradient<td id=climbGrad-${i}><th>Single-Engine ROC<td id=SERateClimb-${i}></table><p class=taf id=TAF-${i}>`;
+    div.innerHTML = `<table class="table-weather table table-bordered table-sm table-striped"><tr><th class=centered colspan=4 id=wIdent-${i}>Weather<tr><th class=no-bottom-border>Time<th class=no-bottom-border>Wind Dir/Vel<th class=no-bottom-border>Visibility<th class=no-bottom-border>Weather<tr><td id=wTime-${i} class=no-top-border><td id=wWind-${i} class=no-top-border><td id=wVisibility-${i} class=no-top-border><td id=wWx-${i} class=no-top-border><tr><th class=no-bottom-border colspan=2>Clouds<th class=no-bottom-border>Temp/Dew<th class=no-bottom-border>Altimeter<tr><td id=wCeilings-${i} class=no-top-border colspan=2><td id=wTempDew-${i} class=no-top-border><td id=wAltimeter-${i} class=no-top-border><tr><th class=no-bottom-border>Remarks</th><td id=wRmks-${i} class=no-top-border colspan=3></td></tr><tr style="border-top:2px solid #000"><th>Density Alt.<td id=wDensityAlt-${i}><th>Pressure Alt.<td id=wPressureAlt-${i}><tr><th>Headwind<td id=headWind-${i}><th>Crosswind<td id=crossWind-${i}><tr style="border-top:2px solid #000"><th class=centered colspan=2>Takeoff (<span id=runwayHdg-${i}></span>)<th class=centered colspan=2>Landing<tr><th>Ground Roll<td id=TODistance-${i}><th>Ground Roll<td id=LDGDistance-${i}><tr><th>Over 50'<td id=TO50Distance-${i}><th>Over 50'<td id=LDG50Distance-${i}><tr style="border-top:2px solid #000"><th>Touch and Go<td id=tgDistance-${i}><th>Rate of Climb<td id=rateClimb-${i}><tr class=hidden id=DA42-performance-${i}><th>Climb Gradient<td id=climbGrad-${i}><th>Single-Engine ROC<td id=SERateClimb-${i}></table><p class=taf id=TAF-${i}>`;
     document.getElementById(i % 2 == 0 ? "weatherCol1" : "weatherCol2").appendChild(div);
 }
 fillData();

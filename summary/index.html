@@ -58,7 +58,7 @@
                 <div class="row" id="buttonRow">
                     <br>
                     <button type="button" class="btn btn-secondary m-2" onclick="savePicture()" id="saveButton">Save</button>
-                    <button type="button" class="btn btn-secondary m-2" onclick="print()">Print</button>
+                    <button type="button" class="btn btn-secondary m-2" onclick="printPage()" id="printButton">Print</button>
                     <button type="button" class="btn btn-secondary m-2" onclick="resetAllData()">Reset</button>
                 </div>
                 <div class="row" id="row1">
@@ -213,7 +213,7 @@
         <div id="previewImg" style="display: none;"></div>
     </div>
     <div>
-        <iframe src="../print" frameborder="0" id="print-iframe" style="width: 0px; height: 0px;"></iframe>
+        <iframe src="../print" frameborder="0" id="print-iframe" style="position:fixed; left:-10000px; top:0; width:850px; height:1100px; opacity:0; pointer-events:none; border:0;" aria-hidden="true" tabindex="-1"></iframe>
     </div>
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -225,8 +225,13 @@
     <script src="../scripts/html2canvas.js"></script>
     <script>
         fillData();
+        // Keep for desktop browsers that support beforeprint, but printPage() now handles iOS explicitly
         window.onbeforeprint = beforePrint;
         window.onafterprint = afterPrint;
+        // Ensure print iframe has finished loading before enabling buttons
+        document.getElementById("print-iframe").addEventListener("load", function() {
+            // fillData inside print iframe runs on its own; no action needed
+        });
     </script>
 </body>
 
