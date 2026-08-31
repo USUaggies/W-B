@@ -1,5 +1,5 @@
 function drawCG(newData, userInput, modelData, colors) {
-    image = new Image();
+    let image = new Image();
     image.src = '../resources/grid.png';
     var c = document.getElementById("cgCanvas");
     var ctx = c.getContext("2d");
@@ -13,7 +13,7 @@ function drawCG(newData, userInput, modelData, colors) {
         ctx.restore();
         ctx.lineWidth = 2;
         ctx.strokeStyle = "black";
-        cgObj = drawEnvelope(c, ctx, modelData, newData);
+        let cgObj = drawEnvelope(c, ctx, modelData, newData);
         /*draw CG points*/
         ctx.lineWidth = 2;
         ctx.beginPath();

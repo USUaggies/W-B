@@ -6,7 +6,7 @@ function fillData() {
         if (a.tail < b.tail) return -1;
         return 1;
     });
-    for (i = 0; i < aircraft.length; i++) {
+    for (let i = 0; i < aircraft.length; i++) {
         if (!models.includes(aircraft[i].model))
             models.push(aircraft[i].model);
     }
@@ -128,11 +128,11 @@ function aircraftSelection() {
             document.getElementById("noseStationDiv").style.display = "none";
             document.getElementById("deIceStationDiv").style.display = "none";
             document.getElementById("auxFuelStationDiv").style.display = "none";
-            document.getElementById("baggageStation1").max = "100";
+            document.getElementById("baggageStation1").max = "120";
             document.getElementById("baggage1MaxNote").innerHTML = "Max 120 lbs";
             document.getElementById("baggageStation2Div").style.display = "flex";
             document.getElementById("baggage2MaxNote").innerHTML = "Max 50 lbs. Max 120 lbs Combined.";
-            document.getElementById("fuelStation").max = "56";
+            document.getElementById("fuelStation").max = "50";
             document.getElementById("fuelMaxNote").innerHTML = "Max 56 Gallons";
             document.getElementById("fuelBurn").max = "56";
             break;
@@ -414,7 +414,7 @@ function reCompute() {
                 modelData.cgRange.minAft, modelData.cgRange.midAft);
             zeroFwdCG = modelData.cgRange.minFwd;
             zeroAftCG = lineX;
-            if ((newData.zeroFuelCG > lineX) || (newData.zeroFuelCG < toFwdCG)) {
+            if ((newData.zeroFuelCG > lineX) || (newData.zeroFuelCG < zeroFwdCG)) {
                 resultWarning("Zero Fuel CG out of limits.");
                 colors["zero"] = "red";
                 cgValid = false;
@@ -453,7 +453,7 @@ function reCompute() {
                 modelData.cgRange.minAft, modelData.cgRange.midAft);
             ldgFwdCG = modelData.cgRange.minFwd;
             ldgAftCG = lineX;
-            if ((newData.landingCG > lineX) || (newData.landingCG < toFwdCG)) {
+            if ((newData.landingCG > lineX) || (newData.landingCG < ldgFwdCG)) {
                 resultWarning("Landing CG out of limits.");
                 colors["landing"] = "red";
                 cgValid = false;
@@ -491,7 +491,7 @@ function reCompute() {
         }
     }
 
-    if (!isNaN(newData.zeroFuelWeight && newData.takeOffWeight && newData.landingWeight)) {
+    if (!isNaN(newData.zeroFuelWeight) && !isNaN(newData.takeOffWeight) && !isNaN(newData.landingWeight)) {
         document.getElementById("result_zero").innerHTML = "Zero Fuel: " + newData.zeroFuelWeight +
             " lbs | CG Range: " + zeroFwdCG + " - " + zeroAftCG +
             " | CG Actual: " + newData.zeroFuelCG;
@@ -534,6 +534,16 @@ function checkInputConstraints(modelData, userInput) {
      **/
 
     if (modelData.model === "DA40F" || modelData.model === "DA40CS") {
+        if (userInput.fuelWeight > modelData.maxFuel * 6.0) {
+            return ["Max fuel exceeded.", "fuelStationDiv"];
+        }
+        if (userInput.baggage1Weight > modelData.maxBaggage) {
+            return ["Max baggage exceeded.", "baggageStation1Div"];
+        }
+        if (userInput.fuelBurnWeight > userInput.fuelWeight) {
+            return ["Fuel burn exceeds fuel available.", "fuelBurnDiv"];
+        }
+    } else if (modelData.model === "C172S") {
         if (userInput.fuelWeight > modelData.maxFuel * 6.0) {
             return ["Max fuel exceeded.", "fuelStationDiv"];
         }
@@ -612,7 +622,7 @@ function loadUserData() {
     document.getElementById("fuelStation").value = userData.fuelWeight / 6;
     document.getElementById("fuelBurn").value = userData.fuelBurnWeight / 6;
 
-    if ((aircraftObj.model === "DA40XL") || (aircraftObj.model === "DA40XLS")) {
+    if ((aircraftObj.model === "DA40XL") || (aircraftObj.model === "DA40XLS") || (aircraftObj.model === "C172S")) {
         document.getElementById("baggageStation2").value = userData.baggage2Weight;
     }
     if (aircraftObj.model === "DA42") {

@@ -30,11 +30,13 @@ function getWeather(correctedIdentifier = false) {
     if (!overlay) {
         const content = document.querySelector('#content > div');
         overlay = document.createElement('div');
-        overlay.id = 'main-overlay'; // Optional: add a class
-        content.parentNode.insertBefore(overlay, content);
-        const loader = document.createElement("span");
-        loader.classList.add("loader");
-        overlay.appendChild(loader);   
+        if (content) {
+            overlay.id = 'main-overlay';
+            content.parentNode.insertBefore(overlay, content);
+            const loader = document.createElement("span");
+            loader.classList.add("loader");
+            overlay.appendChild(loader);
+        }
     }
     overlay.style.visibility = "visible";
     
@@ -75,7 +77,7 @@ function getWeather(correctedIdentifier = false) {
                     if (weatherResults["metar"] !== null) {
                         weatherData[stationID].metar = weatherResults["metar"];
                         var requiredFields = ["temp_c", "altim_in_hg", "wind_dir_degrees", "wind_speed_kt"];
-                        for (i = 0; i < requiredFields.length; i++) {
+                        for (let i = 0; i < requiredFields.length; i++) {
                             if (!(requiredFields[i] in weatherData[stationID].metar)) {
                                 /*We are missed one of the required fields for perf calculations*/
                                 inputWeather(weatherData[stationID].metar);
@@ -188,8 +190,10 @@ function inputWeather(weatherData = null) {
 function clearManualWeather() {
     let inputIDs = ["time", "windHeading", "windSpeed", "visibility", "clouds", "temperature", "dewpoint", "altimeter", "remarks", "fieldAlt"];
     inputIDs.forEach(id => {
-        document.getElementById(id).value = "";
+        if (document.getElementById(id))
+            document.getElementById(id).value = "";
     });
+    document.getElementById("weatherInfo").innerHTML = "";
     document.getElementById("alt-wDensityAlt").innerHTML = "";
     document.getElementById("alt-wPressureAlt").innerHTML = "";
 }
@@ -214,16 +218,19 @@ function weatherInputClick() {
         weatherData[station_id]["metar"] = {};
     weatherData[station_id]["metar"]["manually_entered"] = true;
     weatherData[station_id]["metar"]["station_id"] = station_id;
-    weatherData[station_id]["metar"]["obs_time"] = document.getElementById("time").value;
+    if (document.getElementById("time"))
+        weatherData[station_id]["metar"]["obs_time"] = document.getElementById("time").value;
     weatherData[station_id]["metar"]["temp_c"] = parseFloat(document.getElementById("temperature").value);
     weatherData[station_id]["metar"]["dewpoint_c"] = parseFloat(document.getElementById("dewpoint").value);
     weatherData[station_id]["metar"]["visibility_statute_mi"] = parseFloat(document.getElementById("visibility").value);
-    weatherData[station_id]["metar"]["clouds"] = document.getElementById("clouds").value;
+    if (document.getElementById("clouds"))
+        weatherData[station_id]["metar"]["clouds"] = document.getElementById("clouds").value;
     weatherData[station_id]["metar"]["elevation_m"] = parseFloat(document.getElementById("fieldAlt").value) / 3.28084;
     weatherData[station_id]["metar"]["altim_in_hg"] = parseFloat(document.getElementById("altimeter").value);
     weatherData[station_id]["metar"]["wind_dir_degrees"] = parseFloat(document.getElementById("windHeading").value);
     weatherData[station_id]["metar"]["wind_speed_kt"] = parseFloat(document.getElementById("windSpeed").value);
-    weatherData[station_id]["metar"]["remarks"] = document.getElementById("remarks").value;
+    if (document.getElementById("remarks"))
+        weatherData[station_id]["metar"]["remarks"] = document.getElementById("remarks").value;
     sessionStorage.setItem("weather", JSON.stringify(weatherData));
     updateDataTimestamp();
     var pressureAlt = weatherData[station_id]["metar"]["elevation_m"] * 3.28084 + ((29.92 - parseFloat(weatherData[station_id]["metar"].altim_in_hg)) * 1000);
@@ -403,7 +410,7 @@ function setTAF(weatherTAF) {
         index = rawTAF.indexOf(indicator);
         newLines.push(rawTAF.slice(0, index));
         line = rawTAF.slice(index);
-        for (i = 1; i < nLines; i++) {
+        for (let i = 1; i < nLines; i++) {
             var tempLine = line.slice(indicator.length);
             if (i + 1 === nLines) {
                 newLines.push(indicator + tempLine);
@@ -417,7 +424,7 @@ function setTAF(weatherTAF) {
         }
     }
     document.getElementById("TAF").innerHTML = "Current Time: " + getFormattedUTCTime() + "<br>";
-    for (i = 0; i < newLines.length; i++) {
+    for (let i = 0; i < newLines.length; i++) {
         document.getElementById("TAF").innerHTML += newLines[i] + "<br>"
     }
 }
@@ -426,6 +433,7 @@ function runwayChange(str, station_id = null) {
     /**Called when the runway heading input changes,
      * it then calls the compute functions to recalculate distances**/
     displayError("");
+    let heading;
     if (str === "") {
         document.getElementById("xWind").innerHTML = "";
         document.getElementById("headWind").innerHTML = "";
@@ -462,6 +470,7 @@ function runwayChange(str, station_id = null) {
         var weatherData = allWeatherData[station_id]["metar"];
         var weatherTAF = allWeatherData[station_id]["taf"];
         document.getElementById("weatherWarning").style.display = "none";
+        let winds;
         if (weatherData["wind_dir_degrees"] === "0") {
             winds = {
                 xWind: 0,
@@ -709,7 +718,7 @@ function getUpperLower(dict, val) {
     }).sort(compareDecimals);
     let lower;
     let upper;
-    for (i = 0; i < keys.length; i++) {
+    for (let i = 0; i < keys.length; i++) {
         if (val > keys[i]) {
             lower = keys[i];
             if (i + 1 < keys.length) {
@@ -908,7 +917,7 @@ function densityAltitudeChart(PA_lines, pressureAlt, temp) {
     const PA_Values = Object.keys(PA_lines);
     // Check if PA_lines type contains different equations for different temps
     if (typeof PA_lines[PA_Values[0]][Object.keys(PA_lines[PA_Values[0]])[0]] == "object") {
-        for (i = 0; i < PA_Values.length; i++) {
+        for (let i = 0; i < PA_Values.length; i++) {
             bottomPA = parseFloat(PA_Values[i]);
             let PA_temps = Object.keys(PA_lines[PA_Values[i]]);
             PA_temps = PA_temps.map(e => {
@@ -988,7 +997,7 @@ function densityAltitudeChart(PA_lines, pressureAlt, temp) {
             }
         }
     } else {
-        for (i = 0; i < PA_Values.length; i++) {
+        for (let i = 0; i < PA_Values.length; i++) {
             bottomPA = parseFloat(PA_Values[i]);
             var useExp = false;
             var useExp1 = false;
@@ -1036,7 +1045,7 @@ function densityAltitudeChart(PA_lines, pressureAlt, temp) {
 
 function weightChart(lines, DA_Result, weight, maxWeight) {
     /**Takes the result from the first portion of the chart (DA_Result) and landing weight to find the next section**/
-    for (i = 0; i < lines.length; i++) {
+    for (let i = 0; i < lines.length; i++) {
         var useExp = false;
         var useLog = false;
         if ("e" in lines[i]) {
@@ -1080,7 +1089,8 @@ function weightChart(lines, DA_Result, weight, maxWeight) {
                 }
             } else if ((DA_Result >= bottomIntercept) && (DA_Result < topIntercept)) {
                 /*Between two lines (usually we use this) */
-                skew = (DA_Result - bottomIntercept) / (topIntercept - bottomIntercept);
+                let skew = (DA_Result - bottomIntercept) / (topIntercept - bottomIntercept);
+                let topValue, bottomValue;
                 if (useExp1) {
                     topValue = parseFloat(lines[i + 1].b) * Math.E ** (parseFloat(lines[i + 1].e) * weight);
                 } else if (useLog1) {
@@ -1105,12 +1115,13 @@ function windObstacleChart(lines, previous_result, input_x, reverse = false) {
     /**Interpolates the wind or obstacle lines section of the landing data.
      * It will do either since both start at 0
      * **/
-    for (i = 0; i < lines.length; i++) {
+    for (let i = 0; i < lines.length; i++) {
         var useExp = false;
         var useExp1 = false;
         if ("e" in lines[i]) {
             useExp = true;
         }
+        let bottomIntercept, topIntercept, skew;
         if (reverse) {
             if (useExp) {
                 bottomIntercept = parseFloat(lines[i].b) * Math.E ** (parseFloat(lines[i].e) * 50);
@@ -1149,6 +1160,7 @@ function windObstacleChart(lines, previous_result, input_x, reverse = false) {
                 }
             } else if ((previous_result >= bottomIntercept) && (previous_result < topIntercept)) {
                 /*Between two lines (usually we use this) */
+                let topValue, bottomValue;
                 skew = (previous_result - bottomIntercept) / (topIntercept - bottomIntercept);
                 if (useExp) {
                     bottomValue = parseFloat(lines[i].b) * Math.E ** (parseFloat(lines[i].e) * input_x);
@@ -1190,7 +1202,7 @@ function updateAirports() {
     if (!perfData || !weatherData) return;
     for (let airport in perfData) {
         let valid = true;
-        for (i = 0; i < requiredFields.length; i++) {
+        for (let i = 0; i < requiredFields.length; i++) {
             valid = valid && requiredFields[i] in weatherData[airport].metar;
         }
         if (valid) {

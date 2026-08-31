@@ -331,7 +331,7 @@ function fillWB(computedData, userInput, fwdCG, validCG, isPrint) {
         document.getElementById("bag2_cg_td").innerHTML = "-";
         document.getElementById("bag2_mnt_td").innerHTML = "-";
     }
-    if ((aircraftObj.model === "DA40XL") || (aircraftObj.model === "DA40XLS")) {
+    if ((aircraftObj.model === "DA40XL") || (aircraftObj.model === "DA40XLS") || (aircraftObj.model === "C172S")) {
         if (!isPrint) {
             document.getElementById("bag2_tr").style.display = "";
         }
@@ -550,9 +550,21 @@ function waitForPrintIframe(timeoutMs = 5000) {
     });
 }
 
+function preparePrintIframe() {
+    const iframe = document.getElementById("print-iframe");
+    if (iframe) {
+        // The hosting CMS can override the iframe's size. Force a desktop-sized
+        // viewport so the print page does not reflow into narrow Bootstrap columns.
+        iframe.style.setProperty("width", "850px", "important");
+        iframe.style.setProperty("height", "1100px", "important");
+        iframe.style.setProperty("display", "block", "important");
+    }
+}
+
 async function savePicture() {
     const saveButton = document.getElementById("saveButton");
     saveButton.disabled = true;
+    preparePrintIframe();
     // Preserve gesture on iOS by opening blank window synchronously
     let openedWindow = null;
     const ios = isIOS();
@@ -562,6 +574,16 @@ async function savePicture() {
     }
     try {
         const printDoc = await waitForPrintIframe();
+        // The hosted print template uses `.sheet-outer.letter` as the page itself,
+        // while the local template has an inner `.sheet`. Give the hosted version
+        // the same 8.5in (816px) page width before it lays out its Bootstrap rows.
+        const sheetOuter = printDoc.querySelector(".sheet-outer.letter");
+        if (sheetOuter && !sheetOuter.querySelector(".sheet")) {
+            sheetOuter.style.setProperty("width", "816px", "important");
+            sheetOuter.style.setProperty("margin", "0", "important");
+            sheetOuter.style.setProperty("box-sizing", "border-box", "important");
+            sheetOuter.style.setProperty("padding", "20px", "important");
+        }
         // Ensure print canvas is up-to-date: copy CG from main page
         const srcCanvas = document.getElementById("cgCanvas");
         const destCanvas = printDoc.getElementById("cgCanvas");
@@ -570,11 +592,17 @@ async function savePicture() {
             destCtx.clearRect(0, 0, destCanvas.width, destCanvas.height);
             destCtx.drawImage(srcCanvas, 0, 0, destCanvas.width, destCanvas.height);
         }
-        // Allow paint
-        await new Promise(r => setTimeout(r, 200));
+        // Allow the resized iframe viewport to finish laying out the print document.
+        await new Promise(resolve => setTimeout(resolve, 200));
         const contentEl = printDoc.getElementById("content");
         if (!contentEl) throw new Error("print content not found");
-        const canvas = await html2canvas(contentEl, {
+        // Capture the page itself, not the CMS content wrapper around it. The local
+        // print template names this element `.sheet`; the hosted template does not.
+        const printPage = contentEl.querySelector(".sheet-outer.letter .sheet") ||
+            contentEl.querySelector(".sheet-outer.letter") ||
+            contentEl.querySelector(".sheet") ||
+            contentEl;
+        const canvas = await html2canvas(printPage, {
             scale: 2,
             useCORS: true,
             logging: false,

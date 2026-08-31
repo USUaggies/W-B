@@ -75,8 +75,10 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
             temp = parseFloat(weatherData.temp_c);
             dewpoint = parseFloat(weatherData.dewpoint_c);
             document.getElementById("wTempDew-" + suffix).innerHTML = temp + "&degC/" + dewpoint + "&degC";
-            document.getElementById("wWx-" + suffix).innerHTML = weatherData.wx_string ? weatherData.wx_string : "N/A";
-            document.getElementById("wRmks-" + suffix).innerHTML = weatherData.raw_text.split("RMK")[1];
+            if (document.getElementById("wWx-" + suffix))
+                document.getElementById("wWx-" + suffix).innerHTML = weatherData.wx_string ? weatherData.wx_string : "N/A";
+            if (document.getElementById("wRmks-" + suffix))
+                document.getElementById("wRmks-" + suffix).innerHTML = weatherData.raw_text.split("RMK")[1];
         }
         var obsTime = new Date(weatherData.observation_time);
         document.getElementById("wTime-" + suffix).innerHTML = zeroPad(obsTime.getHours(), 2) + ":" + zeroPad(obsTime.getMinutes(), 2) +

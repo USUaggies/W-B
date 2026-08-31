@@ -752,7 +752,7 @@ const aircraftModels = [
 
         maxBaggage1: 120,
 
-        maxBaggage2: 60,
+        maxBaggage2: 50,
 
         maxBaggage: 120,
 
