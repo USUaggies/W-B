@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DA40 Fixed-Pitch Takeoff AFM Trace</title>
+<style>
+  *{box-sizing:border-box} body{margin:0;background:#f5f6f8;color:#18212b;font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+  main{max-width:1400px;margin:28px auto;padding:0 18px} h1{margin:0 0 6px;font-size:24px}.note{color:#52606d;margin:0 0 18px}
+  form,.result,section{background:#fff;border:1px solid #d7dce2;border-radius:9px;padding:16px;margin-top:14px;box-shadow:0 1px 2px #00000008}
+  form{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr)) auto;gap:12px;align-items:end}label{display:grid;gap:5px;font-weight:650;font-size:13px}input,select{width:100%;padding:8px;border:1px solid #aeb8c2;border-radius:5px;font:inherit}button{padding:9px 14px;border:0;border-radius:5px;background:#075985;color:white;font-weight:700;cursor:pointer}
+  .result{font-size:18px;font-weight:750}.muted{color:#52606d;font-weight:400;font-size:13px}table{border-collapse:collapse;width:100%;font-size:13px}th,td{border:1px solid #d7dce2;padding:8px;text-align:left;vertical-align:top}th{background:#edf3f7}td.num{text-align:right;font-variant-numeric:tabular-nums}code{font-size:12px;white-space:normal}@media(max-width:700px){form{grid-template-columns:repeat(2,1fr)}button{grid-column:span 2}}
+  #chartWrap{overflow-x:auto}#chart{display:block;width:auto;min-width:100%;height:auto;background:#fff;border:1px solid #d7dce2;border-radius:8px}.legend{margin:7px 0 0;font-size:12px;color:#52606d}.layout{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 12px}.layout label{min-width:150px}.layout input{padding:0}
+</style>
+<main>
+  <h1>DA40 Fixed-Pitch Takeoff AFM trace</h1>
+  <p class="note">Recreates the left-to-right reading of the supplied AFM chart. Wind is positive for headwind and negative for tailwind. This is a troubleshooting view; use the approved AFM/POH for operational decisions.</p>
+  <form id="inputs">
+    <label>Aircraft<input id="aircraft" list="aircraftOptions" value="DA40FP"><datalist id="aircraftOptions"><option value="DA40FP"><option value="DA40CS"></datalist></label>
+    <label>AFM chart<select id="chartType"><option value="takeoff">Takeoff ground roll</option><option value="takeoff50">Takeoff over 50 ft</option><option value="landing">Landing ground roll</option><option value="landing50">Landing over 50 ft</option><option value="climb">Climb</option></select></label>
+    <label>Outside air temperature °C<input id="temp" type="number" value="15" step="1"></label>
+    <label>Pressure altitude ft<input id="alt" type="number" value="0" step="100"></label>
+    <label id="massLabel">Takeoff mass kg<input id="mass" type="number" value="950" step="1"></label>
+    <label>Weight unit<select id="weightUnit"><option value="kg">kg</option><option value="lb">lb</option></select></label>
+    <label>Wind component kt<input id="wind" type="number" value="10" step="1"></label>
+    <button>Trace AFM</button>
+  </form>
+  <div class="result" id="result"></div>
+  <section><h2>AFM-style graph</h2><div class="layout"><label>Temperature panel width<input id="p1Width" type="range" min="350" max="900" value="570"></label><label>Mass panel width<input id="p2Width" type="range" min="100" max="400" value="165"></label><label>Wind panel width<input id="p3Width" type="range" min="100" max="400" value="165"></label><label>Obstacle panel width<input id="p4Width" type="range" min="40" max="250" value="70"></label><label>Space between panels<input id="panelGap" type="range" min="10" max="160" value="42"></label></div><div id="chartWrap"><canvas id="chart" width="1080" height="570"></canvas></div><p class="legend">Black = model curves · blue = the entered-condition path · orange dot = final graph result. This is a diagnostic rendering of the model, not a replacement for the POH chart.</p></section>
+  <section><h2>Panel-by-panel calculation</h2><table><thead><tr><th>AFM panel</th><th>What the tool reads</th><th class="num">Chart value (%)</th><th class="num" id="outputHeading">Equivalent distance</th></tr></thead><tbody id="summary"></tbody></table></section>
+  <section><h2>Interpolation detail</h2><table><thead><tr><th>Step</th><th>Lower curve</th><th>Upper curve</th><th class="num">Interpolation</th><th class="num">Output</th></tr></thead><tbody id="detail"></tbody></table></section>
+</main>
+<script src="../scripts/perfdata.js"></script>
+<script>
+const fmt=n=>Number.isFinite(n)?n.toFixed(3):'—';
+const kgPerLb=0.453592;
+const curve=(line,x)=>'e' in line ? line.b*Math.exp(line.e*x) : 'c' in line ? line.c*Math.log(Math.max(x,1))+line.b : line.m*x+line.b;
+const equation=line=>'e' in line ? `${fmt(line.b)} × exp(${fmt(line.e)}x)` : 'c' in line ? `${fmt(line.c)} × ln(x) + ${fmt(line.b)}` : `${fmt(line.m)}x + ${fmt(line.b)}`;
+function bracket(values, value){
+  const keys=values.map(Number).sort((a,b)=>a-b);
+  if(value<=keys[0]) return [keys[0],keys[0],0];
+  for(let i=0;i<keys.length-1;i++) if(value<keys[i+1]) return [keys[i],keys[i+1],(value-keys[i])/(keys[i+1]-keys[i])];
+  return [keys.at(-1),keys.at(-1),0];
+}
+function traceDA(lines, alt, temp){
+  const [lo,hi,t]=bracket(Object.keys(lines),alt), a=curve(lines[lo],temp), b=curve(lines[hi],temp);
+  return {out:a+(b-a)*t,lo,hi,t,a,b,unit:'ft PA',detail:`T=${temp}°C; ${lo} ft: ${equation(lines[lo])}; ${hi} ft: ${equation(lines[hi])}`};
+}
+function traceWeight(lines, prior, pounds, maxWeight){
+  const anchors=lines.map(line=>curve(line,maxWeight));
+  let i=anchors.findIndex((v,index)=>prior<v && index>0)-1;
+  if(prior<anchors[0]) i=0; else if(i<0) i=lines.length-1;
+  const lo=lines[i], loAnchor=anchors[i], loValue=curve(lo,pounds);
+  if(prior<anchors[0]) return {out:loValue,lo:i,hi:i,t:0,a:loValue,b:loValue,detail:`Mass converted to ${fmt(pounds)} lb; clamped to the first weight curve`};
+  if(i===lines.length-1) return {out:loValue+(prior-loAnchor),lo:i,hi:i,t:0,a:loValue,b:loValue,detail:`Mass converted to ${fmt(pounds)} lb; reference at ${maxWeight} lb`};
+  const hi=lines[i+1], hiAnchor=anchors[i+1], hiValue=curve(hi,pounds), t=(prior-loAnchor)/(hiAnchor-loAnchor);
+  return {out:loValue+(hiValue-loValue)*t,lo:i,hi:i+1,t,a:loValue,b:hiValue,detail:`Mass converted to ${fmt(pounds)} lb; reference at ${maxWeight} lb`};
+}
+function traceWind(lines, prior, wind){
+  const anchors=lines.map(line=>line.b);
+  let i=anchors.findIndex((v,index)=>prior<v && index>0)-1;
+  if(prior<anchors[0]) i=0; else if(i<0) i=lines.length-1;
+  const lo=lines[i], loValue=curve(lo,wind);
+  if(prior<anchors[0]) return {out:loValue,lo:i,hi:i,t:0,a:loValue,b:loValue,detail:`${wind} kt applied; clamped to the first wind curve`};
+  if(i===lines.length-1) return {out:loValue+(prior-lo.b),lo:i,hi:i,t:0,a:loValue,b:loValue,detail:`${wind} kt applied to ${equation(lo)}`};
+  const hi=lines[i+1], hiValue=curve(hi,wind), t=(prior-lo.b)/(hi.b-lo.b);
+  return {out:loValue+(hiValue-loValue)*t,lo:i,hi:i+1,t,a:loValue,b:hiValue,detail:`${wind} kt applied to both wind curves`};
+}
+function traceObstacle(lines, prior, obstacle, reverse){
+  const anchors=lines.map(line=>curve(line,reverse?50:0));
+  let i=anchors.findIndex((v,index)=>prior<v && index>0)-1;
+  if(prior<anchors[0]) i=0; else if(i<0) i=lines.length-1;
+  const lo=lines[i], loValue=curve(lo,obstacle);
+  if(prior<anchors[0]) return {out:loValue,lo:i,hi:i,t:0,a:loValue,b:loValue,detail:`${obstacle} ft obstacle applied; clamped to the first obstacle curve`};
+  if(i===lines.length-1) return {out:loValue+(prior-anchors[i]),lo:i,hi:i,t:0,a:loValue,b:loValue,detail:`${obstacle} ft obstacle applied`};
+  const hi=lines[i+1], hiValue=curve(hi,obstacle), t=(prior-anchors[i])/(anchors[i+1]-anchors[i]);
+  return {out:loValue+(hiValue-loValue)*t,lo:i,hi:i+1,t,a:loValue,b:hiValue,detail:`${obstacle} ft obstacle applied`};
+}
+function row(cells){return '<tr>'+cells.map((v,i)=>`<td class="${i>1?'num':''}">${v}</td>`).join('')+'</tr>';}
+let lastGraphData=null;
+const traceStorageKey='da40_afm_trace_last_calculation_v1';
+const savedFieldIds=['aircraft','chartType','temp','alt','mass','weightUnit','wind','p1Width','p2Width','p3Width','p4Width','panelGap'];
+let lastMassUnit='kg';
+function syncMassUnit(convertValue){
+  const unit=document.querySelector('#weightUnit').value, mass=document.querySelector('#mass');
+  if(convertValue && Number.isFinite(Number(mass.value)) && unit!==lastMassUnit){
+    const kg=lastMassUnit==='lb'?Number(mass.value)*kgPerLb:Number(mass.value);
+    mass.value=(unit==='lb'?kg/kgPerLb:kg).toFixed(1).replace(/\.0$/,'');
+  }
+  document.querySelector('#massLabel').childNodes[0].nodeValue=`Takeoff mass ${unit}`;
+  lastMassUnit=unit;
+}
+function saveLastCalculation(){
+  try{const saved={};savedFieldIds.forEach(id=>saved[id]=document.querySelector('#'+id).value);localStorage.setItem(traceStorageKey,JSON.stringify(saved));}catch(e){}
+}
+function restoreLastCalculation(){
+  try{const saved=JSON.parse(localStorage.getItem(traceStorageKey)||'null');if(saved) savedFieldIds.forEach(id=>{if(saved[id]!==undefined)document.querySelector('#'+id).value=saved[id];});}catch(e){}
+}
+function drawGraph(data){
+  const canvas=document.querySelector('#chart'), ctx=canvas.getContext('2d');
+  const {temp,alt,kg,massDisplay,weightUnit,wind,da,weight,windTrace,obstacleTrace,scale,model,type,maxMassKg,isCS,isClimb}=data;
+  const p1Width=Number(document.querySelector('#p1Width').value), p2Width=Number(document.querySelector('#p2Width').value), p3Width=Number(document.querySelector('#p3Width').value), p4Width=Number(document.querySelector('#p4Width').value), gap=Number(document.querySelector('#panelGap').value);
+  const tempMin=isCS?-20:(isClimb?-30:-35), tempMax=isCS?50:45, massMin=isCS?(isClimb?950:850):(isClimb?700:750);
+  const displayMass=value=>weightUnit==='lb'?value/kgPerLb:value;
+  const panelMax=displayMass(maxMassKg), panelMin=displayMass(massMin);
+  const panel=[{x:48,w:p1Width,min:tempMin,max:tempMax,label:'OUTSIDE AIR TEMPERATURE °C'}, {x:48+p1Width+gap,w:p2Width,min:panelMax,max:panelMin,label:`TAKEOFF MASS ${weightUnit}`}, {x:48+p1Width+gap+p2Width+gap,w:p3Width,min:0,max:20,label:'WIND COMPONENT kt'}];
+  if(obstacleTrace) panel.push({x:panel[2].x+panel[2].w+gap,w:p4Width,min:obstacleTrace.reverse?50:0,max:obstacleTrace.reverse?0:50,label:'OBSTACLE ft'});
+  const lastPanel=panel.at(-1), scaleX=lastPanel.x+lastPanel.w+36;
+  // Reserve the maximum gap so moving the gap slider never changes canvas width.
+  canvas.width=48+p1Width+p2Width+p3Width+p4Width+(3*160)+100; canvas.style.width=canvas.width+'px';
+  const top=44, bottom=505, yMin=scale.min, yMax=scale.max;
+  const px=(p,x)=>p.x+(x-p.min)/(p.max-p.min)*p.w, py=y=>bottom-(y-yMin)/(yMax-yMin)*(bottom-top);
+  const distance=pct=>pct*(scale.max-scale.min)/100+scale.min;
+  ctx.clearRect(0,0,canvas.width,canvas.height); ctx.fillStyle='#17212b'; ctx.font='13px system-ui';
+  // Panels, axes, and a light graph-paper grid.
+  for(const p of panel){
+    ctx.strokeStyle='#111';ctx.lineWidth=2;ctx.strokeRect(p.x,top,p.w,bottom-top);
+    ctx.strokeStyle='#d7dde3';ctx.lineWidth=1;ctx.setLineDash([2,3]);
+    for(let n=0;n<=5;n++){const x=p.x+n*p.w/5;ctx.beginPath();ctx.moveTo(x,top);ctx.lineTo(x,bottom);ctx.stroke();}
+    ctx.setLineDash([]);ctx.fillText(p.label,p.x,548);
+  }
+  // Horizontal AFM reference lines: a consistent dotted line every 200 m.
+  for(let y=Math.ceil(yMin/200)*200;y<=yMax;y+=200){
+    const yy=py(y); if(yy<top||yy>bottom) continue;
+    ctx.strokeStyle='#c5cdd5';ctx.lineWidth=1;ctx.setLineDash([2,3]);
+    panel.forEach(p=>{ctx.beginPath();ctx.moveTo(p.x,yy);ctx.lineTo(p.x+p.w,yy);ctx.stroke();});
+    ctx.setLineDash([]);ctx.fillStyle='#344250';ctx.fillText(y,scaleX+12,yy+4);ctx.strokeStyle='#c5cdd5';ctx.beginPath();ctx.moveTo(scaleX,yy);ctx.lineTo(scaleX+8,yy);ctx.stroke();
+  }
+  ctx.save();ctx.translate(scaleX+46,420);ctx.rotate(-Math.PI/2);ctx.fillStyle='#17212b';ctx.font='bold 12px system-ui';ctx.fillText(isClimb?'CLIMB RATE  fpm':'TAKEOFF GROUND ROLL  m',0,0);ctx.restore();
+  const drawLine=(p,fn)=>{ctx.beginPath();for(let i=0;i<=120;i++){const x=p.min+(p.max-p.min)*i/120,y=distance(fn(x));const X=px(p,x),Y=py(y);i?ctx.lineTo(X,Y):ctx.moveTo(X,Y);}ctx.stroke();};
+  ctx.strokeStyle='#1b1b1b';ctx.lineWidth=1.5;
+  const daLines=model(type,'DA'); Object.keys(daLines).forEach(key=>drawLine(panel[0],x=>curve(daLines[key],x)));
+  const weightLines=model(type,'weight'); weightLines.forEach(line=>drawLine(panel[1],x=>curve(line,weightUnit==='lb'?x:x/kgPerLb)));
+  (model(type,'hwind')||[]).forEach(line=>drawLine(panel[2],x=>curve(line,x)));
+  (model(type,'twind')||[]).forEach(line=>drawLine(panel[2],x=>curve(line,x)));
+  if(obstacleTrace) model(type,'obstacle').forEach(line=>drawLine(panel[3],x=>curve(line,x)));
+  // Axis labels.
+  ctx.fillStyle='#17212b';ctx.font='11px system-ui';(isCS?[-20,-5,10,25,40,50]:(isClimb?[-30,-15,0,15,30,45]:[-35,-20,-5,10,25,40])).forEach(x=>ctx.fillText(x,px(panel[0],x)-7,522));(isCS?(isClimb?[1200,1150,1100,1050,1000,950]:[1200,1100,1000,900,850]):(isClimb?[1150,1050,950,850,750,700]:[1150,1050,950,850,750])).map(displayMass).forEach(x=>ctx.fillText(Math.round(x),px(panel[1],x)-10,522));[0,5,10,15,20].forEach(x=>ctx.fillText(x,px(panel[2],x)-4,522));
+  if(obstacleTrace) (obstacleTrace.reverse?[50,25,0]:[0,25,50]).forEach(x=>ctx.fillText(x,px(panel[3],x)-4,522));
+  ctx.font='12px system-ui';ctx.fillText('Pressure altitude: '+alt+' ft',60,25);ctx.fillText(wind>=0?'Headwind curves slope down':'Tailwind curves slope up',870,25);
+  // Same left-to-right construction used when reading the AFM.
+  const finalTrace=obstacleTrace||windTrace, blue='#0676b8', p1x=px(panel[0],temp), p1y=py(distance(da.out)), p2left=px(panel[1],panelMax), p2x=px(panel[1],massDisplay), p2y=py(distance(weight.out)), p3left=px(panel[2],0), p3x=px(panel[2],Math.abs(wind)), p3y=py(distance(windTrace.out));
+  ctx.strokeStyle=blue;ctx.fillStyle=blue;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(p1x,bottom);ctx.lineTo(p1x,p1y);ctx.lineTo(panel[0].x+panel[0].w,p1y);ctx.lineTo(p2left,p1y);ctx.lineTo(p2x,p2y);ctx.lineTo(panel[1].x+panel[1].w,p2y);ctx.lineTo(p3left,p2y);ctx.lineTo(p3x,p3y);
+  let finalY=p3y, finalX=p3x; if(obstacleTrace){const p4=panel[3],x=px(p4,obstacleTrace.input),y=py(distance(obstacleTrace.out));ctx.lineTo(p4.x,p3y);ctx.lineTo(x,y);finalX=x;finalY=y;}ctx.stroke();
+  [[p1x,p1y],[p2x,p2y],[p3x,p3y],[finalX,finalY]].forEach(([x,y])=>{ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fill();});
+  ctx.strokeStyle=blue;ctx.beginPath();ctx.moveTo(finalX,finalY);ctx.lineTo(scaleX-8,finalY);ctx.stroke();ctx.fillStyle='#d85b00';ctx.beginPath();ctx.arc(scaleX-8,finalY,6,0,Math.PI*2);ctx.fill();ctx.fillStyle='#17212b';ctx.font='bold 12px system-ui';ctx.fillText(Math.round(distance(finalTrace.out))+(isClimb?' fpm':' m'),Math.max(0,scaleX-70),finalY-10);
+}
+function run(){
+  const temp=Number(document.querySelector('#temp').value), alt=Number(document.querySelector('#alt').value), massDisplay=Number(document.querySelector('#mass').value), weightUnit=document.querySelector('#weightUnit').value, kg=weightUnit==='lb'?massDisplay*kgPerLb:massDisplay, wind=Number(document.querySelector('#wind').value), aircraft=document.querySelector('#aircraft').value, requestedType=document.querySelector('#chartType').value;
+  if(![temp,alt,kg,wind].every(Number.isFinite)){ document.querySelector('#result').textContent='Enter a number in every field.'; return; }
+  saveLastCalculation();
+  const isCS=aircraft==='DA40CS', model=isCS?DA40CS:DA40FP, maxWeight=isCS?2646:2535;
+  let type=requestedType, useObstacle=false, reverseObstacle=false, obstacleInput=0;
+  // The CS AFM always has an obstacle panel for takeoff/landing.  Ground-roll
+  // charts end at 0 ft; over-50-ft charts end at 50 ft.  Landing reads the
+  // obstacle panel in reverse (50 ft on the left, 0 ft on the right).
+  if(isCS&&requestedType==='takeoff'){useObstacle=true;obstacleInput=0;}
+  if(isCS&&requestedType==='takeoff50'){type='takeoff';useObstacle=true;obstacleInput=50;}
+  if(isCS&&requestedType==='landing'){useObstacle=true;reverseObstacle=true;obstacleInput=0;}
+  if(isCS&&requestedType==='landing50'){type='landing';useObstacle=true;reverseObstacle=true;obstacleInput=50;}
+  const scale=model(type,'scale'), da=traceDA(model(type,'DA'),alt,temp), weight=traceWeight(model(type,'weight'),da.out,kg/0.453592,maxWeight);
+  let windTrace={out:weight.out,lo:'—',hi:'—',t:0,a:weight.out,b:weight.out,detail:requestedType==='climb'?'No wind panel for climb':'No wind correction'};
+  if(requestedType!=='climb'&&wind!==0){const windLines=wind>=0?model(type,'hwind'):model(type,'twind'); windTrace=windLines?traceWind(windLines,weight.out,Math.abs(wind)):{...windTrace,out:weight.out*(1+.05*Math.abs(wind)),detail:'CS landing tailwind: +5% per knot'};}
+  let obstacleTrace=null; if(useObstacle){obstacleTrace=traceObstacle(model(type,'obstacle'),windTrace.out,obstacleInput,reverseObstacle);obstacleTrace.input=obstacleInput;obstacleTrace.reverse=reverseObstacle;}
+  const finalTrace=obstacleTrace||windTrace, outputValue=finalTrace.out*(scale.max-scale.min)/100+scale.min, isClimb=requestedType==='climb';
+  const outputText=value=>isClimb?`${fmt(value)} fpm`:`${fmt(value)} m`;
+  document.querySelector('#outputHeading').textContent=isClimb?'Climb rate':'Equivalent distance';
+  document.querySelector('#result').innerHTML=isClimb?`${aircraft} climb: ${Math.round(outputValue)} fpm <span class="muted">(final chart value ${fmt(finalTrace.out)}%)</span>`:`${aircraft} ${requestedType}: ${Math.round(outputValue)} m <span class="muted">(${Math.round(outputValue*3.28084)} ft; final chart value ${fmt(finalTrace.out)}%)</span>`;
+  document.querySelector('#summary').innerHTML=[
+    row(['1. Temperature / pressure altitude',`${alt} ft at ${temp}°C`,fmt(da.out),outputText(da.out*(scale.max-scale.min)/100+scale.min)]),
+    row(['2. Takeoff mass',weightUnit==='lb'?`${massDisplay} lb (${fmt(kg)} kg)`: `${massDisplay} kg (${fmt(kg/kgPerLb)} lb)`,fmt(weight.out),outputText(weight.out*(scale.max-scale.min)/100+scale.min)]),
+    row(['3. '+(wind>=0?'Headwind':'Tailwind'),`${Math.abs(wind)} kt`,fmt(windTrace.out),outputText(windTrace.out*(scale.max-scale.min)/100+scale.min)]),
+    obstacleTrace?row(['4. Obstacle',`${obstacleInput} ft`,fmt(obstacleTrace.out),outputText(outputValue)]):''
+  ].join('');
+  document.querySelector('#detail').innerHTML=[
+    row(['Panel 1 — PA lines',`${da.lo} ft → ${fmt(da.a)}%<br><code>${equation(model(type,'DA')[da.lo])}</code>`,`${da.hi} ft → ${fmt(da.b)}%<br><code>${equation(model(type,'DA')[da.hi])}</code>`,fmt(da.t),fmt(da.out)]),
+    row(['Panel 2 — mass lines',`line ${weight.lo} → ${fmt(weight.a)}%`,`line ${weight.hi} → ${fmt(weight.b)}%`,fmt(weight.t),fmt(weight.out)]),
+    row(['Panel 3 — '+(wind>=0?'headwind':'tailwind'),`${windTrace.lo==='—'?'No correction':'line '+windTrace.lo+' → '+fmt(windTrace.a)+'%'}`,`${windTrace.hi==='—'?'No correction':'line '+windTrace.hi+' → '+fmt(windTrace.b)+'%'}`,fmt(windTrace.t),fmt(windTrace.out)]),
+    obstacleTrace?row(['Panel 4 — obstacle',`line ${obstacleTrace.lo} → ${fmt(obstacleTrace.a)}%`,`line ${obstacleTrace.hi} → ${fmt(obstacleTrace.b)}%`,fmt(obstacleTrace.t),fmt(obstacleTrace.out)]):'',
+    row(['Scale',`${scale.min}–${scale.max} ${isClimb?'fpm':'m'}`,finalTrace.detail,'—',isClimb?`${fmt(outputValue)} fpm`:`${fmt(outputValue)} m / ${fmt(outputValue*3.28084)} ft`])
+  ].join('');
+  lastGraphData={temp,alt,kg,massDisplay,weightUnit,wind,da,weight,windTrace,obstacleTrace,scale,model,type,maxMassKg:isCS?1200:1150,isCS,isClimb};
+  drawGraph(lastGraphData);
+}
+document.querySelector('#inputs').addEventListener('submit',event=>{event.preventDefault();run();});
+document.querySelector('#weightUnit').addEventListener('change',()=>{syncMassUnit(true);saveLastCalculation();run();});
+document.querySelectorAll('.layout input').forEach(input=>input.addEventListener('input',()=>{saveLastCalculation();if(lastGraphData) drawGraph(lastGraphData);}));
+restoreLastCalculation(); syncMassUnit(false); run();
+</script>
+</html>

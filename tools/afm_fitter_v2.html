@@ -1,0 +1,824 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DA40 Fixed-Pitch Takeoff AFM Fitter v2</title>
+<style>
+  *{box-sizing:border-box;font-family:system-ui,Segoe UI,Helvetica,Arial,sans-serif}
+  body{margin:0;background:#fafafa;color:#111}
+  header{padding:10px 14px;background:#111;color:#fff;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  header h1{font-size:15px;margin:0}
+  header button, header select{padding:6px 10px;border-radius:6px;border:1px solid #ccc;background:#fff;cursor:pointer}
+  #wrap{display:flex;gap:10px;padding:10px;overflow:auto}
+  .panel{border:1.5px solid #000;background:#fff;position:relative;flex-shrink:0}
+  .panel canvas{display:block}
+  .label{position:absolute;left:6px;top:4px;font-size:11px;font-weight:700;background:#fff;padding:2px 6px;border:1px solid #000}
+  #p1{width:467px;height:454px}
+  #p2{width:143px;height:454px}
+  #p3{width:162px;height:454px}
+  #p4{width:50px;height:500px}
+  #p1 canvas{width:467px;height:454px}
+  #p2 canvas{width:143px;height:454px}
+  #p3 canvas{width:162px;height:454px}
+  #p4 canvas{width:50px;height:500px}
+  #p3.hidden, #p4.hidden{display:none}
+  #p3.climb-hidden, #p4.climb-hidden{display:none}
+  #rightScale{width:70px;height:500px;border:1.5px solid #000;border-left:none;background:#fff;position:relative;flex-shrink:0}
+  #editor{padding:10px}
+  table{border-collapse:collapse;width:100%;font-size:12px}
+  th,td{border:1px solid #ccc;padding:4px 6px;text-align:left}
+  th{background:#eee;position:sticky;top:0}
+  td input{width:90px;padding:2px 4px;border:1px solid #bbb;border-radius:3px}
+  td input.changed{border-color:#e67e22;background:#fff8e1}
+  #log{white-space:pre-wrap;font-family:ui-monospace,Menlo,monospace;font-size:12px;background:#fff;border:1px solid #ddd;padding:8px;max-height:240px;overflow:auto}
+  .small{font-size:11px;color:#555}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="toolTitle">DA40 Fixed-Pitch TAKEOFF</h1>
+  <label>Chart <select id="chartMode"><option value="takeoff_fixed">DA40FP Takeoff</option><option value="fp_climb">DA40FP Climb</option><option value="climb">DA40CS Climb</option></select></label>
+  <label>Panel <select id="panelSel"><option value="0">1 OAT (-35→45°C)</option><option value="1">2 MASS (750→1150kg)</option><option value="2">3 WIND (0→20kt)</option><option value="3">4 OBSTACLE (0→50ft)</option></select></label>
+  <label>Curve <select id="curveSel"></select></label>
+  <button id="reset">Reset</button>
+  <button id="fitAll">Fit all</button>
+  <button id="export">Export</button>
+  <button id="loadAFM">Load AFM image…</button>
+  <input type="file" id="file" accept="image/*" hidden>
+  <input type="file" id="fileP2" accept="image/*" hidden>
+  <input type="file" id="fileP3" accept="image/*" hidden>
+  <input type="file" id="fileP4" accept="image/*" hidden>
+  <span class="small" id="chartSummary">Y −200–1400m • DA40FP takeoff values from perfdata.js • Drag & drop image onto any panel</span>
+</header>
+<div style="padding:6px 10px;background:#fffbe6;border-bottom:1px solid #ddd;font-size:12px">
+  Tip: Each panel now has its own <b>Load image</b>. Upload the cropped <b>weight graph</b> to P2, <b>wind</b> to P3, <b>obstacle</b> to P4 — or drag & drop an image directly onto any panel. Opacity slider below each panel. The main button loads to the panel selected in the Table’s <b>Panel</b> dropdown (defaults to P1).
+</div>
+<div id="layoutControls" style="padding:8px 10px;background:#fff;border-bottom:1px solid #ddd;display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:12px">
+  <label>Temperature width <input id="p1Width" type="range" min="300" max="900" value="467"></label>
+  <label>Weight width <input id="p2Width" type="range" min="120" max="600" value="143"></label>
+  <label>Panel space <input id="panelGap" type="range" min="0" max="120" value="10"></label>
+</div>
+<div id="wrap">
+  <div class="panel" id="p1"><div class="label">P1 OAT -35→45°C</div><canvas width="500" height="500"></canvas><button class="miniLoad" data-panel="0" style="position:absolute;right:4px;top:4px;font-size:10px;padding:2px 6px">Load image</button><input type="range" min="0" max="100" value="32" class="opac" data-panel="0" style="position:absolute;right:4px;bottom:4px;width:90px"></div>
+  <div class="panel" id="p2"><div class="label">P2 MASS 750→1150kg</div><canvas width="180" height="500"></canvas><button class="miniLoad" data-panel="1" style="position:absolute;right:4px;top:4px;font-size:10px;padding:2px 6px">Load image</button><input type="range" min="0" max="100" value="32" class="opac" data-panel="1" style="position:absolute;right:4px;bottom:4px;width:90px"></div>
+  <div class="panel" id="p3"><div class="label">P3 WIND 0→20kt</div><canvas width="180" height="500"></canvas><button class="miniLoad" data-panel="2" style="position:absolute;right:4px;top:4px;font-size:10px;padding:2px 6px">Load image</button><input type="range" min="0" max="100" value="32" class="opac" data-panel="2" style="position:absolute;right:4px;bottom:4px;width:90px"></div>
+  <div class="panel" id="p4"><div class="label">P4 OBST 0→50ft</div><canvas width="50" height="500"></canvas><button class="miniLoad" data-panel="3" style="position:absolute;right:4px;top:4px;font-size:10px;padding:2px 6px">Load image</button><input type="range" min="0" max="100" value="32" class="opac" data-panel="3" style="position:absolute;right:4px;bottom:4px;width:90px"></div>
+  <div id="rightScale"><canvas width="70" height="500"></canvas></div>
+</div>
+<div id="editor">
+  <div style="display:flex;gap:10px;align-items:start;flex-wrap:wrap">
+    <div style="flex:1;min-width:600px">
+      <h3 style="margin:6px 0">Existing perfdata.js parameters (editable) — DA40 fixed-pitch takeoff</h3>
+      <div id="tables"></div>
+      <p class="small">Original values from <code>scripts/perfdata.js:601</code>. Change any <code>m / e / b</code> and the red fitted line updates live. Yellow highlight = changed from original. Use Reset to revert.</p>
+    </div>
+    <div style="flex:1;min-width:400px">
+      <h3 style="margin:6px 0">How to use</h3>
+      <ol style="font-size:13px;line-height:1.5">
+        <li><b>Pre-loaded:</b> Black dots = sampled points from current <code>perfdata.js</code> (visual reference only). New dots, or black dots you drag, are the only points used for fitting. Blue = old original, Red = your edited/fitted.</li>
+        <li>Pick Panel/Curve via dropdown or click a panel, then <b>click to add points</b> or <b>drag existing points</b>. Right-click removes.</li>
+        <li>Or <b>edit the table</b> directly — type new <code>m</code>, <code>e</code>, <code>b</code>. Change is instant. Leave <code>e</code> empty for linear <code>m*x+b</code>, fill <code>e</code> for <code>b*exp(e*x)</code>.</li>
+        <li><b>Fit all from points</b> overwrites table with least-squares fit from your points.</li>
+        <li><b>Export</b> copies snippet to paste into <code>scripts/perfdata.js</code>. Also saved to <code>localStorage</code> automatically.</li>
+        <li>Python: <code>python3 tools/afm_fitter.py --demo --model linear --export /tmp/new.js</code></li>
+      </ol>
+      <h3>Digitized points & fit status</h3>
+      <div id="log"></div>
+    </div>
+  </div>
+</div>
+<script src="../scripts/perfdata.js"></script>
+<script>
+const requestedMode=new URLSearchParams(location.search).get('chart');
+const MODE=['climb','fp_climb'].includes(requestedMode) ? requestedMode : 'takeoff_fixed';
+const IS_CLIMB=MODE==='climb'||MODE==='fp_climb';
+const IS_FP_CLIMB=MODE==='fp_climb';
+const CLIMB_MODEL=IS_FP_CLIMB?DA40FP:DA40CS;
+const ACTIVE_MODEL=DA40FP, ACTIVE_TYPE='takeoff', ACTIVE_MAX_WEIGHT=MODE==='climb'?2646:2535;
+let SCALE=IS_CLIMB ? CLIMB_MODEL('climb','scale') : ACTIVE_MODEL(ACTIVE_TYPE,'scale');
+let YMIN=IS_CLIMB ? 0 : SCALE.min, YMAX=IS_CLIMB ? (IS_FP_CLIMB?1800:1600) : SCALE.max;
+function toDist(pct){return pct*(SCALE.max-SCALE.min)/100+SCALE.min}
+function toPct(dist){return (dist-SCALE.min)/(SCALE.max-SCALE.min)*100}
+const panels=[
+  {id:'p1', w:IS_CLIMB?443:467, h:IS_CLIMB?464:454, xmin:IS_CLIMB?(IS_FP_CLIMB?-30:-20):-35, xmax:IS_CLIMB?(IS_FP_CLIMB?45:50):45, key:'DA', curves:(IS_FP_CLIMB?[0,2000,4000,6000,8000,10000,12000]:[0,2000,4000,6000,8000,10000]).map(v=>({label:v+' ft', key:String(v)}))},
+  {id:'p2', w:IS_CLIMB?316:143, h:IS_CLIMB?465:454, xmin:IS_CLIMB?(IS_FP_CLIMB?1150:1200):1150, xmax:IS_CLIMB?(IS_FP_CLIMB?700:950):750, key:'weight', curves:[]},
+  {id:'p3', w:162, h:454, xmin:0, xmax:20, key:'wind', curves:[]},
+  {id:'p4', w:50, h:500, xmin:52, xmax:-2, key:'obstacle', curves:[]},
+];
+// Keep the canvas drawing buffer in the same coordinate system as its CSS
+// panel.  Previously P1/P2/P3 were displayed at 467/143/162px but retained
+// 500/180px buffers, which made dots render away from the mouse position.
+panels.forEach(panel=>{
+  const canvas=document.querySelector('#'+panel.id+' canvas');
+  canvas.width=panel.w;
+  canvas.height=panel.h;
+});
+const chartModeControl=document.getElementById('chartMode');
+chartModeControl.value=MODE;
+chartModeControl.addEventListener('change',()=>{
+  const url=new URL(location.href); url.searchParams.set('chart',chartModeControl.value); location.href=url.toString();
+});
+if(IS_CLIMB){
+  const climbName=IS_FP_CLIMB?'DA40FP':'DA40CS', massRange=IS_FP_CLIMB?'700→1150':'950→1200', yMax=IS_FP_CLIMB?1800:1600;
+  document.getElementById('toolTitle').textContent=climbName+' CLIMB — temperature and weight';
+  document.getElementById('chartSummary').textContent=`Y 0–${yMax} fpm • ${climbName} climb values from perfdata.js`;
+  document.querySelector('#p1 .label').textContent=`P1 OAT ${panels[0].xmin}→${panels[0].xmax}°C`;
+  document.querySelector('#p2 .label').textContent='P2 MASS '+massRange+'kg';
+  document.querySelector('#panelSel option[value="0"]').textContent=`1 OAT (${panels[0].xmin}→${panels[0].xmax}°C)`;
+  document.querySelector('#panelSel option[value="1"]').textContent='2 MASS ('+massRange+'kg)';
+  [...document.querySelectorAll('#panelSel option')].slice(2).forEach(option=>{option.hidden=true;option.disabled=true;});
+  document.getElementById('p1Width').value=panels[0].w;
+  document.getElementById('p2Width').value=panels[1].w;
+} else {
+  document.getElementById('toolTitle').textContent='DA40 Fixed-Pitch TAKEOFF';
+}
+function applyPanelLayout(){
+  panels[0].w=Number(document.getElementById('p1Width').value);
+  panels[1].w=Number(document.getElementById('p2Width').value);
+  document.getElementById('wrap').style.gap=Number(document.getElementById('panelGap').value)+'px';
+  [0,1].forEach(index=>{
+    const panel=panels[index], element=document.getElementById(panel.id), canvas=element.querySelector('canvas');
+    element.style.width=panel.w+'px'; element.style.height=panel.h+'px';
+    canvas.width=panel.w; canvas.height=panel.h; canvas.style.width=panel.w+'px'; canvas.style.height=panel.h+'px';
+  });
+  if(window.afmFitterReady) drawAll();
+}
+document.querySelectorAll('#layoutControls input').forEach(input=>input.addEventListener('input',applyPanelLayout));
+applyPanelLayout();
+// P2 curves are populated from the actual perfdata.js weight-line array.
+panels[1].curves = [];
+panels[2].curves = []; // filled after loadOriginal based on actual hwind/twind length
+panels[3].curves = []; // filled after loadOriginal based on obstacle length
+
+let original={}; // deep copy of original perfdata params
+let current={};  // editable copy
+let points={};   // digitized points per panel/curve
+function deep(o){ if(o===undefined) return undefined; try{ return JSON.parse(JSON.stringify(o)); } catch(e){ console.warn('deep failed',o,e); return undefined; } }
+function loadOriginal(){
+  const firstType = IS_CLIMB ? 'climb' : (MODE==='takeoff_fixed' ? 'takeoff' : 'landing');
+  const modelFn = MODE==='takeoff_fixed' ? ACTIVE_MODEL : (IS_CLIMB ? CLIMB_MODEL : DA40CS);
+  // P1 DA
+  const da=(MODE==='takeoff_fixed'?DA40FP:(IS_CLIMB?CLIMB_MODEL:DA40CS))(firstType,'DA');
+  original.p1={}; current.p1={};
+  for(let k in da){ original.p1[k]=deep(da[k]); current.p1[k]=deep(da[k]); }
+  // P2 weight
+  const w=(MODE==='takeoff_fixed'?DA40FP:(IS_CLIMB?CLIMB_MODEL:DA40CS))(firstType,'weight');
+  original.p2={}; current.p2={};
+  w.forEach((v,i)=>{ original.p2[i]=deep(v); current.p2[i]=deep(v); });
+  panels[1].curves=w.map((_,i)=>({label:'wLine '+i, key:String(i)}));
+  // P3/P4 hidden for climb (only 2 panels)
+  if(IS_CLIMB){
+    document.getElementById('p3').classList.add('climb-hidden');
+    document.getElementById('p4').classList.add('climb-hidden');
+    document.getElementById('rightScale').style.height='465px';
+    panels[2].curves=[]; panels[3].curves=[];
+    original.p3={}; current.p3={}; original.p4={}; current.p4={};
+    return;
+  } else if(MODE==='takeoff_fixed'){
+    document.getElementById('p3').classList.remove('climb-hidden');
+    document.getElementById('p4').classList.add('climb-hidden');
+    document.getElementById('rightScale').style.height='454px';
+  } else {
+    document.getElementById('p3').classList.remove('climb-hidden');
+    document.getElementById('p4').classList.remove('climb-hidden');
+    document.getElementById('rightScale').style.height='500px';
+  }
+  // P3 wind (landing has no twind) — expand per-line curves so each isoline has its own dots
+  const hwindArr=(MODE==='takeoff_fixed'?DA40FP:DA40CS)(firstType,'hwind');
+  original.p3={};
+  if(hwindArr) original.p3.hwind=deep(hwindArr);
+  const _tw=(MODE==='takeoff_fixed'?DA40FP:DA40CS)(firstType,'twind');
+  if(_tw!==undefined) original.p3.twind=deep(_tw);
+  current.p3=deep(original.p3);
+  // expand wind curves per line index for editing
+  panels[2].curves=[];
+  if(hwindArr) hwindArr.forEach((_,i)=> panels[2].curves.push({label:'hwind '+i, key:'hwind_'+i, arr:'hwind', idx:i}));
+  if(_tw) _tw.forEach((_,i)=> panels[2].curves.push({label:'twind '+i, key:'twind_'+i, arr:'twind', idx:i}));
+  if(panels[2].curves.length===0) panels[2].curves.push({label:'hwind 0', key:'hwind_0', arr:'hwind', idx:0});
+  // P4 obstacle — per line
+  const obsArr=(MODE==='takeoff_fixed'?DA40FP:DA40CS)(firstType,'obstacle');
+  if(obsArr){
+    original.p4={obstacle:deep(obsArr)};
+    current.p4=deep(original.p4);
+    panels[3].curves=[];
+    obsArr.forEach((_,i)=> panels[3].curves.push({label:'obs '+i, key:'obs_'+i, arr:'obstacle', idx:i}));
+  } else {
+    original.p4={}; current.p4={}; panels[3].curves=[];
+  }
+}
+loadOriginal();
+// auto-update if perfdata.js changed: compare stored original hash
+(function(){
+  const hash=JSON.stringify(original);
+  const prev=localStorage.getItem('afm_original_hash');
+  if(prev && prev!==hash){
+    console.log('perfdata changed, clearing old points');
+    localStorage.removeItem('afm_v2_points');
+  }
+  localStorage.setItem('afm_original_hash', hash);
+})();
+// initialise points by sampling existing curves so user sees them
+function samplePoints(){
+  points={};
+  // P1: for each PA, sample 5 temps -> y = toDist( m*temp+b or b*exp(e*temp))
+  points.p1={};
+  for(let k in original.p1){
+    const line=original.p1[k];
+    const pts=[];
+    for(let t of [-30,-10,5,20,35,45]){
+      let pct;
+      if('e' in line) pct=line.b*Math.exp(line.e*t);
+      else pct=line.m*t+line.b;
+      pts.push({x:t, y:toDist(pct,SCALE)});
+    }
+    points.p1[k]=pts;
+  }
+  // P2: DA40 fixed-pitch takeoff AFM mass range is 750–1150 kg.
+  points.p2={};
+  for(let i in original.p2){
+    const line=original.p2[i];
+    const pts=[];
+    const wRange = IS_CLIMB ? (IS_FP_CLIMB?[700,800,900,1000,1100,1150]:[950,1000,1100,1200]) : [750,850,950,1050,1150];
+    for(let w of wRange){
+      const wlb=w/0.453592;
+      let pct;
+      if('e' in line) pct=line.b*Math.exp(line.e*wlb);
+      else if('c' in line) pct=line.c*Math.log(Math.max(wlb,1))+line.b;
+      else pct=line.m*wlb+line.b;
+      // Use the same fpm value and coordinate transform as the drawn curve.
+      // The climb panel mapping already provides the required orientation.
+      const y=toDist(pct, SCALE);
+      pts.push({x:w, y});
+    }
+    points.p2[i]=pts;
+  }
+  // P3 per-line: 7 hwind lines -> 7×3 dots, so you see all isolines
+  points.p3={};
+  for(let k of Object.keys(original.p3)){
+    const arr=original.p3[k];
+    if(!arr) continue;
+    arr.forEach((line,i)=>{
+      const key=k+'_'+i;
+      points.p3[key]=[];
+      for(let w of [0,10,20]){
+        let y;
+        if('e' in line) y=toDist(line.b*Math.exp(line.e*w),SCALE);
+        else y=toDist(line.m*w+line.b,SCALE);
+        points.p3[key].push({x:w, y});
+      }
+    });
+  }
+  // P4 per-line: 9 obstacle lines -> 9×3 dots (as requested) — skip if climb (no obstacle)
+  points.p4={};
+  const arrObs=original.p4?.obstacle;
+  if(arrObs){
+    arrObs.forEach((line,i)=>{
+      const key='obs_'+i;
+      points.p4[key]=[];
+      for(let o of [0,25,50]){
+        let y;
+        if('e' in line) y=toDist(line.b*Math.exp(line.e*o),SCALE);
+        else y=toDist(line.m*o+line.b,SCALE);
+        points.p4[key].push({x:o, y});
+      }
+    });
+  }
+  // Do not seed reference dots outside the visible AFM panel.
+  const panelByStore={p1:panels[0],p2:panels[1],p3:panels[2],p4:panels[3]};
+  for(const [store,panel] of Object.entries(panelByStore))
+    for(const key of Object.keys(points[store]))
+      points[store][key]=points[store][key].filter(point=>pointIsInPanel(panel,point));
+  // These are visual references from perfdata.js, not digitized AFM data.
+  // A reference becomes a fitting point only when the user drags it.
+  for(const panelPoints of Object.values(points))
+    for(const curvePoints of Object.values(panelPoints))
+      curvePoints.forEach(point=>point.seed=true);
+}
+samplePoints();
+let saveKey= IS_CLIMB ? ('afm_v2_points_'+MODE+'_v3') : (MODE==='takeoff_fixed' ? 'afm_v2_points_takeoff_fixed_v3' : 'afm_v2_points_landing_v8'); // v3: DA40FP scale and reference points match perfdata.js
+let saved=localStorage.getItem(saveKey);
+let legacy=localStorage.getItem('afm_v2_points');
+if(!saved && legacy){
+  // migrate: if old landing/takeoff mismatch, discard
+  try{
+    const tmp=JSON.parse(legacy);
+    if(tmp.p3 && ('hwind' in tmp.p3) && !('hwind_0' in tmp.p3)){
+      console.log('migrating old p3 structure, discarding');
+    } else {
+      points=tmp; // keep if already per-line
+      saved=legacy;
+    }
+  }catch(e){}
+}
+if(saved){ try{ points=JSON.parse(saved); }catch(e){} }
+// auto-clear if weight numbers changed (hash check already above) or per-line mismatch
+if(points.p3 && ('hwind' in points.p3) && !('hwind_0' in points.p3)){
+  console.log('clearing stale p3');
+  delete points.p3; // will be resampled below via samplePoints already? need to resample those panels
+  // resample p3/p4 only
+  points.p3={};
+  for(let k of Object.keys(original.p3)){
+    const arr=original.p3[k];
+    if(!arr) continue;
+    arr.forEach((line,i)=>{
+      const key=k+'_'+i;
+      points.p3[key]=[];
+      for(let w of [0,10,20]){
+        let y; if('e' in line) y=toDist(line.b*Math.exp(line.e*w),SCALE); else y=toDist(line.m*w+line.b,SCALE);
+        points.p3[key].push({x:w, y});
+      }
+    });
+  }
+  points.p4={};
+  original.p4.obstacle.forEach((line,i)=>{
+    const key='obs_'+i;
+    points.p4[key]=[];
+    for(let o of [0,15,30,50]){
+      let y; if('e' in line) y=toDist(line.b*Math.exp(line.e*o),SCALE); else y=toDist(line.m*o+line.b,SCALE);
+      points.p4[key].push({x:o, y});
+    }
+  });
+}
+function savePoints(){ localStorage.setItem(saveKey, JSON.stringify(points)); }
+
+function xToPx(p,x){return (x-p.xmin)/(p.xmax-p.xmin)*p.w}
+function yToPx(y, h=500){return (1-(y-YMIN)/(YMAX-YMIN))*h}
+function yToPxP(p,y){
+  const fraction=(y-YMIN)/(YMAX-YMIN);
+  return (IS_CLIMB ? fraction : 1-fraction)*p.h;
+}
+function pxToX(p,px){return p.xmin+px/p.w*(p.xmax-p.xmin)}
+function pxToY(py, h=500){return YMAX-py/h*(YMAX-YMIN)}
+function pxToYP(p,py){
+  const fraction=py/p.h;
+  return IS_CLIMB ? YMIN+fraction*(YMAX-YMIN) : YMAX-fraction*(YMAX-YMIN);
+}
+function pointIsInPanel(p,point){
+  return point.x>=Math.min(p.xmin,p.xmax) && point.x<=Math.max(p.xmin,p.xmax) && point.y>=YMIN && point.y<=YMAX;
+}
+
+let afmImgs=[null,null,null,null];
+let afmAlphas=[0.32,0.32,0.32,0.32];
+let afmImg=null; let afmAlpha=0.32; // legacy alias for P1
+
+function loadImageToPanel(file, idx){
+  const url=URL.createObjectURL(file);
+  const img=new Image(); img.onload=()=>{ afmImgs[idx]=img; if(idx===0) afmImg=img; drawAll(); }; img.src=url;
+}
+document.getElementById('loadAFM').onclick=()=>{
+  // loads to currently selected panel in a hidden dropdown if exists, else P1
+  const sel=document.getElementById('panelSel');
+  const idx= sel ? parseInt(sel.value) : 0;
+  document.getElementById(['file','fileP2','fileP3','fileP4'][idx]||'file').click();
+};
+document.getElementById('file').onchange=e=>{ const f=e.target.files[0]; if(f) loadImageToPanel(f,0); };
+document.getElementById('fileP2').onchange=e=>{ const f=e.target.files[0]; if(f) loadImageToPanel(f,1); };
+document.getElementById('fileP3').onchange=e=>{ const f=e.target.files[0]; if(f) loadImageToPanel(f,2); };
+document.getElementById('fileP4').onchange=e=>{ const f=e.target.files[0]; if(f) loadImageToPanel(f,3); };
+document.querySelectorAll('.miniLoad').forEach(btn=>{
+  btn.onclick=()=>{ const idx=parseInt(btn.dataset.panel); document.getElementById(['file','fileP2','fileP3','fileP4'][idx]).click(); };
+});
+document.querySelectorAll('.opac').forEach(slider=>{
+  slider.oninput=()=>{ const idx=parseInt(slider.dataset.panel); afmAlphas[idx]=slider.value/100; drawAll(); };
+});
+document.querySelectorAll('.flipBtn').forEach(btn=>{
+  btn.onclick=()=>{
+    const idx=parseInt(btn.dataset.panel);
+    const p=panels[idx];
+    // swap xmin/xmax to flip horizontally
+    const tmp=p.xmin; p.xmin=p.xmax; p.xmax=tmp;
+    // also need to swap canvas? No, just redraw
+    drawAll();
+    btn.textContent = btn.textContent.includes('Flip X') ? 'Unflip X' : 'Flip X';
+  };
+});
+// drag & drop onto any panel
+document.querySelectorAll('.panel').forEach((el,idx)=>{
+  el.addEventListener('dragover', e=>{e.preventDefault(); el.style.outline='2px dashed #e74c3c';});
+  el.addEventListener('dragleave', ()=>el.style.outline='');
+  el.addEventListener('drop', e=>{
+    e.preventDefault(); el.style.outline='';
+    const f=e.dataTransfer.files[0];
+    if(f && f.type.startsWith('image/')) loadImageToPanel(f, idx);
+  });
+});
+
+// Build editable tables
+function buildTables(){
+  const cont=document.getElementById('tables');
+  cont.innerHTML='';
+  // P1
+  let html='<h4>P1 OAT → PA (takeoff DA) <span class="small">y = m*temp+b or y=b*exp(e*temp) → % → m</span></h4><table><tr><th>PA</th><th>m</th><th>e</th><th>b</th><th>type</th><th>pts</th></tr>';
+  for(let k in current.p1){
+    const o=original.p1[k], c=current.p1[k];
+    const pts=points.p1[k]||[];
+    const isExp='e' in c;
+    html+=`<tr><td>${k} ft</td>
+      <td><input data-p="p1" data-k="${k}" data-f="m" value="${c.m!==undefined?c.m:''}" placeholder="-" style="${o.m!==c.m?'background:#fff8e1':''}"></td>
+      <td><input data-p="p1" data-k="${k}" data-f="e" value="${c.e!==undefined?c.e:''}" placeholder="-" style="${o.e!==c.e?'background:#fff8e1':''}"></td>
+      <td><input data-p="p1" data-k="${k}" data-f="b" value="${c.b!==undefined?c.b:''}" style="${o.b!==c.b?'background:#fff8e1':''}"></td>
+      <td>${isExp?'exp':'lin'}</td><td>${pts.length}</td></tr>`;
+  }
+  html+='</table>';
+  // P2
+  html+='<h4>P2 MASS → weight lines (at maxWeight '+ACTIVE_MAX_WEIGHT+' lb) <span class="small">y = m*weight+b / b*exp(e*weight) / c*ln(weight)+b</span></h4><table><tr><th>#</th><th>m</th><th>e</th><th>c</th><th>b</th><th>pts</th></tr>';
+  for(let k in current.p2){
+    const o=original.p2[k], c=current.p2[k];
+    html+=`<tr><td>wLine ${k}</td>
+      <td><input data-p="p2" data-k="${k}" data-f="m" value="${c.m!==undefined?c.m:''}" placeholder="-"></td>
+      <td><input data-p="p2" data-k="${k}" data-f="e" value="${c.e!==undefined?c.e:''}" placeholder="-"></td>
+      <td><input data-p="p2" data-k="${k}" data-f="c" value="${c.c!==undefined?c.c:''}" placeholder="-"></td>
+      <td><input data-p="p2" data-k="${k}" data-f="b" value="${c.b!==undefined?c.b:''}"></td><td>${(points.p2[k]||[]).length}</td></tr>`;
+  }
+  html+='</table>';
+  // P3 WIND — all hwind lines editable (hidden for climb)
+  if(!IS_CLIMB){
+    html+='<h4>P3 WIND — hwind lines (all editable)</h4><table><tr><th>#</th><th>m</th><th>e</th><th>b</th><th>pts</th></tr>';
+    if(original.p3.hwind) original.p3.hwind.forEach((o,i)=>{
+      const c=current.p3.hwind[i];
+      html+=`<tr><td>hwind ${i}</td><td><input data-p="p3h" data-k="${i}" data-f="m" value="${c.m!==undefined?c.m:''}" placeholder="-"></td><td><input data-p="p3h" data-k="${i}" data-f="e" value="${c.e!==undefined?c.e:''}" placeholder="-"></td><td><input data-p="p3h" data-k="${i}" data-f="b" value="${c.b}"></td><td>${(points.p3['hwind_'+i]||[]).length}</td></tr>`;
+    });
+    if(original.p3.twind) {
+      html+='</table><h4>P3 TWIND (if takeoff)</h4><table><tr><th>#</th><th>m</th><th>e</th><th>b</th><th>pts</th></tr>';
+      original.p3.twind.forEach((o,i)=>{
+        const c=current.p3.twind[i];
+        html+=`<tr><td>twind ${i}</td><td><input data-p="p3t" data-k="${i}" data-f="m" value="${c.m!==undefined?c.m:''}"></td><td><input data-p="p3t" data-k="${i}" data-f="e" value="${c.e!==undefined?c.e:''}"></td><td><input data-p="p3t" data-k="${i}" data-f="b" value="${c.b}"></td><td>${(points.p3['twind_'+i]||[]).length}</td></tr>`;
+      });
+    }
+    html+='</table>';
+    html+='<h4>P4 OBSTACLE — 9 lines (all editable)</h4><table><tr><th>#</th><th>m</th><th>e</th><th>b</th><th>pts</th></tr>';
+    if(original.p4.obstacle) original.p4.obstacle.forEach((o,i)=>{
+      const c=current.p4.obstacle[i];
+      html+=`<tr><td>obs ${i}</td><td><input data-p="p4" data-k="${i}" data-f="m" value="${c.m!==undefined?c.m:''}" placeholder="-"></td><td><input data-p="p4" data-k="${i}" data-f="e" value="${c.e!==undefined?c.e:''}" placeholder="-"></td><td><input data-p="p4" data-k="${i}" data-f="b" value="${c.b}"></td><td>${(points.p4['obs_'+i]||[]).length}</td></tr>`;
+    });
+    html+='</table>';
+  } else {
+    html+='<p class="small">P3/P4 hidden for CLIMB (only P1 443×464 + P2 316×465)</p>';
+  }
+  cont.innerHTML=html;
+  cont.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('input', e=>{
+      const p=inp.dataset.p, k=inp.dataset.k, f=inp.dataset.f;
+      let v=inp.value.trim();
+      let target;
+      if(p==='p1') target=current.p1[k];
+      else if(p==='p2') target=current.p2[k];
+      else if(p==='p3h') target=current.p3.hwind[k];
+      else if(p==='p3t') target=current.p3.twind[k];
+      else if(p==='p4') target=current.p4.obstacle[k];
+      else target=current[p]?.[k];
+      if(!target) return;
+      if(v===''){ delete target[f]; } else { target[f]=parseFloat(v); }
+      drawAll();
+    });
+  });
+}
+buildTables();
+
+function drawPanel(idx){
+  const p=panels[idx];
+  const el=document.querySelector('#'+p.id+' canvas'); const ctx=el.getContext('2d');
+  ctx.clearRect(0,0,p.w,500);
+  ctx.strokeStyle='#ddd'; ctx.lineWidth=0.7; ctx.setLineDash([2,3]);
+  for(let y of [100,300,500,750,1000,1250,1400]){ const py=yToPxP(p,y); ctx.beginPath(); ctx.moveTo(0,py); ctx.lineTo(p.w,py); ctx.stroke(); }
+  ctx.setLineDash([]);
+  const bg=afmImgs[idx];
+  if(bg){ ctx.globalAlpha=afmAlphas[idx]; ctx.drawImage(bg,0,0,p.w,p.h); ctx.globalAlpha=1; }
+  else if(idx===0 && afmImg){ ctx.globalAlpha=afmAlphas[0]; ctx.drawImage(afmImg,0,0,p.w,p.h); ctx.globalAlpha=1; }
+  // draw existing fitted (current) as red, original as blue dashed, points as black
+  // For P1 we can draw current lines directly from current.p1
+  if(idx===0){
+    // original dashed blue
+    for(let k in original.p1){
+      const line=original.p1[k];
+      ctx.strokeStyle='rgba(0,0,255,0.35)'; ctx.setLineDash([6,4]); ctx.lineWidth=1.2; ctx.beginPath();
+      for(let px=0; px<p.w; px+=2){ const x=pxToX(p,px); let pct='e' in line? line.b*Math.exp(line.e*x): line.m*x+line.b; const py=yToPxP(p,toDist(pct,SCALE)); if(px===0) ctx.moveTo(px,py); else ctx.lineTo(px,py); } ctx.stroke(); ctx.setLineDash([]);
+    }
+    // current red
+    for(let k in current.p1){
+      const line=current.p1[k];
+      ctx.strokeStyle='#e74c3c'; ctx.lineWidth=1.8; ctx.beginPath();
+      for(let px=0; px<p.w; px+=2){ const x=pxToX(p,px); let pct; if('e' in line) pct=line.b*Math.exp(line.e*x); else if('m' in line) pct=line.m*x+line.b; else continue; const py=yToPxP(p,toDist(pct,SCALE)); if(px===0) ctx.moveTo(px,py); else ctx.lineTo(px,py); } ctx.stroke();
+    }
+    // points
+    for(let k in points.p1){
+      ctx.fillStyle='#000';
+      (points.p1[k]||[]).filter(pt=>pointIsInPanel(p,pt)).forEach(pt=>{ const px=xToPx(p,pt.x), py=yToPxP(p,pt.y); ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke(); });
+    }
+  } else if(idx===1){
+    // P2 MASS: draw current weight lines - for climb flip Y so heavier (left) is lower rate (higher up)
+    for(let k in original.p2){
+      const line=original.p2[k];
+      ctx.strokeStyle='rgba(0,0,255,0.30)'; ctx.setLineDash([6,4]); ctx.lineWidth=1.1; ctx.beginPath();
+      for(let px=0; px<p.w; px+=2){
+        const kg=pxToX(p,px); const wlb=kg/0.453592;
+        let pct;
+        if('e' in line) pct=line.b*Math.exp(line.e*wlb);
+        else if('c' in line) pct=line.c*Math.log(Math.max(wlb,1))+line.b;
+        else pct=line.m*wlb+line.b;
+        let y=toDist(pct,SCALE);
+        const py=yToPxP(p,y); if(px===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+      } ctx.stroke(); ctx.setLineDash([]);
+    }
+    for(let k in current.p2){
+      const line=current.p2[k];
+      ctx.strokeStyle='#e74c3c'; ctx.lineWidth=1.6; ctx.beginPath();
+      for(let px=0; px<p.w; px+=2){
+        const kg=pxToX(p,px); const wlb=kg/0.453592;
+        let pct;
+        if('e' in line) pct=line.b*Math.exp(line.e*wlb);
+        else if('c' in line) pct=line.c*Math.log(Math.max(wlb,1))+line.b;
+        else if('m' in line) pct=line.m*wlb+line.b; else continue;
+        let y=toDist(pct,SCALE);
+        const py=yToPxP(p,y); if(px===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+      } ctx.stroke();
+    }
+    // points
+    const storePts=points.p2||{};
+    for(let k in storePts){ ctx.fillStyle='#000'; storePts[k].filter(pt=>pointIsInPanel(p,pt)).forEach(pt=>{ const px=xToPx(p,pt.x), py=yToPxP(p,pt.y); ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke(); }); }
+  } else if(idx===2){
+    // P3 WIND: hwind (down) and twind (up) - draw all lines
+    const drawWind=(arr, color)=>{
+      arr.forEach(line=>{
+        ctx.strokeStyle=color; ctx.setLineDash(line===arr[0]?[]:[4,4]); ctx.lineWidth=1.1; ctx.beginPath();
+        for(let px=0; px<p.w; px+=2){
+          const w=pxToX(p,px);
+          let y;
+          if('e' in line) y=line.b*Math.exp(line.e*w);
+          else y=line.m*w+line.b;
+          // y is pct offset, need to add base? For display we show first line as reference; use direct toDist
+          const py=yToPxP(p,toDist(y,SCALE)); if(px===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+        } ctx.stroke(); ctx.setLineDash([]);
+      });
+    };
+    // original blue dashed, current red
+    ctx.strokeStyle='rgba(0,0,255,0.25)';
+    // draw original
+    if(original.p3.hwind) drawWind(original.p3.hwind, 'rgba(0,0,255,0.30)');
+    if(original.p3.twind) drawWind(original.p3.twind, 'rgba(0,0,255,0.30)');
+    // draw current red
+    if(current.p3.hwind) drawWind(current.p3.hwind, '#e74c3c');
+    if(current.p3.twind) drawWind(current.p3.twind, '#e74c3c');
+    // points
+    for(let k in points.p3){
+      ctx.fillStyle='#000';
+      (points.p3[k]||[]).filter(pt=>pointIsInPanel(p,pt)).forEach(pt=>{ const px=xToPx(p,pt.x), py=yToPxP(p,pt.y); ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.stroke(); });
+    }
+    // labels
+    ctx.fillStyle='#000'; ctx.font='italic 10px system-ui'; ctx.fillText('Headwind', 10, yToPxP(p,650)); ctx.fillText('Tailwind', 10, yToPxP(p,1080));
+  } else if(idx===3){
+    // P4 OBSTACLE: 9 lines — hidden for climb
+    if(IS_CLIMB){ ctx.strokeStyle='#000'; ctx.lineWidth=1.4; ctx.strokeRect(0,0,p.w,p.h); return; }
+    const drawObs=(arr, color, dash)=>{
+      if(!arr) return;
+      arr.forEach(line=>{
+        ctx.strokeStyle=color; ctx.setLineDash(dash); ctx.lineWidth=1.0; ctx.beginPath();
+        for(let px=0; px<p.w; px+=2){
+          const o=pxToX(p,px);
+          let y; if('e' in line) y=line.b*Math.exp(line.e*o); else y=line.m*o+line.b;
+          const py=yToPxP(p,toDist(y,SCALE)); if(px===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+        } ctx.stroke(); ctx.setLineDash([]);
+      });
+    };
+    if(original.p4.obstacle) drawObs(original.p4.obstacle, 'rgba(0,0,255,0.30)', [6,4]);
+    if(current.p4.obstacle) drawObs(current.p4.obstacle, '#e74c3c', []);
+    const storePts=points.p4||{};
+    for(let k in storePts){ ctx.fillStyle='#000'; storePts[k].filter(pt=>pointIsInPanel(p,pt)).forEach(pt=>{ const px=xToPx(p,pt.x), py=yToPxP(p,pt.y); ctx.beginPath(); ctx.arc(px,py,5,0,Math.PI*2); ctx.fill(); ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.stroke(); }); }
+  }
+  ctx.strokeStyle='#000'; ctx.lineWidth=1.4; ctx.strokeRect(0,0,p.w,500);
+}
+function drawRight(){
+  const el=document.querySelector('#rightScale canvas'); const ctx=el.getContext('2d');
+  const h= document.getElementById('rightScale').clientHeight || 500;
+  ctx.clearRect(0,0,70,h);
+  const yticks = IS_CLIMB ? (IS_FP_CLIMB?[0,450,900,1350,1800]:[0,400,800,1200,1600]) : [-200,0,200,400,600,800,1000,1200,1400];
+  for(let y of yticks){ const fraction=(y-YMIN)/(YMAX-YMIN), py=(IS_CLIMB?fraction:1-fraction)*h; ctx.fillStyle='#000'; ctx.font='bold 10px system-ui'; ctx.fillText(y,4,py+3); if(!IS_CLIMB){ ctx.fillStyle='#222'; ctx.font='7px system-ui'; ctx.fillText(Math.round(y*3.28084)+' ft',38,py+3); } ctx.strokeStyle='#ddd'; ctx.beginPath(); ctx.moveTo(0,py); ctx.lineTo(70,py); ctx.stroke(); }
+  ctx.strokeStyle='#000'; ctx.lineWidth=1.4; ctx.strokeRect(0,0,70,500);
+  ctx.save(); ctx.translate(58,250); ctx.rotate(-Math.PI/2); ctx.font='bold 9px system-ui'; ctx.fillStyle='#000'; ctx.fillText(IS_CLIMB?'CLIMB RATE [fpm] →':'TAKEOFF GROUND ROLL [m] →',-60,0); ctx.restore();
+}
+function drawAll(){ for(let i=0;i<4;i++) drawPanel(i); drawRight(); updateLog(); }
+function updateLog(){
+  let s=''; for(let i=0;i<4;i++){ const p=panels[i]; s+=`P${i+1}:\n`; const storePts=points[['p1','p2','p3','p4'][i]]||{}; for(let k in storePts) s+=`  ${k}: ${(storePts[k]||[]).length} pts\n`; }
+  document.getElementById('log') && (document.getElementById('log').textContent=s);
+}
+// interaction: click to add, drag to move, right-click to delete — fixed for 163px/151px narrow panels + retina + inverted axes
+let drag=null;
+function getCanvasPos(cnv, e){
+  const rect=cnv.getBoundingClientRect();
+  const scaleX=cnv.width/rect.width, scaleY=cnv.height/rect.height;
+  const px=(e.clientX-rect.left)*scaleX, py=(e.clientY-rect.top)*scaleY;
+  // map back to logical 0..w,0..500 for our helpers (helpers use logical w)
+  const logicalPx=px*(panels[0].w/cnv.width)* (cnv.width/rect.width>1 ? 1 : 1); // keep logical
+  // simpler: use rect size as logical (CSS) and helpers use same
+  return {px: (e.clientX-rect.left), py:(e.clientY-rect.top), rect};
+}
+document.querySelectorAll('.panel canvas').forEach((cnv, idx)=>{
+  cnv.addEventListener('mousedown', e=>{
+    const p=panels[idx]; const rect=cnv.getBoundingClientRect();
+    const cssPx=e.clientX-rect.left, cssPy=e.clientY-rect.top;
+    const scaleX=cnv.width/rect.width, scaleY=cnv.height/rect.height;
+    // Normalize mouse CSS pixels to panel logical coordinates (0..p.w, 0..p.h)
+    // cssPx/cssPy are relative to canvas element (0..rect.width/rect.height (CSS-rendered));
+    // scale them by panel ratio so helpers (expect 0..p.w/p.h) match
+    const normPx = cssPx * (p.w / rect.width), normPy = cssPy * (p.h / rect.height);
+    const x=pxToX(p, normPx), y=pxToYP(p, normPy);
+    const pid=['p1','p2','p3','p4'][idx];
+    let best=null, bestDist=40, bestKey=null, bestIdx=-1;
+    for(let k in points[pid]){
+      points[pid][k].forEach((pt,i)=>{
+        const d=Math.hypot(xToPx(p,pt.x)-normPx, yToPxP(p,pt.y)-normPy);
+        if(d<bestDist){ bestDist=d; best=pt; bestKey=k; bestIdx=i; }
+      });
+    }
+    if(e.button===2 || (e.ctrlKey && e.button===0)){
+      if(best){ points[pid][bestKey].splice(bestIdx,1); savePoints(); drawAll(); e.preventDefault(); }
+      return;
+    }
+    if(best && bestDist<40){ drag={pid, key:bestKey, idx:bestIdx, offsetX: xToPx(p,best.x)-normPx, offsetY: yToPxP(p,best.y)-normPy }; }
+    else {
+      const selectedPanel=Number(document.getElementById('panelSel').value);
+      const selectedKey=activeCurveKey(selectedPanel);
+      // When this panel is selected, its Curve dropdown is authoritative:
+      // dots join exactly that one line and can only affect that line's fit.
+      // For a different panel, retain the nearest-line fallback.
+      let targetKey=(selectedPanel===idx && points[pid][selectedKey]) ? selectedKey : null;
+      if(!targetKey){
+        let bestK=Object.keys(points[pid])[0], bestDy=1e9;
+        for(let k in points[pid]){
+        let line;
+        if(pid==='p1') line=current.p1[k];
+        else if(pid==='p2') line=current.p2[k];
+        else if(pid==='p3'){
+          const [arr, idxStr]=k.split('_');
+          const idx=parseInt(idxStr);
+          line=current.p3[arr] ? current.p3[arr][idx] : null;
+          if(!line) continue;
+        } else if(pid==='p4'){
+          const idx=parseInt(k.split('_')[1]);
+          line=current.p4.obstacle[idx];
+          if(!line) continue;
+        }
+        if(!line) continue;
+        let pct, yy;
+        if(pid==='p1'){
+          pct='e' in line? line.b*Math.exp(line.e*x): line.m*x+line.b;
+          yy=toDist(pct,SCALE);
+        } else if(pid==='p2'){
+          const wlb=x/0.453592;
+          if('e' in line) pct=line.b*Math.exp(line.e*wlb);
+          else if('c' in line) pct=line.c*Math.log(Math.max(wlb,1))+line.b;
+          else pct=line.m*wlb+line.b;
+          yy=toDist(pct,SCALE);
+        } else if(pid==='p3'){
+          // wind x 0-20, obstacle-like
+          if('e' in line) pct=line.b*Math.exp(line.e*x);
+          else pct=line.m*x+line.b;
+          yy=toDist(pct,SCALE);
+        } else if(pid==='p4'){
+          if('e' in line) pct=line.b*Math.exp(line.e*x);
+          else pct=line.m*x+line.b;
+          yy=toDist(pct,SCALE);
+        }
+        const dy=Math.abs(yy-y);
+          if(dy<bestDy){ bestDy=dy; bestK=k; }
+        }
+        targetKey=bestK;
+      }
+      points[pid][targetKey].push({x,y}); savePoints(); drawAll();
+    }
+  });
+
+  cnv.addEventListener('mousemove', e=>{
+    if(!drag) return;
+    const p=panels[['p1','p2','p3','p4'].indexOf(drag.pid)]; const rect=cnv.getBoundingClientRect();
+    // Normalize CSS pixels to panel logical coordinates (0..p.w, 0..p.h)
+    const cssPx=e.clientX-rect.left, cssPy=e.clientY-rect.top;
+    const normPx = cssPx * (p.w / rect.width), normPy = cssPy * (p.h / rect.height);
+    // keep cursor offset so point stays under mouse center, not snapping to corner
+    const x=pxToX(p, normPx + drag.offsetX), y=pxToYP(p, normPy + drag.offsetY);
+    // clamp to panel bounds
+    const clampedX=Math.min(Math.max(x, Math.min(p.xmin,p.xmax)), Math.max(p.xmin,p.xmax));
+    const clampedY=Math.min(Math.max(y, YMIN), YMAX);
+    points[drag.pid][drag.key][drag.idx]={x:clampedX,y:clampedY}; drawAll();
+  });
+
+  cnv.addEventListener('mouseup', ()=>{ if(drag){ savePoints(); drag=null; }});
+
+  cnv.addEventListener('mouseleave', ()=>{ if(drag){ savePoints(); drag=null; }});
+
+  cnv.addEventListener('contextmenu', e=>e.preventDefault());
+});  // end forEach
+
+function activeCurveKey(panelIndex){
+  const p=panels[panelIndex];
+  const selected=document.getElementById('curveSel').value;
+  return selected || (p.curves[0] && p.curves[0].key);
+}
+function refreshCurveSelector(){
+  const panelIndex=Number(document.getElementById('panelSel').value);
+  const select=document.getElementById('curveSel');
+  select.replaceChildren();
+  for(const curve of panels[panelIndex].curves){
+    const option=document.createElement('option');
+    option.value=curve.key; option.textContent=curve.label;
+    select.appendChild(option);
+  }
+}
+function lineFor(panelId, key){
+  if(panelId==='p1') return current.p1[key];
+  if(panelId==='p2') return current.p2[key];
+  if(panelId==='p3') { const [type,index]=key.split('_'); return current.p3[type]?.[Number(index)]; }
+  if(panelId==='p4') return current.p4.obstacle?.[Number(key.split('_')[1])];
+}
+function fitLine(panelId, key){
+  // Preloaded black dots show the old perfdata curve.  Only AFM dots the user
+  // creates, or reference dots they deliberately drag, may influence a fit.
+  const panel=panels[['p1','p2','p3','p4'].indexOf(panelId)];
+  const pts=(points[panelId]?.[key] || []).filter(pt=>!pt.seed && pointIsInPanel(panel,pt));
+  if(pts.length<2) return false;
+  const line=lineFor(panelId,key);
+  if(!line) return false;
+  // All fitter panels store output as a percentage; weight is the only x-axis
+  // expressed in pounds in perfdata.js.
+  const xs=pts.map(pt=>panelId==='p2' ? pt.x/0.453592 : pt.x);
+  const ys=pts.map(pt=>toPct(pt.y));
+  if(panelId==='p2' && 'c' in line){
+    // DA40FP climb's early weight curves are logarithmic.  Keep that model
+    // when fitting moved/new dots instead of silently replacing it with m*x+b.
+    const logXs=xs.map(x=>Math.log(Math.max(x,1))), n=xs.length;
+    const sx=logXs.reduce((a,b)=>a+b,0), sy=ys.reduce((a,b)=>a+b,0);
+    const sxx=logXs.reduce((a,b)=>a+b*b,0), sxy=logXs.reduce((a,b,i)=>a+b*ys[i],0);
+    const denominator=n*sxx-sx*sx;
+    if(!denominator) return false;
+    line.c=(n*sxy-sx*sy)/denominator;
+    line.b=(sy-line.c*sx)/n;
+    delete line.m;
+    delete line.e;
+  } else if('e' in line && ys.every(y=>y>0)){
+    // Fit in chart space, not log space.  A log-linear fit overweights dots
+    // close to zero, so its red curve can visibly miss correctly placed AFM
+    // dots.  For a fixed e, the least-squares scale factor is analytic; a
+    // short golden-section search then finds the e with minimum vertical SSE.
+    const x0=xs.reduce((a,b)=>a+b,0)/xs.length;
+    const span=Math.max(...xs)-Math.min(...xs);
+    if(!span) return false;
+    const scaleFor=e=>{
+      const q=xs.map(x=>Math.exp(e*(x-x0)));
+      return ys.reduce((sum,y,i)=>sum+y*q[i],0)/q.reduce((sum,v)=>sum+v*v,0);
+    };
+    const loss=e=>{
+      const a=scaleFor(e);
+      return ys.reduce((sum,y,i)=>sum+(y-a*Math.exp(e*(xs[i]-x0)))**2,0);
+    };
+    // The log fit only seeds the search; it is not the result we use.
+    const logs=ys.map(Math.log), n=xs.length;
+    const sx=xs.reduce((a,b)=>a+b,0), sy=logs.reduce((a,b)=>a+b,0);
+    const sxx=xs.reduce((a,b)=>a+b*b,0), sxy=xs.reduce((a,b,i)=>a+b*logs[i],0);
+    const seed=(n*sxy-sx*sy)/(n*sxx-sx*sx);
+    let lo=seed-20/span, hi=seed+20/span;
+    const phi=(Math.sqrt(5)-1)/2;
+    let left=hi-phi*(hi-lo), right=lo+phi*(hi-lo);
+    for(let i=0;i<80;i++){
+      if(loss(left)>loss(right)){ lo=left; left=right; right=lo+phi*(hi-lo); }
+      else { hi=right; right=left; left=hi-phi*(hi-lo); }
+    }
+    line.e=(lo+hi)/2;
+    const a=scaleFor(line.e);
+    line.b=a*Math.exp(-line.e*x0);
+  } else {
+    const n=xs.length, sx=xs.reduce((a,b)=>a+b,0), sy=ys.reduce((a,b)=>a+b,0);
+    const sxx=xs.reduce((a,b)=>a+b*b,0), sxy=xs.reduce((a,b,i)=>a+b*ys[i],0);
+    const denominator=n*sxx-sx*sx;
+    if(!denominator) return false;
+    line.m=(n*sxy-sx*sy)/denominator;
+    line.b=(sy-line.m*sx)/n;
+    delete line.e;
+  }
+  return true;
+}
+function exportSnippet(){
+  const payload={mode:MODE, densityAltitude:current.p1, weight:current.p2,
+    hwind:current.p3.hwind, twind:current.p3.twind, obstacle:current.p4.obstacle};
+  const text='// AFM Fitter v2 export ('+MODE+')\n'+JSON.stringify(payload,null,2);
+  localStorage.setItem('afm_v2_export_'+MODE,text);
+  navigator.clipboard?.writeText(text).catch(()=>{});
+  document.getElementById('log').textContent='Export copied to clipboard (and saved in localStorage).\n\n'+text;
+}
+document.getElementById('panelSel').addEventListener('change', refreshCurveSelector);
+document.getElementById('reset').addEventListener('click', ()=>{
+  current=deep(original); samplePoints(); savePoints(); buildTables(); drawAll();
+});
+document.getElementById('fitAll').addEventListener('click', ()=>{
+  let fitted=0;
+  for(const [panelIndex,panelId] of ['p1','p2','p3','p4'].entries())
+    for(const curve of panels[panelIndex].curves) fitted+=fitLine(panelId,curve.key) ? 1 : 0;
+  buildTables(); drawAll();
+  document.getElementById('log').textContent=`Fitted ${fitted} curve(s). Add or drag at least two points on a curve to fit it.`;
+});
+document.getElementById('export').addEventListener('click', exportSnippet);
+refreshCurveSelector();
+window.afmFitterReady=true;
+drawAll();
+</script>
+</body>
+</html>
