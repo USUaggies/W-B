@@ -87,6 +87,7 @@ function aircraftSelection() {
             document.getElementById("baggageStation1").max = "100";
             document.getElementById("baggage1MaxNote").innerHTML = "Max 100 lbs";
             document.getElementById("baggageStation2Div").style.display = "flex";
+            document.getElementById("baggageStation2").max = "40";
             document.getElementById("baggage2MaxNote").innerHTML = "Max 40 lbs. Max 100 lbs Combined.";
             document.getElementById("fuelStation").max = "40.2";
             document.getElementById("fuelMaxNote").innerHTML = "Max 40.2 Gallons";
@@ -99,6 +100,7 @@ function aircraftSelection() {
             document.getElementById("baggageStation1").max = "100";
             document.getElementById("baggage1MaxNote").innerHTML = "Max 100 lbs";
             document.getElementById("baggageStation2Div").style.display = "flex";
+            document.getElementById("baggageStation2").max = "40";
             document.getElementById("baggage2MaxNote").innerHTML = "Max 40 lbs. Max 100 lbs Combined.";
             document.getElementById("fuelStation").max = "50";
             document.getElementById("fuelMaxNote").innerHTML = "Max 50 Gallons";
@@ -121,6 +123,7 @@ function aircraftSelection() {
             document.getElementById("baggageStation1").max = "100";
             document.getElementById("baggage1MaxNote").innerHTML = "Max 100 lbs";
             document.getElementById("baggageStation2Div").style.display = "flex";
+            document.getElementById("baggageStation2").max = "40";
             document.getElementById("baggage2MaxNote").innerHTML = "Max 40 lbs. Max 100 lbs Combined.";
             document.getElementById("fuelBurn").max = "76";
             break;
@@ -131,6 +134,7 @@ function aircraftSelection() {
             document.getElementById("baggageStation1").max = "120";
             document.getElementById("baggage1MaxNote").innerHTML = "Max 120 lbs";
             document.getElementById("baggageStation2Div").style.display = "flex";
+            document.getElementById("baggageStation2").max = "50";
             document.getElementById("baggage2MaxNote").innerHTML = "Max 50 lbs. Max 120 lbs Combined.";
             document.getElementById("fuelStation").max = "50";
             document.getElementById("fuelMaxNote").innerHTML = "Max 56 Gallons";
@@ -552,6 +556,9 @@ function checkInputConstraints(modelData, userInput) {
         }
         if (userInput.fuelBurnWeight > userInput.fuelWeight) {
             return ["Fuel burn exceeds fuel available.", "fuelBurnDiv"];
+        }
+        if ((userInput.baggage1Weight + userInput.baggage2Weight) > modelData.maxBaggage) {
+            return ["Max combined baggage exceeded.", "baggageStation1Div"];
         }
     } else if ((modelData.model === "DA40XL") || (modelData.model === "DA40XLS")) {
         if (userInput.fuelWeight > modelData.maxFuel * 6.0) {
