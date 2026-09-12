@@ -65,7 +65,7 @@ function getWeather(correctedIdentifier = false) {
                     var weatherResults = JSON.parse(this.responseText);
                     if (!weatherData[stationID])
                         weatherData[stationID] = {};
-                    if (weatherResults["taf"] !== null) {
+                    if (weatherResults["taf"] !== null && weatherResults["taf"].forecast) {
                         var weatherTAF = weatherResults["taf"];
                         weatherData[stationID]["taf"] = weatherTAF;
                         sessionStorage.setItem("weather", JSON.stringify(weatherData));
@@ -479,7 +479,7 @@ function runwayChange(str, station_id = null) {
         } else {
             winds = windComponents(heading, weatherData["wind_dir_degrees"], weatherData["wind_speed_kt"]);
         }
-        if (weatherTAF != null) {
+        if (weatherTAF != null && weatherTAF.forecast) {
             setTAF(weatherTAF);
         } else {
             document.getElementById("TAF").innerHTML = "No TAF Available";
