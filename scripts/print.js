@@ -52,8 +52,10 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
         document.getElementById("wTempDew-" + suffix).innerHTML = temp + "&degC/" + ((weatherData.dewpoint_c) ? (weatherData.dewpoint_c + "&degC") : "---");
         document.getElementById("wVisibility-" + suffix).innerHTML = ((weatherData.visibility_statute_mi) ? parseFloat(weatherData.visibility_statute_mi) + " sm" : "MISSING");
         document.getElementById("wAltimeter-" + suffix).innerHTML = parseFloat(weatherData.altim_in_hg).toFixed(2) + " inHg";
-        document.getElementById("wWx-" + suffix).innerHTML = weatherData.wx_string ? weatherData.wx_string : "N/A";
-        document.getElementById("wRmks-" + suffix).innerHTML = weatherData.remarks;
+        if (document.getElementById("wWx-" + suffix))
+            document.getElementById("wWx-" + suffix).innerHTML = weatherData.wx_string ? weatherData.wx_string : "N/A";
+        if (document.getElementById("wRmks-" + suffix))
+            document.getElementById("wRmks-" + suffix).innerHTML = weatherData.remarks;
         var fldAlt = parseFloat(weatherData.elevation_m) * 3.281;
         var pressureAlt = fldAlt + ((29.92 - parseFloat(weatherData.altim_in_hg)) * 1000);
         var altimeterHg = parseFloat(weatherData.altim_in_hg);
