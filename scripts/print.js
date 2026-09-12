@@ -136,7 +136,7 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
         document.getElementById("wPressureAlt-" + suffix).innerHTML = pressureAlt.toFixed(0) + " ft";
         document.getElementById("wDensityAlt-" + suffix).innerHTML = densityAlt.toFixed(0) + " ft";
         /*TAF*/
-        if (weatherTAF !== null) {
+        if (weatherTAF && weatherTAF.forecast) {
             setTAF(weatherTAF, suffix);
         } else {
             document.getElementById("TAF-" + suffix).innerHTML = "No TAF Available";
