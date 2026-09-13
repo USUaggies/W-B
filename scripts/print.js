@@ -1,5 +1,7 @@
 const zeroPad = (num, places) => String(num).padStart(places, '0');
-
+document.addEventListener("load", () => {
+    document.getElementsByClassName("dfwid-tab")[0].parentElement.removeChild(document.getElementsByClassName("dfwid-tab")[0]);
+});
 function fillData() {
     /**Main call to fetch all data from local or session storage and call all the fill functions**/
     var userData = JSON.parse(localStorage.getItem("userInput"));
