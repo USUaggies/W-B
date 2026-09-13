@@ -187,9 +187,11 @@
                             <p>Performance data is an estimate only and does not take into consideration runway condition, aircraft condition, or pilot technique. Runway data may be outdated or incorrect</p>
                             <div class="container form-group row">
                                 <div id="runwaySelectDiv"></div>
-                                <div style="white-space: nowrap;">
-                                    <label for="runwayHdg" class="col-sm-4 col-form-label" style="display: inline-block; max-width: 150px">Runway Heading: </label>
-                                    <input type="number" class="form-control" id="runwayHdg" min="1" max="360" placeholder="Degrees" onchange="runwayChange(this.value)" style="max-width: 125px; display: inline-block;">
+                                <div style="white-space: nowrap;" class="input-group">
+                                    <label for="runwayHdg" class="col-sm-4 col-form-label" style="display: inline-block; max-width: 150px;">Runway Heading: </label>
+                                    <input type="number" class="form-control" id="runwayHdg" min="1" max="360" placeholder="Degrees" onchange="runwayChange(this.value)" style="max-width: 125px; display: inline-block;  min-width: 75px; border-radius: 4px; margin-right: 5px;">
+                                    <button class="btn btn-secondary" onclick="runwayChange(document.getElementById('runwayHdg').value)">Update</button>
+                                    
                                 </div>
                             </div>
                             <p id="weatherWarning" style="display: none"></p>

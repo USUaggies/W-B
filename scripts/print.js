@@ -45,7 +45,7 @@ function fillWeather(weatherData, weatherTAF, isPrint, suffix) {
     /**Fills HTML elements with weather data**/
     if (weatherData.manually_entered) {
         document.getElementById("wTime-" + suffix).innerHTML = weatherData.obs_time;
-        document.getElementById("wIdent-" + suffix).innerHTML = weatherData.station_id;
+        document.getElementById("wIdent-" + suffix).innerHTML = weatherData.station_id + " (Manually entered)";
         var temp = parseFloat(weatherData.temp_c);
         document.getElementById("wWind-" + suffix).innerHTML = weatherData.wind_dir_degrees + " @ " + weatherData.wind_speed_kt + " kts";
         document.getElementById("wCeilings-" + suffix).innerHTML = weatherData.clouds;
