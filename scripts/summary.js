@@ -565,18 +565,10 @@ async function savePicture() {
     const saveButton = document.getElementById("saveButton");
     saveButton.disabled = true;
     preparePrintIframe();
-    // Preserve gesture on iOS by opening blank window synchronously
-    let openedWindow = null;
     const ios = isIOS();
-    if (ios) {
-        openedWindow = window.open('', '_blank');
-        // If blocked, openedWindow will be null - we will fallback to _blank later
-    }
     try {
         const printDoc = await waitForPrintIframe();
-        // The hosted print template uses `.sheet-outer.letter` as the page itself,
-        // while the local template has an inner `.sheet`. Give the hosted version
-        // the same 8.5in (816px) page width before it lays out its Bootstrap rows.
+        // Hosted print uses .sheet-outer.letter as page, local uses .sheet
         const sheetOuter = printDoc.querySelector(".sheet-outer.letter");
         if (sheetOuter && !sheetOuter.querySelector(".sheet")) {
             sheetOuter.style.setProperty("width", "816px", "important");
@@ -584,7 +576,6 @@ async function savePicture() {
             sheetOuter.style.setProperty("box-sizing", "border-box", "important");
             sheetOuter.style.setProperty("padding", "20px", "important");
         }
-        // Ensure print canvas is up-to-date: copy CG from main page
         const srcCanvas = document.getElementById("cgCanvas");
         const destCanvas = printDoc.getElementById("cgCanvas");
         if (srcCanvas && destCanvas) {
@@ -592,12 +583,9 @@ async function savePicture() {
             destCtx.clearRect(0, 0, destCanvas.width, destCanvas.height);
             destCtx.drawImage(srcCanvas, 0, 0, destCanvas.width, destCanvas.height);
         }
-        // Allow the resized iframe viewport to finish laying out the print document.
         await new Promise(resolve => setTimeout(resolve, 200));
         const contentEl = printDoc.getElementById("content");
         if (!contentEl) throw new Error("print content not found");
-        // Capture the page itself, not the CMS content wrapper around it. The local
-        // print template names this element `.sheet`; the hosted template does not.
         const printPage = contentEl.querySelector(".sheet-outer.letter .sheet") ||
             contentEl.querySelector(".sheet-outer.letter") ||
             contentEl.querySelector(".sheet") ||
@@ -614,46 +602,68 @@ async function savePicture() {
         const tailNum = (tailData.obj && tailData.obj.tail) ? tailData.obj.tail : "summary";
         const date = new Date();
         const fileName = `${tailNum} ${zeroPad(date.getDate(), 2)}-${zeroPad(date.getMonth() + 1, 2)}-${date.getFullYear()} ${zeroPad(date.getHours(), 2)}${zeroPad(date.getMinutes(), 2)}.png`;
-        // Prefer Web Share API with files on iOS
         const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
         if (!blob) throw new Error("canvas toBlob failed");
         const blobUrl = URL.createObjectURL(blob);
-        // Try native share first (iOS 14+ supports files)
+        // iOS: try native share first - no new tab needed, avoids USU CMS popup blocker
         if (ios && navigator.share && navigator.canShare) {
             try {
                 const file = new File([blob], fileName, { type: "image/png" });
                 if (navigator.canShare({ files: [file] })) {
-                    if (openedWindow) { openedWindow.close(); openedWindow = null; }
                     await navigator.share({ files: [file], title: fileName, text: fileName });
                     URL.revokeObjectURL(blobUrl);
-                    saveButton.disabled = false;
-                    return;
+                    // also show inline preview for manual long-press fallback
+                } else {
+                    throw new Error("canShare false");
                 }
             } catch (shareErr) {
-                // Share cancelled or failed - fallback to window open
                 if (shareErr && shareErr.name === 'AbortError') {
                     URL.revokeObjectURL(blobUrl);
                     saveButton.disabled = false;
-                    if (openedWindow) openedWindow.close();
                     return;
                 }
+                // fall through to inline preview
             }
         }
         if (ios) {
-            // iOS does not support download attribute - open image in new tab for user to long-press Save
-            if (openedWindow) {
-                openedWindow.location.href = blobUrl;
-                // Also show in-page fallback for user to save
-                const preview = document.getElementById("previewImg");
-                if (preview) {
-                    preview.style.display = "block";
-                    preview.innerHTML = `<p style="margin-top:1rem">Tap and hold image to Save: <br><a href="${blobUrl}" target="_blank" rel="noopener">Open Image</a></p>`;
-                    preview.appendChild(canvas);
-                    canvas.style.maxWidth = "100%";
-                    canvas.style.height = "auto";
+            // USU CMS blocks window.open after async - show inline image instead of new tab
+            const preview = document.getElementById("previewImg");
+            if (preview) {
+                preview.style.display = "block";
+                // keep blobUrl alive for link
+                preview.innerHTML = `<div style="margin-top:1rem; padding:12px; background:#f8f9fa; border:1px solid #dee2e6; border-radius:8px;">
+                    <p style="margin:0 0 8px 0; font-weight:600;">Image ready — tap Share or long-press to Save</p>
+                    <a href="${blobUrl}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" style="margin-bottom:8px;">Open Image in New Tab</a>
+                    <p style="margin:0; font-size:0.9em; color:#555;">Long-press the image below → <strong>Add to Photos</strong> / <strong>Save to Files</strong></p>
+                </div>`;
+                const img = document.createElement("img");
+                img.src = blobUrl;
+                img.alt = fileName;
+                img.style.maxWidth = "100%";
+                img.style.height = "auto";
+                img.style.marginTop = "12px";
+                img.style.border = "1px solid #ccc";
+                preview.appendChild(img);
+                // scroll to preview
+                preview.scrollIntoView({ behavior: "smooth", block: "center" });
+                // also offer share button if available
+                if (navigator.share && navigator.canShare) {
+                    const shareBtn = document.createElement("button");
+                    shareBtn.textContent = "Share…";
+                    shareBtn.className = "btn btn-primary btn-sm";
+                    shareBtn.style.marginTop = "8px";
+                    shareBtn.onclick = async () => {
+                        try {
+                            const file = new File([blob], fileName, { type: "image/png" });
+                            await navigator.share({ files: [file], title: fileName });
+                        } catch (e) {}
+                    };
+                    preview.appendChild(document.createElement("br"));
+                    preview.appendChild(shareBtn);
                 }
                 setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
             } else {
+                // fallback if preview div missing - try open (may be blocked on USU)
                 window.open(blobUrl, '_blank');
                 setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
             }
@@ -677,7 +687,6 @@ async function savePicture() {
     } catch (err) {
         console.error("savePicture failed:", err);
         alert("Save failed: " + (err.message || err));
-        if (openedWindow) openedWindow.close();
     } finally {
         saveButton.disabled = false;
     }
