@@ -1,4 +1,7 @@
-const NUM_QUESTIONS = document.getElementById("risk-table").childNodes[1].childNodes[1].childNodes.length == 15 ? 10 : 12;
+function getQuestionRows() {
+    const cells = document.querySelectorAll('#risk-table .selectable-cell');
+    return [...new Set([...cells].map((c) => c.dataset.row))];
+}
 
 function handleCellClick(cell) {
     const selectedRow = cell.dataset.row;
@@ -60,13 +63,13 @@ function updateTotal() {
 
 function validateCompletion() { // Make sure all questions are answered
     let completed = true;
-    for (let i = 0; i < NUM_QUESTIONS; i++) {
+    for (const row of getQuestionRows()) {
         let rowCompleted = false;
-        document.querySelectorAll(`.selectable-cell[data-row="${i}"]`).forEach((cell) => {
-            if (cell.classList.contains("selected")) 
+        document.querySelectorAll(`.selectable-cell[data-row="${CSS.escape(row)}"]`).forEach((cell) => {
+            if (cell.classList.contains("selected"))
                 rowCompleted = true;
         });
-        if (!rowCompleted) 
+        if (!rowCompleted)
             completed = false;
     }
     if (completed) {
@@ -112,11 +115,11 @@ function populateCells() {
 }
 
 function clear() {
-    for (let i = 0; i < NUM_QUESTIONS; i++) {
-        document.querySelectorAll(`.selectable-cell[data-row="${i}"]`).forEach((cell) => {
+    for (const row of getQuestionRows()) {
+        document.querySelectorAll(`.selectable-cell[data-row="${CSS.escape(row)}"]`).forEach((cell) => {
             cell.classList.remove('selected');
         });
-        document.querySelector(`.score-cell[data-row="${i}"]`).innerHTML = "";
+        document.querySelector(`.score-cell[data-row="${CSS.escape(row)}"]`).innerHTML = "";
     }
     removeNoFly();
     document.getElementById("risk0").classList.add("hidden");
