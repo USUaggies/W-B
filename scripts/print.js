@@ -1,9 +1,15 @@
 const zeroPad = (num, places) => String(num).padStart(places, '0');
-document.addEventListener("DOMContentLoaded", () => {
+const observer = new MutationObserver((mutations, obs) => {
   const el = document.querySelector(".dfwid-tab");
   if (el) {
     el.remove();
+    obs.disconnect(); // Stops watching once removed
   }
+});
+
+observer.observe(document.documentElement, {
+  childList: true,
+  subtree: true
 });
 function fillData() {
     /**Main call to fetch all data from local or session storage and call all the fill functions**/
