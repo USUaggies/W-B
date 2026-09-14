@@ -74,7 +74,8 @@ function getWeather(correctedIdentifier = false) {
                     } else {
                         document.getElementById("TAF").innerHTML = "No TAF Available";
                     }
-                    if (weatherResults["metar"] !== null) {
+                    let age = new Date - new Date(weatherResults["metar"].observation_time)
+                    if (weatherResults["metar"] !== null && age / 60000 < 120 ) {
                         weatherData[stationID].metar = weatherResults["metar"];
                         var requiredFields = ["temp_c", "altim_in_hg", "wind_dir_degrees", "wind_speed_kt"];
                         for (let i = 0; i < requiredFields.length; i++) {
