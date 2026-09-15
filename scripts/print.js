@@ -1,6 +1,6 @@
 const zeroPad = (num, places) => String(num).padStart(places, '0');
 const observer = new MutationObserver((mutations, obs) => {
-  const el = document.querySelector(".dfwid-tab");
+  const el = document.querySelector(".dfwid-trigger-tab");
   if (el) {
     el.remove();
     obs.disconnect(); // Stops watching once removed

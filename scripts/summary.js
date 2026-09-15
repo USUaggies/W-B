@@ -1,5 +1,11 @@
 const zeroPad = (num, places) => String(num).padStart(places, '0');
-
+const observer = new MutationObserver((mutations, obs) => {
+  const el = document.querySelector(".dfwid-trigger-tab");
+  if (el) {
+    el.remove();
+    obs.disconnect(); // Stops watching once removed
+  }
+});
 function fillData() {
     /**Main call to fetch all data from local or session storage and call all the fill functions**/
     var userData = JSON.parse(localStorage.getItem("userInput"));
